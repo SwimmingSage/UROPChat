@@ -2,3 +2,90 @@ html {
     margin: 0px;
     padding: 0px;
 }
+
+/* Style for front home page */
+
+.loginhome {
+    text-align: center;
+}
+
+ul.homeoptions {
+    list-style: none;
+    padding: 0px;
+    margin-top: 1.5em;
+}
+
+.homeoptions li {
+    width: 4em;
+    border: 1px solid black;
+    padding: 0.2em 2em;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.homeoptions li:hover {
+    background-color: #F4F4F4;
+    transition: 0.2s;
+    transform: scale(1.05);
+}
+
+div.enterform {
+    text-align: center;
+}
+
+.enterform ul {
+    list-style: none;
+    margin-top: .5em;
+}
+
+.enterform ul li input{
+    margin-top: .2em;
+    padding: .4em .4em;
+    font-size: 1em;
+    border: 1px solid #D8D8D8;
+}
+
+.enterform ul li input:focus {
+    background-color: #F9F9F9;
+    outline: none;
+}
+
+button.submithome {
+    font-size: 1em;
+    font-weight: bold;
+    padding: .2em .5em;
+    background-color: #F9F9F9;
+    border: 1px solid black;
+    margin-top: 1em;
+}
+
+button.submithome:hover {
+    cursor: pointer;
+    background-color: white;
+    transition: 0.2s;
+    transform: scale(1.05);
+}
+
+.enterform li.error {
+  list-style-type: none;
+  align-content: center;
+  color: red;
+  display: none;
+  margin-top: 1em;
+/*  opacity: 0;*/
+  font-size: 1.2em;
+}
+
+#signupform {
+    display: block;
+    opacity: 1;
+}
+
+#loginform {
+    display: none;
+    opacity: 0;
+}
+
+
+
+
