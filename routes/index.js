@@ -8,6 +8,8 @@ var router = require('express').Router();
 var mongoose = require('mongoose')
 
 var User = mongoose.model('User');
+var Message = mongoose.model('Message');
+var ChatRoom = mongoose.model('ChatRoom');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {

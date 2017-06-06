@@ -11,10 +11,21 @@ var User = new Schema({
     admin:                  {type: Boolean, default: false},
 });
 
+var messageschema = new Schema({
+    message:                {type: String, required: true},
+    sender:                 {type: Schema.Types.ObjectId, ref: 'User'},
+});
+
 var chatroomschema = new Schema({
-    
+    Users:                  [{type: Schema.Types.ObjectId , ref: 'User'}],
+    Conversation:           [{type: Schema.Types.ObjectId, ref: 'Message'}],
 });
 
 User.plugin(passportLocalMongoose);
 
 module.exports = mongoose.model('User', User);
+mongoose.model('Message', messageschema);
+mongoose.model('ChatRoom', chatroomschema);
+
+// var Message = mongoose.model('Message', messageschema);
+// var ChatRoom = mongoose.model('ChatRoom', chatroomschema);
