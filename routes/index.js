@@ -28,6 +28,14 @@ router.get('/loginhome', function(req, res, next) {
   }
 });
 
+router.get('/messaging', function(req, res, next) {
+  if(req.isAuthenticated()) {
+    res.render('messaging', {user: req.user, title: 'AI Monitoring of Human Team Planning Conversations'});
+  } else {
+    res.redirect('/');
+  }
+});
+
 
 router.post('/signup', function(req, res, next) {
     var username = req.body.username;

@@ -9,16 +9,18 @@
   </head>
   <body>
 
-    <div class="messaginghome">
+    <div class="loginhome">
         <h1><%= title %></h1>
 <!--         <p>You have succesfully joined a chat with <%= user.firstname %>!</p> -->
 
     </div>
-    <ul id="messages"></ul>
     <div class="chat">
-        <form action="">
-            <input id="m" autocomplete="off" /><button>Send</button>
-        </form>
+        <ul id="messages"></ul>
+        <div id="entermessage">
+            <form action="">
+                <input id="m" autocomplete="off" /><button>Send</button>
+            </form>
+        </div>
     </div>
   </body>
 </html>

@@ -87,5 +87,97 @@ button.submithome:hover {
 }
 
 
+/* Style for the login home page */
+
+div.joinchat {
+    text-align: center;
+    margin-top: 2em;
+}
+
+.joinchat button {
+    font-size: 1em;
+    font-weight: bold;
+    padding: .2em .5em;
+    background-color: #F9F9F9;
+    border: 1px solid black;
+    margin-top: 1em;
+}
+
+.joinchat button:hover {
+    cursor: pointer;
+    background-color: white;
+    transition: 0.2s;
+    transform: scale(1.05);
+}
+
+
+/* Style for the messaging page */
+
+.chat {
+    width: 25em;
+    height: 20em;
+    border: 1px solid black;
+    text-align: center;
+    margin: auto;
+
+}
+
+ul#messages {
+    height: 18em;
+    width: 23em;
+    overflow: auto;
+    list-style: none;
+    padding: 0em 1em;
+    margin: 0px;
+}
+
+ul#messages li {
+    
+}
+
+#entermessage {
+    height: 2em;
+    width: 100%;
+}
+
+#entermessage form {
+    width:100%;
+    border-top: 1px solid black;
+}
+
+#entermessage form input {
+    height: 2em;
+    width: 28em;
+    margin:0em;
+    padding: 0em 1em;
+}
+
+#entermessage form input:focus {
+    background-color: #F9F9F9;
+    outline: none;
+}
+
+#entermessage form button {
+    height: 2em;
+    margin-left: 1em;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
