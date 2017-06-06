@@ -26,7 +26,7 @@ ul.homeoptions {
 .homeoptions li:hover {
     background-color: #F4F4F4;
     transition: 0.2s;
-    transform: scale(1.05);
+/*    transform: scale(1.05);*/
 }
 
 div.enterform {
