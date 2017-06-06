@@ -125,14 +125,20 @@ div.joinchat {
 ul#messages {
     height: 18em;
     width: 23em;
-    overflow: auto;
+    overflow: none;
+    position: relative;
     list-style: none;
     padding: 0em 1em;
     margin: 0px;
 }
 
 ul#messages li {
-    
+    overflow:auto;
+    position: absolute;
+    display: flex;
+    width:21em;
+    bottom:0;
+    width:100%;
 }
 
 #entermessage {

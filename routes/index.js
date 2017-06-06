@@ -36,6 +36,10 @@ router.get('/messaging', function(req, res, next) {
   }
 });
 
+// Gets the user data to the frontend for some pages where this is nice to have
+router.get('/getUser', function(req, res) {
+  res.send(req.user);
+});
 
 router.post('/signup', function(req, res, next) {
     var username = req.body.username;
