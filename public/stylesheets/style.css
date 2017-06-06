@@ -110,6 +110,11 @@ div.joinchat {
     transform: scale(1.05);
 }
 
+.joinchat p {
+    display: none;
+    opacity: 0;
+}
+
 
 /* Style for the messaging page */
 

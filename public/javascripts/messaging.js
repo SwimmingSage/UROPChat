@@ -1,5 +1,6 @@
 $(document).ready(function() {
 
+    // This grabs the user data from backend so we can get their first name
     var user;
     $.ajax({
         url: '/getUser',
