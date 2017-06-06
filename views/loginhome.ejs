@@ -4,14 +4,22 @@
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-    <script src="/javascripts/home.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/javascripts/loginhome.js"></script>
   </head>
   <body>
+
     <div class="loginhome">
         <h1><%= title %></h1>
         <p>Welcome to <%= title %> Chat System</p>
         <p>You are succesfully logged in <%= user.firstname %>!</p>
 
+    </div>
+    <ul id="messages"></ul>
+    <div class="chat">
+        <form action="">
+            <input id="m" autocomplete="off" /><button>Send</button>
+        </form>
     </div>
   </body>
 </html>
