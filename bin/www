@@ -24,13 +24,40 @@ var server = http.createServer(app);
 // start socket.io
 var io = require('socket.io').listen(server);
 
+queue = [];
 
 io.on('connection', function(socket) {
   console.log('a user connected');
-
   // When a user disconnects from out app...
   socket.on('disconnect', function() {
     console.log('a user disconnected');
+  });
+
+
+  socket.on('room', function(room) {
+    if(socket.room) {
+        socket.leave(socket.room);
+    }
+    socket.room = room;
+    socket.join(room);
+   });
+
+  socket.on('joinRoom', function(userID) {
+    if (!([userID, socket.id] in queue)){
+        queue.push([userID, socket.id]);
+    }
+    if (queue.length >= 2) {
+        [user1ID, user1Socket] = queue.shift();
+        [user2ID, user2Socket] = queue.shift();
+        total = [user1ID, user1Socket, user2ID, user2Socket];
+        io.to(user1Socket).emit("makeChat", total);
+    }
+  });
+
+  socket.on("sendToChat", function(total) {
+    [user1ID, user1Socket, user2ID, user2Socket] = total;
+    io.to(user1Socket).emit("sendToChat");
+    io.to(user2Socket).emit("sendToChat");
   });
 
   // When the server receives a 'chat message' message from
@@ -40,7 +67,8 @@ io.on('connection', function(socket) {
 
     // Emit that message to all users currently connected
     // to our app
-    io.emit('chat message', msg);
+    io.socket.in(socket.room).emit('chat message', msg);
+    // io.emit('chat message', msg);
   });
 });
 

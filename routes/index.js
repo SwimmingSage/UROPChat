@@ -41,6 +41,41 @@ router.get('/getUser', function(req, res) {
   res.send(req.user);
 });
 
+// router.get('/getUserRoom', function(req, res) {
+//   res.send(req.user.chat_room);
+// });
+
+router.post('/makeChat', function(req, res) {
+    var user1ID = req.body.user1ID;
+    var user2ID = req.body.user2ID;
+
+    createChat = function(){
+
+        var new_chat = new ChatRoom({
+            Users: [user1ID, user2ID],
+        })
+        new_chat.save();
+        return new Promise(function(resolve, reject){
+            resolve(new_chat);
+        });
+    }
+    addChatToStudent = function(user1ID,user2ID){
+        createChat()
+        .then(chat => {
+            User.update({_id: { $in: [user1ID, user2ID]} },
+                        {$set: {'chat_room': chat._id} },
+                        function(err, result) {
+                            if(err) {
+                                console.log("There was an error in the storing of the chat ID into the user");
+                            }
+                            res.send("moveOn");
+                        }
+            )
+        })
+    }
+    addChatToStudent(user1ID, user2ID);
+});
+
 router.post('/signup', function(req, res, next) {
     var username = req.body.username;
     var email = req.body.email;

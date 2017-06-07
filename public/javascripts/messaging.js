@@ -16,8 +16,30 @@ $(document).ready(function() {
         }
     });
 
+    var room = user.chat_room;
+    console.log(room);
+    // $.ajax({
+    //     url: '/getUserRoom',
+    //     data: {
+    //     },
+    //     type: 'GET',
+    //     success: function(data) {
+    //         //$('where I could put data').text(data);
+    //         room = data;
+    //     },
+    //     error: function(xhr, status, error) {
+    //         console.log("Uh oh there was an error: " + error);
+    //     }
+    // });
+
     // Initialize a socket object from socket.io
     var socket = io();
+
+    socket.on('connect', function() {
+       // Connected, let's sign-up for to receive messages for this room
+       socket.emit('room', room);
+    });
+
     // When we click the submit button...
     $('form').submit(function() {
         console.log('submitted');
@@ -34,3 +56,5 @@ $(document).ready(function() {
         $('#messages').append($('<li>').text(msg));
     });
 });
+
+

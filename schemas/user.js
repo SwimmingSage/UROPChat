@@ -7,7 +7,7 @@ var User = new Schema({
     firstname:              {type: String , required: true},
     lastname:               {type: String , required: true},
     email:                  {type: String , required: true, index: {unique: true}},
-    accessible_chat_room:   {type: Array  , required: false},
+    chat_room:              {type: Schema.Types.ObjectId  , required: false},
     admin:                  {type: Boolean, default: false},
 });
 
