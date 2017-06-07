@@ -14,6 +14,7 @@ var User = new Schema({
 
 var messageschema = new Schema({
     message:                {type: String, required: true},
+    timeCreated:            {type: Number, required: true},
 });
 
 var chatroomschema = new Schema({

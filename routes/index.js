@@ -89,11 +89,12 @@ router.post('/newMessage', function(req, res, next) {
         if (err) {
           console.log('An error occurred');
         }
+        time = new Date();
+        currentTime = time.getTime();
         var new_message = new Message({
             message : newmessage,
+            timeCreated: currentTime,
         })
-        console.log(userchatroom, " is the chatroom the user is in");
-        console.log("This should have worked");
         userchatroom.Conversation.push(new_message)
         userchatroom.save();
         res.send()
