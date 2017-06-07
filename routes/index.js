@@ -57,21 +57,10 @@ router.post('/makeChat', function(req, res) {
         });
     }
     updateUser = function(userid, chatid){
-        // User.update({_id: id}, {$set: {"chat_room": chat._id}}, function(err,result) {
-        //     if (err) {
-        //         console.log("And error occured while storing a user");
-        //     }
-        //     console.log("The result is", result);
-        //     console.log("The update should have occured");
-        // })
-        // console.log("userid is", userid);
         User.findOne({"id": userid}, function(err, users) {
             if (err) {
                 console.log("And error occured while storing a user");
             }
-            // console.log("This is the user that was found", users)
-            // console.log("We found the user");
-            // console.log("chat is", chatid);
             users.chat_room = chatid;
             users.save();
         });
@@ -90,6 +79,26 @@ router.post('/makeChat', function(req, res) {
 
     }
     addChatToStudent();
+});
+
+router.post('/newMessage', function(req, res, next) {
+    chatRoomID = req.body.chatID;
+    newmessage = req.body.newmessage;
+
+    ChatRoom.findOne({'id': chatRoomID}, function(err, userchatroom){
+        if (err) {
+          console.log('An error occurred');
+        }
+        var new_message = new Message({
+            message : newmessage,
+        })
+        console.log(userchatroom, " is the chatroom the user is in");
+        console.log("This should have worked");
+        userchatroom.Conversation.push(new_message)
+        userchatroom.save();
+        res.send()
+    })
+
 });
 
 router.post('/signup', function(req, res, next) {

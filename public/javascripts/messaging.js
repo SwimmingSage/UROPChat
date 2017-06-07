@@ -35,6 +35,21 @@ $(document).ready(function() {
         message = user.firstname + ": " + $('#m').val()
         input = {'room': user.chat_room, 'message':message}
         socket.emit('chat message', input);
+
+        $.ajax({
+            url: '/newMessage',
+            data: {
+                chatID:     user.chat_room,
+                newmessage: message,
+            },
+            type: 'POST',
+            success: function(data) {
+                console.log("Message successfully stored");
+            },
+            error: function(xhr, status, error) {
+                console.log("Uh oh there was an error: " + error);
+            }
+        });
         // // Clear the message area's text
         $('#m').val('');
         return false;
