@@ -28,7 +28,7 @@ $(document).ready(function() {
     });
 
 
-    $('#send').click(function() {
+    $('form').submit(function() {
         console.log('submitted');
         // Emit the 'chat message' message with socket.io
         // socket.emit('chat message', user.firstname + ": " + $('#m').val());
@@ -37,6 +37,7 @@ $(document).ready(function() {
         socket.emit('chat message', input);
         // // Clear the message area's text
         $('#m').val('');
+        return false;
     });
 
     // When we receive a 'chat message' message...
