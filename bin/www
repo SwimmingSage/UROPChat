@@ -31,6 +31,12 @@ io.on('connection', function(socket) {
   // When a user disconnects from out app...
   socket.on('disconnect', function() {
     console.log('a user disconnected');
+    for (i = 0; queue.length; i++) {
+        if (queue[i][1] === socket.id) { 
+            queue.splice(i);
+            break; 
+        }
+    }   
   });
 
 
@@ -39,6 +45,8 @@ io.on('connection', function(socket) {
         socket.leave(socket.room);
     }
     socket.room = room;
+    console.log("The room to join is", room);
+    console.log("The socket room is", socket.room);
     socket.join(room);
    });
 
@@ -62,12 +70,10 @@ io.on('connection', function(socket) {
 
   // When the server receives a 'chat message' message from
   // a single user
-  socket.on('chat message', function(msg) {
-    // console.log('message:', msg);
-
-    // Emit that message to all users currently connected
-    // to our app
-    io.socket.in(socket.room).emit('chat message', msg);
+  socket.on('chat message', function(input) {
+    // input has format of {'room': chat_room, 'message':message}
+    // emit message to users in this room
+    io.to(input['room']).emit("recieve message", input['message']);
     // io.emit('chat message', msg);
   });
 });

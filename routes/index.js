@@ -41,10 +41,6 @@ router.get('/getUser', function(req, res) {
   res.send(req.user);
 });
 
-// router.get('/getUserRoom', function(req, res) {
-//   res.send(req.user.chat_room);
-// });
-
 router.post('/makeChat', function(req, res) {
     var user1ID = req.body.user1ID;
     var user2ID = req.body.user2ID;
@@ -54,26 +50,46 @@ router.post('/makeChat', function(req, res) {
         var new_chat = new ChatRoom({
             Users: [user1ID, user2ID],
         })
+        new_chat.id = new_chat._id.toString();
         new_chat.save();
         return new Promise(function(resolve, reject){
             resolve(new_chat);
         });
     }
-    addChatToStudent = function(user1ID,user2ID){
-        createChat()
-        .then(chat => {
-            User.update({_id: { $in: [user1ID, user2ID]} },
-                        {$set: {'chat_room': chat._id} },
-                        function(err, result) {
-                            if(err) {
-                                console.log("There was an error in the storing of the chat ID into the user");
-                            }
-                            res.send("moveOn");
-                        }
-            )
-        })
+    updateUser = function(userid, chatid){
+        // User.update({_id: id}, {$set: {"chat_room": chat._id}}, function(err,result) {
+        //     if (err) {
+        //         console.log("And error occured while storing a user");
+        //     }
+        //     console.log("The result is", result);
+        //     console.log("The update should have occured");
+        // })
+        // console.log("userid is", userid);
+        User.findOne({"id": userid}, function(err, users) {
+            if (err) {
+                console.log("And error occured while storing a user");
+            }
+            // console.log("This is the user that was found", users)
+            // console.log("We found the user");
+            // console.log("chat is", chatid);
+            users.chat_room = chatid;
+            users.save();
+        });
     }
-    addChatToStudent(user1ID, user2ID);
+    addChatToStudent = function(){
+        createChat()
+        .then(chat => { 
+            updateUser(user1ID, chat.id);
+            return chat;
+        })
+        .then(chat => { 
+            updateUser(user2ID, chat.id);
+        })
+        .then(() => { res.send("Success") })
+        .catch(error => { console.log(error) });
+
+    }
+    addChatToStudent();
 });
 
 router.post('/signup', function(req, res, next) {
@@ -108,6 +124,13 @@ router.post('/signup', function(req, res, next) {
           console.log('error while user register!', err);
           return next(err);
         }
+        User.findOne({email: email}, function (err, users) {
+          if (err) {
+            console.log('An error occurred');
+          }
+          users.id = users._id.toString();
+          users.save();
+        });
 
 
         res.send("loggedin");

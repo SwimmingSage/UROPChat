@@ -7,18 +7,19 @@ var User = new Schema({
     firstname:              {type: String , required: true},
     lastname:               {type: String , required: true},
     email:                  {type: String , required: true, index: {unique: true}},
-    chat_room:              {type: Schema.Types.ObjectId  , required: false},
+    chat_room:              {type: String},
     admin:                  {type: Boolean, default: false},
+    id:                     {type: String},
 });
 
 var messageschema = new Schema({
     message:                {type: String, required: true},
-    sender:                 {type: Schema.Types.ObjectId, ref: 'User'},
 });
 
 var chatroomschema = new Schema({
     Users:                  [{type: Schema.Types.ObjectId , ref: 'User'}],
     Conversation:           [{type: Schema.Types.ObjectId, ref: 'Message'}],
+    id:                     {type: String},
 });
 
 User.plugin(passportLocalMongoose);

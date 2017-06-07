@@ -54,6 +54,6 @@ $(document).ready(function() {
         $('.joinchat button').css({"display":"none", "opacity": "0"});
         $('.joinchat p').css({"display":"block", "opacity": "0"});
         $('.joinchat p').animate({'opacity':'0.97'}, 'slow');
-        socket.emit('joinRoom', user._id);
+        socket.emit('joinRoom', user.id);
     })
 });
