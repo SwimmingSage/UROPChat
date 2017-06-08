@@ -15,12 +15,14 @@ var User = new Schema({
 var messageschema = new Schema({
     message:                {type: String, required: true},
     timeCreated:            {type: Number, required: true},
+    sender:                 {type: String, required: true},
 });
 
 var chatroomschema = new Schema({
-    Users:                  [{type: Schema.Types.ObjectId , ref: 'User'}],
+    Users:                  [{type: String , required: true}],
     Conversation:           [{type: Schema.Types.ObjectId, ref: 'Message'}],
     id:                     {type: String},
+    creationTime:           {type: String, required: true},
 });
 
 User.plugin(passportLocalMongoose);

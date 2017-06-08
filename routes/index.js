@@ -29,16 +29,50 @@ router.get('/loginhome', function(req, res, next) {
 });
 
 router.get('/messaging', function(req, res, next) {
-  if(req.isAuthenticated()) {
-    res.render('messaging', {user: req.user, title: 'AI Monitoring of Human Team Planning Conversations'});
-  } else {
-    res.redirect('/');
-  }
+    if(req.isAuthenticated()) {
+        console.log("req.user is now upon entering /messaging", req.user.chat_room);
+        ChatRoom.findOne({'id': req.user.chat_room}, function(err, userchatroom){
+            if (err) {
+              console.log('An error occurred');
+            } else if (userchatroom === null){
+                console.log("The req.user.chat_room is set as", req.user.chat_room)
+                console.log("userchatroom gave us", userchatroom);
+                res.redirect('/loginhome');
+            } else {
+                time = new Date();
+                currentTime = time.getTime();
+
+                // As chat rooms time out at 20 minutes right now
+                msSince = currentTime -= userchatroom.creationTime;
+                ageInSec = msSince / 1000;
+                maxAgeSec = 60 * 20;
+
+                if (ageInSec >= maxAgeSec){
+                    res.redirect('/loginhome');
+                } else {
+                    res.render('messaging', {user: req.user, title: 'AI Monitoring of Human Team Planning Conversations'});
+                }
+            }
+        })
+    } else {
+        res.redirect('/');
+    }
 });
 
 // Gets the user data to the frontend for some pages where this is nice to have
 router.get('/getUser', function(req, res) {
   res.send(req.user);
+});
+
+// Gets the start time of the users conversation
+router.get('/getStartTime', function(req, res) {
+    ChatRoom.findOne({'id': req.user.chat_room}, function(err, userchatroom){
+        if (err) {
+          console.log('An error occurred');
+        }
+        console.log("When looking for userchatroom we found", userchatroom);
+        res.send(userchatroom.creationTime);
+    })
 });
 
 router.post('/makeChat', function(req, res) {
@@ -47,8 +81,11 @@ router.post('/makeChat', function(req, res) {
 
     createChat = function(){
 
+        time = new Date();
+        currentTime = time.getTime();
         var new_chat = new ChatRoom({
-            Users: [user1ID, user2ID],
+            Users:          [user1ID, user2ID],
+            creationTime:   currentTime,
         })
         new_chat.id = new_chat._id.toString();
         new_chat.save();
@@ -68,11 +105,11 @@ router.post('/makeChat', function(req, res) {
     addChatToStudent = function(){
         createChat()
         .then(chat => { 
-            updateUser(user1ID, chat.id);
+            updateUser(user1ID.toString(), chat.id);
             return chat;
         })
         .then(chat => { 
-            updateUser(user2ID, chat.id);
+            updateUser(user2ID.toString(), chat.id);
         })
         .then(() => { res.send("Success") })
         .catch(error => { console.log(error) });
@@ -84,6 +121,7 @@ router.post('/makeChat', function(req, res) {
 router.post('/newMessage', function(req, res, next) {
     chatRoomID = req.body.chatID;
     newmessage = req.body.newmessage;
+    sentby = req.body.sender;
 
     ChatRoom.findOne({'id': chatRoomID}, function(err, userchatroom){
         if (err) {
@@ -92,8 +130,9 @@ router.post('/newMessage', function(req, res, next) {
         time = new Date();
         currentTime = time.getTime();
         var new_message = new Message({
-            message : newmessage,
-            timeCreated: currentTime,
+            message :     newmessage,
+            timeCreated : currentTime,
+            sender :      sentby,
         })
         userchatroom.Conversation.push(new_message)
         userchatroom.save();
