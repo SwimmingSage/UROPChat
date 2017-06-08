@@ -98,15 +98,14 @@ $(document).ready(function() {
         console.log('We recieved a message');
         // Add a new element to our chat with the message text
         // $('#messages').append($('<li>').text(msg));
+        shouldScroll = (messages.scrollTop + messages.clientHeight === messages.scrollHeight);
         if(output['name'] === user.firstname){
             $('#messages').append('<li><strong>'+output['name']+':&nbsp;</strong>'+output['message']+'</li>');
         } else {
             $('#messages').append('<li class="otheruser"><strong>'+output['name']+':&nbsp;</strong>'+output['message']+'</li>');
         }
 
-        shouldScroll = (messages.scrollTop + messages.clientHeight === messages.scrollHeight);
-
-        if (!shouldScroll) {
+        if (shouldScroll) {
             scrollToBottom();
         }
 
