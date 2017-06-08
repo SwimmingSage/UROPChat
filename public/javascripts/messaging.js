@@ -3,8 +3,8 @@ $(document).ready(function() {
     // Initialize a socket object from socket.io
     var socket = io();
 
+    // Send the user to the proper room
     function getToRoom(room) {
-        console.log("We tryed to join the room", room);
         socket.emit('room', room);
     }
 
@@ -17,10 +17,7 @@ $(document).ready(function() {
         },
         type: 'GET',
         success: function(data) {
-            //$('where I want to put data').text(data);
-            console.log("The data fromt the first ajax is", data);
             user = data;
-            var room = data.chat_room;
             getToRoom(data.chat_room);
             $.ajax({
                 url: '/getStartTime',
@@ -28,8 +25,6 @@ $(document).ready(function() {
                 },
                 type: 'GET',
                 success: function(data) {
-                    //$('where I want to put data').text(data);
-
                     startTime = data;
                     console.log("The data that is start time is", data);
                 },
@@ -43,13 +38,12 @@ $(document).ready(function() {
         }
     });
 
-
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Process of sending out messages
     var x = 0
-
     function addToTime(){
         x += 1;
     }
-
     setInterval(addToTime, 200);
 
     $('form').submit(function() {
@@ -63,7 +57,6 @@ $(document).ready(function() {
         message = $('#m').val();
         input = {'room': user.chat_room, 'message':message, 'sender': user.id, 'name': user.firstname};
         socket.emit('chat message', input);
-
         $.ajax({
             url: '/newMessage',
             data: {
@@ -81,13 +74,15 @@ $(document).ready(function() {
         });
         // // Clear the message area's text
         $('#m').val('');
-        return false;
+        return false; // This is to not refresh the page after sending a message
     });
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Process receiving messages
     var messages = document.getElementById('messages');
 
     function scrollToBottom() {
-        // messages.scrollTop = messages.scrollHeight;
+        // messages.scrollTop = messages.scrollHeight; this is to scroll fast
         $('#messages').animate({
             scrollTop: messages.scrollHeight
         }, 200);
@@ -95,22 +90,20 @@ $(document).ready(function() {
     // When we receive a 'chat message' message...
     socket.on('recieve message', function(output) {
         // form of output is output = {'message':input['message'], name: input['name']};
-        console.log('We recieved a message');
-        // Add a new element to our chat with the message text
-        // $('#messages').append($('<li>').text(msg));
         shouldScroll = (messages.scrollTop + messages.clientHeight === messages.scrollHeight);
         if(output['name'] === user.firstname){
             $('#messages').append('<li><strong>'+output['name']+':&nbsp;</strong>'+output['message']+'</li>');
         } else {
             $('#messages').append('<li class="otheruser"><strong>'+output['name']+':&nbsp;</strong>'+output['message']+'</li>');
         }
-
         if (shouldScroll) {
             scrollToBottom();
         }
-
     });
 
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Keep track of the timer
     // max time in minutes
     maxTime = 20*60;
 
@@ -141,9 +134,34 @@ $(document).ready(function() {
 
     setInterval(updateTimer, 200);
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    // function checkTyping(){
+    //     message = $('#m').val();
+    //     if (message.length > 0) {
+    //         input = {'name': user.firstname, 'id':user.id};
+    //         socket.emit('user typing', input);
+    //     } else if {
 
+    //     }
+    // }
+
+    // socket.on()
+    // setInterval(checkTyping, 200);
 
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

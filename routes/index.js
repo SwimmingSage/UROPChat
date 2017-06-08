@@ -22,7 +22,21 @@ router.get('/', function(req, res, next) {
 
 router.get('/loginhome', function(req, res, next) {
   if(req.isAuthenticated()) {
-    res.render('loginhome', {user: req.user, title: 'AI Monitoring of Human Team Planning Conversations'});
+    User.findOne({"id": req.user.id}, function(err, users) {
+        if (err) {
+            console.log("And error occured while finding the user");
+        }
+        ChatRoom.findOne({'id': users.chat_room}, function(err, userchatroom){
+            if (err) {
+              console.log('An error occurred while finding the user chatroom by ID');
+            } else if (userchatroom === null){
+                res.render('loginhome', {user: req.user, title: 'AI Monitoring of Human Team Planning Conversations'});
+            } else {
+                res.redirect('/messaging');
+            }
+        })
+    })
+    //res.render('loginhome', {user: req.user, title: 'AI Monitoring of Human Team Planning Conversations'});
   } else {
     res.redirect('/');
   }
@@ -36,9 +50,6 @@ router.get('/messaging', function(req, res, next) {
             if (err) {
                 console.log("And error occured while finding the user");
             }
-            console.log("")
-            console.log(users,"is what we have in /messaging");
-            console.log("")
             ChatRoom.findOne({'id': users.chat_room}, function(err, userchatroom){
                 if (err) {
                   console.log('An error occurred while finding the user chatroom by ID');
@@ -48,12 +59,10 @@ router.get('/messaging', function(req, res, next) {
                 } else {
                     time = new Date();
                     currentTime = time.getTime();
-
                     // As chat rooms time out at 20 minutes right now
                     msSince = currentTime -= userchatroom.creationTime;
                     ageInSec = msSince / 1000;
                     maxAgeSec = 60 * 20;
-
                     if (ageInSec >= maxAgeSec){
                         res.redirect('/loginhome');
                     } else {
@@ -84,6 +93,33 @@ router.get('/getStartTime', function(req, res) {
           console.log('An error occurred');
         }
         res.send(userchatroom.creationTime);
+    })
+});
+
+router.get('/checkInChat', function(req, res) {
+    User.findOne({"id": req.user.id}, function(err, users) {
+        if (err) {
+            console.log("And error occured while finding the user");
+        }
+        ChatRoom.findOne({'id': req.user.chat_room}, function(err, userchatroom){
+            if (err) {
+              console.log('An error occurred');
+            } else if(userchatroom === null) {
+                res.send("nope");
+                return;
+            }
+            time = new Date();
+            currentTime = time.getTime();
+            // As chat rooms time out at 20 minutes right now
+            msSince = currentTime -= userchatroom.creationTime;
+            ageInSec = msSince / 1000;
+            maxAgeSec = 60 * 20;
+            if (ageInSec >= maxAgeSec){
+                res.send("nope");
+            } else {
+                res.send("inchat");
+            }
+        })
     })
 });
 
