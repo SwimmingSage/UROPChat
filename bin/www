@@ -75,7 +75,8 @@ io.on('connection', function(socket) {
     // input has format of {'room': chat_room, 'message':message}
     // emit message to users in this room
     console.log("In the socket we just recieved the input", input);
-    io.to(input['room']).emit("recieve message", input['message']);
+    output = {'message':input['message'], name: input['name']};
+    io.to(input['room']).emit("recieve message", output);
     // io.emit('chat message', msg);
   });
 });

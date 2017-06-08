@@ -129,22 +129,24 @@ div.joinchat {
 
 ul#messages {
     height: 18em;
-    width: 23em;
+    width: 100%;
     overflow-y: auto;
     position: relative;
     list-style: none;
-    padding: 0em 1em;
+    padding: 0em;
     margin: 0px;
 }
 
 ul#messages li {
     overflow:auto;
-/*    position: absolute;*/
     display: flex;
-    width:21em;
-/*    bottom:0;*/
     width:100%;
+    padding: 0em .5em;
 }
+ul#messages li.otheruser {
+    background-color: #f1f1f1;
+}
+
 
 ul span#bottomanchor {
     position: absolute;

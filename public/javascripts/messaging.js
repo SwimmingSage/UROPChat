@@ -29,7 +29,7 @@ $(document).ready(function() {
                 type: 'GET',
                 success: function(data) {
                     //$('where I want to put data').text(data);
-                    
+
                     startTime = data;
                     console.log("The data that is start time is", data);
                 },
@@ -59,8 +59,9 @@ $(document).ready(function() {
             x = 0;
         }
         // Emit the 'chat message' message with socket.io
-        message = user.firstname + ": " + $('#m').val()
-        input = {'room': user.chat_room, 'message':message, 'sender': user.id};
+        // message = user.firstname + ": " + $('#m').val();
+        message = $('#m').val();
+        input = {'room': user.chat_room, 'message':message, 'sender': user.id, 'name': user.firstname};
         socket.emit('chat message', input);
 
         $.ajax({
@@ -92,10 +93,16 @@ $(document).ready(function() {
         }, 200);
     }
     // When we receive a 'chat message' message...
-    socket.on('recieve message', function(msg) {
+    socket.on('recieve message', function(output) {
+        // form of output is output = {'message':input['message'], name: input['name']};
         console.log('We recieved a message');
         // Add a new element to our chat with the message text
-        $('#messages').append($('<li id="#newMessage">').text(msg));
+        // $('#messages').append($('<li>').text(msg));
+        if(output['name'] === user.firstname){
+            $('#messages').append('<li><strong>'+output['name']+':&nbsp;</strong>'+output['message']+'</li>');
+        } else {
+            $('#messages').append('<li class="otheruser"><strong>'+output['name']+':&nbsp;</strong>'+output['message']+'</li>');
+        }
 
         shouldScroll = (messages.scrollTop + messages.clientHeight === messages.scrollHeight);
 
