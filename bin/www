@@ -81,8 +81,15 @@ io.on('connection', function(socket) {
     // input has format of {'room': chat_room, 'message':message}
     // emit message to users in this room
     console.log("In the socket we just recieved the input", input);
-    output = {'message':input['message'], name: input['name']};
+    output = {'message':input['message'], name: input['name'], id:input['id']};
     io.to(input['room']).emit("recieve message", output);
+  });
+
+  socket.on('user typing', function(input) {
+    // input has format of input = {'room': user.chat_room, 'name': user.firstname, 'id':user.id};
+    // emit message to users in this room
+    output = {'id':input['id'], name: input['name'], message: input['message']};
+    io.to(input['room']).emit("typing alert", output);
   });
 });
 

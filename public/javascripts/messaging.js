@@ -55,7 +55,7 @@ $(document).ready(function() {
         // Emit the 'chat message' message with socket.io
         // message = user.firstname + ": " + $('#m').val();
         message = $('#m').val();
-        input = {'room': user.chat_room, 'message':message, 'sender': user.id, 'name': user.firstname};
+        input = {'room': user.chat_room, 'message':message, 'sender': user.id, 'name': user.firstname, 'id':user.id};
         socket.emit('chat message', input);
         $.ajax({
             url: '/newMessage',
@@ -86,7 +86,10 @@ $(document).ready(function() {
         $('#messages').animate({
             scrollTop: messages.scrollHeight
         }, 200);
-    }
+    };
+    function fastScroll() {
+        messages.scrollTop = messages.scrollHeight;
+    };
     // When we receive a 'chat message' message...
     socket.on('recieve message', function(output) {
         // form of output is output = {'message':input['message'], name: input['name']};
@@ -98,6 +101,12 @@ $(document).ready(function() {
         }
         if (shouldScroll) {
             scrollToBottom();
+        }
+        if (wasTyping){
+            wasTyping = false;
+            $('ul#messages').css({'height':'18em'});
+            $('#typing').css({'display':'none'});
+            fastScroll();
         }
     });
 
@@ -136,18 +145,35 @@ $(document).ready(function() {
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // function checkTyping(){
-    //     message = $('#m').val();
-    //     if (message.length > 0) {
-    //         input = {'name': user.firstname, 'id':user.id};
-    //         socket.emit('user typing', input);
-    //     } else if {
+    function checkTyping(){
+        message = $('#m').val();
+        input = {'room': user.chat_room, 'name': user.firstname, 'id':user.id, 'message': message};
+        socket.emit('user typing', input);
+    }
 
-    //     }
-    // }
-
-    // socket.on()
-    // setInterval(checkTyping, 200);
+    var wasTyping = false;
+    socket.on('typing alert', function(output) {
+        // form of output is output = {'id':input['id'], name: input['name'], message: input['message']};
+        // want to add name to this at some point
+        console.log("Output is", output);
+        console.log("the length of message is", output['message'].length);
+        // ignore signs that I am typing
+        if (output['id'] != user.id) {
+            if (output['message'].length === 0 && wasTyping) {
+                console.log("It went in the first route");
+                wasTyping = false;
+                $('ul#messages').css({'height':'18em'});
+                $('#typing').css({'display':'none'});
+            } else if(output['message'].length > 0 && !wasTyping) {
+                console.log("It went in the second route");
+                wasTyping = true;
+                $('ul#messages').css({'height':'16.6em'});
+                $('#typing').css({'display':'block'});
+                fastScroll();
+            }
+        }
+    });
+    setInterval(checkTyping, 200);
 
 });
 
