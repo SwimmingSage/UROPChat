@@ -30,30 +30,34 @@ router.get('/loginhome', function(req, res, next) {
 
 router.get('/messaging', function(req, res, next) {
     if(req.isAuthenticated()) {
-        console.log("req.user is now upon entering /messaging", req.user.chat_room);
-        ChatRoom.findOne({'id': req.user.chat_room}, function(err, userchatroom){
+        // req.user must not update instantaneously so we must find the current user in the database to get their
+        // chat room
+        User.findOne({"id": req.user.id}, function(err, users) {
             if (err) {
-              console.log('An error occurred');
-            } else if (userchatroom === null){
-                console.log("The req.user.chat_room is set as", req.user.chat_room)
-                console.log("userchatroom gave us", userchatroom);
-                res.redirect('/loginhome');
-            } else {
-                time = new Date();
-                currentTime = time.getTime();
-
-                // As chat rooms time out at 20 minutes right now
-                msSince = currentTime -= userchatroom.creationTime;
-                ageInSec = msSince / 1000;
-                maxAgeSec = 60 * 20;
-
-                if (ageInSec >= maxAgeSec){
+                console.log("And error occured while finding the user");
+            }
+            ChatRoom.findOne({'id': users.chat_room}, function(err, userchatroom){
+                if (err) {
+                  console.log('An error occurred while finding the user chatroom by ID');
+                } else if (userchatroom === null){
                     res.redirect('/loginhome');
                 } else {
-                    res.render('messaging', {user: req.user, title: 'AI Monitoring of Human Team Planning Conversations'});
+                    time = new Date();
+                    currentTime = time.getTime();
+
+                    // As chat rooms time out at 20 minutes right now
+                    msSince = currentTime -= userchatroom.creationTime;
+                    ageInSec = msSince / 1000;
+                    maxAgeSec = 60 * 20;
+
+                    if (ageInSec >= maxAgeSec){
+                        res.redirect('/loginhome');
+                    } else {
+                        res.render('messaging', {user: req.user, title: 'AI Monitoring of Human Team Planning Conversations'});
+                    }
                 }
-            }
-        })
+            })
+        });
     } else {
         res.redirect('/');
     }
@@ -70,7 +74,6 @@ router.get('/getStartTime', function(req, res) {
         if (err) {
           console.log('An error occurred');
         }
-        console.log("When looking for userchatroom we found", userchatroom);
         res.send(userchatroom.creationTime);
     })
 });
@@ -189,7 +192,6 @@ router.post('/signup', function(req, res, next) {
   });
 
 });
-
 
 router.post('/login', passport.authenticate('local'), function(req, res) {
     // If this function gets called, authentication was successful.
