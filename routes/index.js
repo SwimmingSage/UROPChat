@@ -36,10 +36,14 @@ router.get('/messaging', function(req, res, next) {
             if (err) {
                 console.log("And error occured while finding the user");
             }
+            console.log("")
+            console.log(users,"is what we have in /messaging");
+            console.log("")
             ChatRoom.findOne({'id': users.chat_room}, function(err, userchatroom){
                 if (err) {
                   console.log('An error occurred while finding the user chatroom by ID');
                 } else if (userchatroom === null){
+                    console.log("userchatroom was found to be",userchatroom);
                     res.redirect('/loginhome');
                 } else {
                     time = new Date();
@@ -65,7 +69,12 @@ router.get('/messaging', function(req, res, next) {
 
 // Gets the user data to the frontend for some pages where this is nice to have
 router.get('/getUser', function(req, res) {
-  res.send(req.user);
+    User.findOne({"id": req.user.id}, function(err, users) {
+        if (err) {
+            console.log("And error occured while finding the user");
+        }
+        res.send(users);
+    });
 });
 
 // Gets the start time of the users conversation

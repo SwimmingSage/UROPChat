@@ -4,6 +4,7 @@ $(document).ready(function() {
     var socket = io();
 
     function getToRoom(room) {
+        console.log("We tryed to join the room", room);
         socket.emit('room', room);
     }
 
@@ -17,6 +18,7 @@ $(document).ready(function() {
         type: 'GET',
         success: function(data) {
             //$('where I want to put data').text(data);
+            console.log("The data fromt the first ajax is", data);
             user = data;
             var room = data.chat_room;
             getToRoom(data.chat_room);
@@ -27,6 +29,7 @@ $(document).ready(function() {
                 type: 'GET',
                 success: function(data) {
                     //$('where I want to put data').text(data);
+                    
                     startTime = data;
                     console.log("The data that is start time is", data);
                 },

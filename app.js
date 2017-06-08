@@ -37,6 +37,7 @@ app.use(passport.session());
 //end of more passport code
 
 // set up for mongodb copied from mongodb-solutions in class with substitution of mongolab
+mongoose.Promise = global.Promise;
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/test');
 var connection = mongoose.connection;
 connection.on('error', console.error.bind(console, 'connection error:'));

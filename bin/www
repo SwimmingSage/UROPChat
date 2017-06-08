@@ -44,6 +44,7 @@ io.on('connection', function(socket) {
     if(socket.room) {
         socket.leave(socket.room);
     }
+    console.log("The room we are joining is",room);
     socket.room = room;
     // console.log("The room to join is", room);
     // console.log("The socket room is", socket.room);
