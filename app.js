@@ -14,6 +14,14 @@ var LocalStrategy = require('passport-local').Strategy;
 var User = require('./schemas/user.js');
 
 passport.use(User.createStrategy());
+// passport.use(new LocalStrategy({
+//     usernameField: 'email',
+//     passwordField: 'password'
+//   },
+//   function(username, password, done) {
+//     // ...
+//   }
+// ));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 // end of passport code
