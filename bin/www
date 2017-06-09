@@ -57,11 +57,11 @@ io.on('connection', function(socket) {
     });
 
 
-    createChat = function(user1ID, user2ID){
+    createChat = function(user1name, user2name){
         time = new Date();
         currentTime = time.getTime();
         var new_chat = new ChatRoom({
-            // Users:          [user1ID, user2ID],
+            Users:          [user1name, user2name],
             creationTime:   currentTime,
         })
         new_chat.id = new_chat._id.toString();
@@ -75,21 +75,18 @@ io.on('connection', function(socket) {
             }
             users.chat_room = newChat.id;
             users.save();
-            newChat.Users.push(users._id);
-            console.log("We are adding", users);
-            console.log("newChat during a creation is", newChat);
-            newChat.save();
         });
     }
-    socket.on('joinRoom', function(userID) {
-        if (!([userID, socket.id] in queue)){
-            queue.push([userID, socket.id]);
+    socket.on('joinRoom', function(input) {
+        // Input is {'userid': user.id, 'name': user.firstname}
+        if (!([input['userid'], socket.id, input['name']] in queue)){
+            queue.push([input['userid'], socket.id, input['name']]);
         }
         if (queue.length >= 2) {
-            [user1ID, user1Socket] = queue.shift();
-            [user2ID, user2Socket] = queue.shift();
+            [user1ID, user1Socket, user1name] = queue.shift();
+            [user2ID, user2Socket, user2name] = queue.shift();
             // This makes a new chat room with these 2 new users
-            newChat = createChat(user1ID, user2ID);
+            newChat = createChat(user1name, user2name);
             // This adds this chat room to the user object
             updateUser(user1ID, newChat);
             updateUser(user2ID, newChat);
@@ -107,8 +104,9 @@ io.on('connection', function(socket) {
         var new_message = new Message({
             message :     input['message'],
             timeCreated : currentTime,
-            sender :      input['id'],
+            sender :      input['name'],
         })
+        new_message.save();
         userchatroom.Conversation.push(new_message)
         userchatroom.save();
     })
@@ -116,7 +114,7 @@ io.on('connection', function(socket) {
   // When the server receives a 'chat message' message from
   // a single user
   socket.on('chat message', function(input) {
-    // input has format of {'room': chat_room, 'message':message}
+    // input has format of {'room': user.chat_room, 'message':message, 'sender': user.id, 'name': user.firstname, 'id':user.id};
     // emit message to users in this room
     addMessage(input); // This adds the message to the database
     output = {'message':input['message'], name: input['name'], id:input['id']};

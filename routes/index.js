@@ -29,7 +29,7 @@ router.get('/loginhome', function(req, res, next) {
         ChatRoom.findOne({'id': users.chat_room}, function(err, userchatroom){
             if (err) {
               console.log('An error occurred while finding the user chatroom by ID');
-            } else if (userchatroom === null){
+            } else if (userchatroom === null || !(userchatroom.active)){
                 res.render('loginhome', {user: req.user, title: 'AI Monitoring of Human Team Planning Conversations'});
             } else {
                 time = new Date();
@@ -38,7 +38,9 @@ router.get('/loginhome', function(req, res, next) {
                 msSince = currentTime -= userchatroom.creationTime;
                 ageInSec = msSince / 1000;
                 maxAgeSec = 60 * 20;
-                if (ageInSec >= maxAgeSec){
+                if (ageInSec >= maxAgeSec ){
+                    userchatroom.active = false;
+                    userchatroom.save();
                     res.render('loginhome', {user: req.user, title: 'AI Monitoring of Human Team Planning Conversations'});
                 } else {
                     res.redirect('/messaging');
@@ -68,11 +70,11 @@ router.get('/admin', function(req, res, next) {
     //     }
     //     populate(allconversations.Conversation)
     //.populate('Conversation Users')
+    // .populate({path: 'Conversation', model: 'Message'})
     // });
     ChatRoom
     .find()
-    .populate({path: 'Conversation', model: 'Message'})
-    .populate({path: 'Users', model: 'User'})
+    .populate('Conversation')
     .exec(function (err, chatrooms) {
         if (err) return handleError(err);
         console.log(chatrooms);
@@ -94,7 +96,7 @@ router.get('/messaging', function(req, res, next) {
             ChatRoom.findOne({'id': users.chat_room}, function(err, userchatroom){
                 if (err) {
                   console.log('An error occurred while finding the user chatroom by ID');
-                } else if (userchatroom === null){
+                } else if (userchatroom === null || !(userchatroom.active)){
                     console.log("userchatroom was found to be",userchatroom);
                     res.redirect('/loginhome');
                 } else {
@@ -106,6 +108,8 @@ router.get('/messaging', function(req, res, next) {
                     maxAgeSec = 60 * 20;
                     if (ageInSec >= maxAgeSec){
                         res.redirect('/loginhome');
+                        userchatroom.active = false;
+                        userchatroom.save();
                     } else {
                         res.render('messaging', {user: req.user, title: 'AI Monitoring of Human Team Planning Conversations'});
                     }
@@ -178,10 +182,8 @@ router.post('/signup', function(req, res, next) {
       if (err) {
         console.log('An error occurred');
       }
-      console.log("The user found was",users);
       if(users != null){
         res.send("emailtaken");
-        console.log("We found another identical email");
         return;
       } else {                    // We are using email and not username
           User.register(new User({username: email, firstname: firstname, lastname: lastname}), password, function(err) {

@@ -21,10 +21,11 @@ var messageschema = new Schema({
 
 var chatroomschema = new Schema({
     // Users:                  [{type: String , required: true}],
-    Users:                  [{type: Schema.Types.ObjectId, ref: 'User'}],
+    Users:                  [{type: String}],
     Conversation:           [{type: Schema.Types.ObjectId, ref: 'Message'}],
     id:                     {type: String},
     creationTime:           {type: String, required: true},
+    active:                 {type: Boolean, default: true},
 });
 
 User.plugin(passportLocalMongoose);

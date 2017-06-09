@@ -141,27 +141,35 @@ $(document).ready(function() {
         input = {'room': user.chat_room, 'name': user.firstname, 'id':user.id, 'message': message};
         socket.emit('user typing', input);
     }
-
+    var typingmodified = false;
     var wasTyping = false;
     socket.on('typing alert', function(output) {
         // form of output is output = {'id':input['id'], name: input['name'], message: input['message']};
         // want to add name to this at some point
-        console.log("Output is", output);
-        console.log("the length of message is", output['message'].length);
+        // console.log("Output is", output);
+        // console.log("the length of message is", output['message'].length);
         // ignore signs that I am typing
         if (output['id'] != user.id) {
             if (output['message'].length === 0 && wasTyping) {
-                console.log("It went in the first route");
                 wasTyping = false;
+                shouldScroll = (messages.scrollTop + messages.clientHeight === messages.scrollHeight);
                 $('ul#messages').css({'height':'18em'});
                 $('#typing').css({'display':'none'});
+                if (shouldScroll) {
+                    fastScroll();
+                }
             } else if(output['message'].length > 0 && !wasTyping) {
-                console.log("It went in the second route");
+                if (!typingmodified){
+                    typingmodified = true;
+                    othertyping = output['name'] + " is typing. . ."
+                    $('#typing').text(othertyping);
+                }
+                console.log("We recognize the other user is typing");
                 wasTyping = true;
                 shouldScroll = (messages.scrollTop + messages.clientHeight === messages.scrollHeight);
+                $('ul#messages').css({'height':'16.6em'});
+                $('#typing').css({'display':'block'});
                 if (shouldScroll) {
-                    $('ul#messages').css({'height':'16.6em'});
-                    $('#typing').css({'display':'block'});
                     fastScroll();
                 }
             }
