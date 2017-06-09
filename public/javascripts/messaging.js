@@ -55,6 +55,10 @@ $(document).ready(function() {
         // Emit the 'chat message' message with socket.io
         // message = user.firstname + ": " + $('#m').val();
         message = $('#m').val();
+        // I don't want to send empty messages
+        if (message.length === 0){
+            return false;
+        }
         input = {'room': user.chat_room, 'message':message, 'sender': user.id, 'name': user.firstname, 'id':user.id};
         socket.emit('chat message', input);
         $.ajax({
@@ -106,7 +110,9 @@ $(document).ready(function() {
             wasTyping = false;
             $('ul#messages').css({'height':'18em'});
             $('#typing').css({'display':'none'});
-            fastScroll();
+            if (shouldScroll){
+                fastScroll();
+            }
         }
     });
 
@@ -167,9 +173,12 @@ $(document).ready(function() {
             } else if(output['message'].length > 0 && !wasTyping) {
                 console.log("It went in the second route");
                 wasTyping = true;
-                $('ul#messages').css({'height':'16.6em'});
-                $('#typing').css({'display':'block'});
-                fastScroll();
+                shouldScroll = (messages.scrollTop + messages.clientHeight === messages.scrollHeight);
+                if (shouldScroll) {
+                    $('ul#messages').css({'height':'16.6em'});
+                    $('#typing').css({'display':'block'});
+                    fastScroll();
+                }
             }
         }
     });

@@ -15,6 +15,7 @@ var http = require('http');
 var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
+
 /**
  * Create HTTP server.
  */
@@ -80,7 +81,7 @@ io.on('connection', function(socket) {
   socket.on('chat message', function(input) {
     // input has format of {'room': chat_room, 'message':message}
     // emit message to users in this room
-    console.log("In the socket we just recieved the input", input);
+    // console.log("In the socket we just recieved the input", input);
     output = {'message':input['message'], name: input['name'], id:input['id']};
     io.to(input['room']).emit("recieve message", output);
   });
