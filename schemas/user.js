@@ -20,7 +20,8 @@ var messageschema = new Schema({
 });
 
 var chatroomschema = new Schema({
-    Users:                  [{type: String , required: true}],
+    // Users:                  [{type: String , required: true}],
+    Users:                  [{type: Schema.Types.ObjectId, ref: 'User'}],
     Conversation:           [{type: Schema.Types.ObjectId, ref: 'Message'}],
     id:                     {type: String},
     creationTime:           {type: String, required: true},

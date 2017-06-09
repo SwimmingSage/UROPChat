@@ -61,7 +61,7 @@ io.on('connection', function(socket) {
         time = new Date();
         currentTime = time.getTime();
         var new_chat = new ChatRoom({
-            Users:          [user1ID, user2ID],
+            // Users:          [user1ID, user2ID],
             creationTime:   currentTime,
         })
         new_chat.id = new_chat._id.toString();
@@ -73,23 +73,26 @@ io.on('connection', function(socket) {
             if (err) {
                 console.log("And error occured while storing a user");
             }
-            users.chat_room = chatid;
+            users.chat_room = newChat.id;
             users.save();
+            newChat.Users.push(users._id);
+            // console.log("We are adding", users);
+            // console.log("newChat during a creation is", newChat);
+            newChat.save();
         });
     }
     socket.on('joinRoom', function(userID) {
         if (!([userID, socket.id] in queue)){
             queue.push([userID, socket.id]);
         }
-        console.log("The queue after adding the user is", queue);
         if (queue.length >= 2) {
             [user1ID, user1Socket] = queue.shift();
             [user2ID, user2Socket] = queue.shift();
             // This makes a new chat room with these 2 new users
             newChat = createChat(user1ID, user2ID);
             // This adds this chat room to the user object
-            updateUser(user1ID, newChat.id);
-            updateUser(user2ID, newChat.id);
+            updateUser(user1ID, newChat);
+            updateUser(user2ID, newChat);
             io.to(user1Socket).emit("sendToChat");
             io.to(user2Socket).emit("sendToChat");
         }

@@ -32,11 +32,52 @@ router.get('/loginhome', function(req, res, next) {
             } else if (userchatroom === null){
                 res.render('loginhome', {user: req.user, title: 'AI Monitoring of Human Team Planning Conversations'});
             } else {
-                res.redirect('/messaging');
+                time = new Date();
+                currentTime = time.getTime();
+                // As chat rooms time out at 20 minutes right now
+                msSince = currentTime -= userchatroom.creationTime;
+                ageInSec = msSince / 1000;
+                maxAgeSec = 60 * 20;
+                if (ageInSec >= maxAgeSec){
+                    res.render('loginhome', {user: req.user, title: 'AI Monitoring of Human Team Planning Conversations'});
+                } else {
+                    res.redirect('/messaging');
+                }
             }
         })
     })
-    //res.render('loginhome', {user: req.user, title: 'AI Monitoring of Human Team Planning Conversations'});
+  } else {
+    res.redirect('/');
+  }
+});
+
+// router.get('/loginhome1', function(req, res, next) {
+//   if(req.isAuthenticated()) {
+//     res.render('loginhome', {user: req.user, title: 'AI Monitoring of Human Team Planning Conversations'});
+//   } else {
+//     res.redirect('/');
+//   }
+// });
+
+
+router.get('/admin', function(req, res, next) {
+  if(req.isAuthenticated()) {
+    // ChatRoom.find({}, function(err, allconversations) {
+    //     if (err) {
+    //         console.log("And error occured while finding the user");
+    //     }
+    //     populate(allconversations.Conversation)
+    //.populate('Conversation Users')
+    // });
+    ChatRoom
+    .find()
+    .populate({path: 'Conversation', model: 'Message'})
+    .populate({path: 'Users', model: 'User'})
+    .exec(function (err, chatrooms) {
+        if (err) return handleError(err);
+        console.log(chatrooms);
+        res.render('admin', {chats: chatrooms, title: 'AI Monitoring of Human Team Planning Conversations'});
+    })
   } else {
     res.redirect('/');
   }
@@ -113,7 +154,8 @@ router.get('/checkInChat', function(req, res) {
             // As chat rooms time out at 20 minutes right now
             msSince = currentTime -= userchatroom.creationTime;
             ageInSec = msSince / 1000;
-            maxAgeSec = 60 * 20;
+            // maxAgeSec = 60 * 20;
+            maxAgeSec = 30;
             if (ageInSec >= maxAgeSec){
                 res.send("nope");
             } else {
