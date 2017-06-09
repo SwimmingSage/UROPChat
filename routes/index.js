@@ -124,48 +124,41 @@ router.get('/checkInChat', function(req, res) {
 });
 
 router.post('/signup', function(req, res, next) {
-    var username = req.body.username;
     var email = req.body.email;
     var firstname = req.body.firstname;
     var lastname = req.body.lastname;
     var password = req.body.password;
     var reenterpassword = req.body.reenterpassword;
 
-  //to find if username already in use
-  User.findOne({username: username}, function (err, users) {
-    if (err) {
-      console.log('An error occurred');
-    }
-    if(users){
-      res.send("usernametaken");
-      return;
-    }
     //to find if email already in use
-    User.findOne({email: email}, function (err, users) {
+                 // as passport keeps the email as the username
+    User.findOne({'username': email}, function (err, users) {
       if (err) {
         console.log('An error occurred');
       }
-      if(users){
+      console.log("The user found was",users);
+      if(users != null){
         res.send("emailtaken");
+        console.log("We found another identical email");
         return;
+      } else {                    // We are using email and not username
+          User.register(new User({username: email, firstname: firstname, lastname: lastname}), password, function(err) {
+            if (err) {
+              console.log('error while user register!', err);
+              return next(err);
+            }
+            User.findOne({username: email}, function (err, users) {
+              if (err) {
+                console.log('An error occurred');
+              }
+              users.id = users._id.toString();
+              users.save();
+            });
+            res.send("loggedin");
+            console.log("loggedin was sent successfully")
+          });
       }
-      User.register(new User({username: username, email: email, firstname: firstname, lastname: lastname}), password, function(err) {
-        if (err) {
-          console.log('error while user register!', err);
-          return next(err);
-        }
-        User.findOne({email: email}, function (err, users) {
-          if (err) {
-            console.log('An error occurred');
-          }
-          users.id = users._id.toString();
-          users.save();
-        });
-        res.send("loggedin");
-        console.log("loggedin was sent successfully")
-      });
     });
-  });
 
 });
 

@@ -15,6 +15,8 @@ var http = require('http');
 var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
+
+// This code is so that I can make database calls
 var mongoose = require('mongoose')
 
 var User = mongoose.model('User');
@@ -37,17 +39,9 @@ io.on('connection', function(socket) {
     console.log('a user connected');
     // When a user disconnects from out app...
     socket.on('disconnect', function() {
-        // console.log('a user disconnected');
-        // console.log("The full queue is", queue);
-        // console.log("The queue length is", queue.length);
         for (i = 0; i < queue.length; i++) {
-            // console.log("i is", i);
-            // console.log("queue[i] is", queue[i]);
             if (queue[i][1] === socket.id) { 
                 queue.splice(i);
-                // console.log(" ");
-                // console.log("The queue is now upon leaving", queue);
-                // console.log(" ");
                 break; 
             }
         }   
@@ -58,7 +52,6 @@ io.on('connection', function(socket) {
         if(socket.room) {
             socket.leave(socket.room);
         }
-        // console.log("The room we are joining is",room);
         socket.room = room;
         socket.join(room);
     });
@@ -73,7 +66,6 @@ io.on('connection', function(socket) {
         })
         new_chat.id = new_chat._id.toString();
         new_chat.save();
-        console.log("We just created a chat!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         return new_chat
     }
     updateUser = function(userid, chatid){
@@ -95,6 +87,7 @@ io.on('connection', function(socket) {
             [user2ID, user2Socket] = queue.shift();
             // This makes a new chat room with these 2 new users
             newChat = createChat(user1ID, user2ID);
+            // This adds this chat room to the user object
             updateUser(user1ID, newChat.id);
             updateUser(user2ID, newChat.id);
             io.to(user1Socket).emit("sendToChat");
@@ -123,7 +116,6 @@ io.on('connection', function(socket) {
   socket.on('chat message', function(input) {
     // input has format of {'room': chat_room, 'message':message}
     // emit message to users in this room
-    // console.log("In the socket we just recieved the input", input);
     addMessage(input); // This adds the message to the database
     output = {'message':input['message'], name: input['name'], id:input['id']};
     io.to(input['room']).emit("recieve message", output);

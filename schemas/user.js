@@ -3,10 +3,11 @@ var mongoose = require('mongoose'),
     passportLocalMongoose = require('passport-local-mongoose');
 
 var User = new Schema({
-  // I think User.plugin(passportLocalMongoose takes care of this username: {type: String, required: true, index: {unique: true}},
+    // I think User.plugin(passportLocalMongoose takes care of this username: {type: String, required: true, index: {unique: true}},
+    // We are using email to login, rather than username, and passport takes care of that for us
     firstname:              {type: String , required: true},
     lastname:               {type: String , required: true},
-    email:                  {type: String , required: true, index: {unique: true}},
+    // email:                  {type: String , required: true, index: {unique: true}},
     chat_room:              {type: String},
     admin:                  {type: Boolean, default: false},
     id:                     {type: String},
