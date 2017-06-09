@@ -19,26 +19,6 @@ $(document).ready(function() {
 
     var socket = io();
 
-    socket.on("makeChat", function(total) {
-        [user1ID, user1Socket, user2ID, user2Socket] = total;
-        $.ajax({
-            url: '/makeChat',
-            data: {
-                user1ID: user1ID,
-                user2ID: user2ID,
-            },
-            type: 'POST',
-            success: function(data) {
-                //$('where I want to put data').text(data);
-                // total.append(data)
-                socket.emit('sendToChat', total);
-            },
-            error: function(xhr, status, error) {
-                console.log("Uh oh there was an error: " + error);
-            }
-        });
-    });
-
     socket.on("sendToChat", function() {
         window.location.href = "/messaging";
     });

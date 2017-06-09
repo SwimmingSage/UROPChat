@@ -123,72 +123,6 @@ router.get('/checkInChat', function(req, res) {
     })
 });
 
-router.post('/makeChat', function(req, res) {
-    var user1ID = req.body.user1ID;
-    var user2ID = req.body.user2ID;
-
-    createChat = function(){
-
-        time = new Date();
-        currentTime = time.getTime();
-        var new_chat = new ChatRoom({
-            Users:          [user1ID, user2ID],
-            creationTime:   currentTime,
-        })
-        new_chat.id = new_chat._id.toString();
-        new_chat.save();
-        return new Promise(function(resolve, reject){
-            resolve(new_chat);
-        });
-    }
-    updateUser = function(userid, chatid){
-        User.findOne({"id": userid}, function(err, users) {
-            if (err) {
-                console.log("And error occured while storing a user");
-            }
-            users.chat_room = chatid;
-            users.save();
-        });
-    }
-    addChatToStudent = function(){
-        createChat()
-        .then(chat => { 
-            updateUser(user1ID.toString(), chat.id);
-            return chat;
-        })
-        .then(chat => { 
-            updateUser(user2ID.toString(), chat.id);
-        })
-        .then(() => { res.send("Success") })
-        .catch(error => { console.log(error) });
-
-    }
-    addChatToStudent();
-});
-
-router.post('/newMessage', function(req, res, next) {
-    chatRoomID = req.body.chatID;
-    newmessage = req.body.newmessage;
-    sentby = req.body.sender;
-
-    ChatRoom.findOne({'id': chatRoomID}, function(err, userchatroom){
-        if (err) {
-          console.log('An error occurred');
-        }
-        time = new Date();
-        currentTime = time.getTime();
-        var new_message = new Message({
-            message :     newmessage,
-            timeCreated : currentTime,
-            sender :      sentby,
-        })
-        userchatroom.Conversation.push(new_message)
-        userchatroom.save();
-        res.send()
-    })
-
-});
-
 router.post('/signup', function(req, res, next) {
     var username = req.body.username;
     var email = req.body.email;
@@ -206,7 +140,6 @@ router.post('/signup', function(req, res, next) {
       res.send("usernametaken");
       return;
     }
-
     //to find if email already in use
     User.findOne({email: email}, function (err, users) {
       if (err) {
@@ -228,8 +161,6 @@ router.post('/signup', function(req, res, next) {
           users.id = users._id.toString();
           users.save();
         });
-
-
         res.send("loggedin");
         console.log("loggedin was sent successfully")
       });

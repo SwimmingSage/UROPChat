@@ -61,21 +61,6 @@ $(document).ready(function() {
         }
         input = {'room': user.chat_room, 'message':message, 'sender': user.id, 'name': user.firstname, 'id':user.id};
         socket.emit('chat message', input);
-        $.ajax({
-            url: '/newMessage',
-            data: {
-                chatID:     user.chat_room,
-                newmessage: message,
-                sender:     user.firstname,
-            },
-            type: 'POST',
-            success: function(data) {
-                console.log("Message successfully stored");
-            },
-            error: function(xhr, status, error) {
-                console.log("Uh oh there was an error: " + error);
-            }
-        });
         // // Clear the message area's text
         $('#m').val('');
         return false; // This is to not refresh the page after sending a message
