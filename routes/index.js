@@ -11,6 +11,9 @@ var User = mongoose.model('User');
 var Message = mongoose.model('Message');
 var ChatRoom = mongoose.model('ChatRoom');
 
+// var maxAgeSec = 60*20 + 5;
+var maxAgeSec = 30;
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
   if(req.isAuthenticated()) {
@@ -37,7 +40,6 @@ router.get('/loginhome', function(req, res, next) {
                 // As chat rooms time out at 20 minutes right now
                 msSince = currentTime -= userchatroom.creationTime;
                 ageInSec = msSince / 1000;
-                maxAgeSec = 60 * 20;
                 if (ageInSec >= maxAgeSec){
                     userchatroom.active = false;
                     userchatroom.save();
@@ -88,7 +90,6 @@ router.get('/messaging', function(req, res, next) {
                     // As chat rooms time out at 20 minutes right now
                     msSince = currentTime -= userchatroom.creationTime;
                     ageInSec = msSince / 1000;
-                    maxAgeSec = 60 * 20;
                     if (ageInSec >= maxAgeSec){
                         userchatroom.active = false;
                         userchatroom.save();
@@ -124,12 +125,12 @@ router.get('/getStartTime', function(req, res) {
     })
 });
 
-router.get('/closeChat', function(req, res) {
+router.post('/closeChat', function(req, res) {
     ChatRoom.findOne({'id': req.user.chat_room}, function(err, userchatroom){
         if (err) {
           console.log('An error occurred');
         }
-        if (!userchatroom.active) {
+        if (userchatroom.active) {
             userchatroom.active = false;
             userchatroom.save();
             res.send('Success');
@@ -154,7 +155,6 @@ router.get('/checkInChat', function(req, res) {
             // As chat rooms time out at 20 minutes right now
             msSince = currentTime -= userchatroom.creationTime;
             ageInSec = msSince / 1000;
-            maxAgeSec = 60 * 20;
             if (ageInSec >= maxAgeSec){
                 userchatroom.active = false;
                 userchatroom.save();

@@ -113,7 +113,10 @@ $(document).ready(function() {
             },
             type: 'POST',
             success: function(data) {
-                turnedOff = true;
+                if(data = 'success') {
+                    console.log("The chat was successfully closed");
+                    turnedOff = true;
+                }
             },
             error: function(xhr, status, error) {
                 console.log("Uh oh there was an error: " + error);
@@ -122,11 +125,13 @@ $(document).ready(function() {
     }
 
     $("#closeChat").click(function(){
+        console.log("closeChat ran");
         input = {'room': user.chat_room};
         socket.emit('close Chat', input);
     });
 
     $("#returnHome").click(function() {
+        console.log("We should be redirected");
         window.location.href = "/loginhome";
     });
 
@@ -145,8 +150,9 @@ $(document).ready(function() {
     /////////////////////////////////////////////////////////////////////////////////////////////////////
     // Keep track of the timer
     // max time in minutes
-    maxTime = 20*60 + 5;
-    turnedOff = false;
+    // var maxTime = 20*60 + 5;
+    var maxTime = 30;
+    var turnedOff = false;
     function updateTimer(){
         console.log("UpdateTimer ran")
         time = new Date();
@@ -159,7 +165,9 @@ $(document).ready(function() {
             return;
         }
         if (remaining <= 0){
-            $('.closeChatSection').css({'display':'none'});
+            $('#closeChatSection').css({'display':'none'});
+            $('#goHome').css({'display':'block'});
+            $('#goHome').animate({'opacity':'1'}, 'slow');
             $('#m').prop("readonly", true);
             $('#m').val('');
             $('#timer').html('Chat has expired');
