@@ -3,6 +3,10 @@ html {
     padding: 0px;
 }
 
+body {
+    margin: 0px;
+}
+
 /* Style for front home page */
 
 .loginhome {
@@ -140,7 +144,7 @@ div.joinchat {
     display: none;
 }
 
-ul#messages {
+ul.messages {
     /* we want this to switch to 16.6em */
     height: 18em;
     width: 100%;
@@ -151,7 +155,7 @@ ul#messages {
     margin: 0px;
 }
 
-ul#messages li {
+ul.messages li {
 /*    overflow:auto;
     display: flex;
     width:24em;
@@ -164,7 +168,7 @@ ul#messages li {
     word-wrap: break-word;
     padding: 0em .5em;
 }
-ul#messages li.otheruser {
+ul.messages li.otheruser {
     background-color: #f1f1f1;
 }
 
@@ -231,8 +235,14 @@ ul span#bottomanchor {
 /* Style for admin page */
 .admin {
     text-align: center;
-
 }
+
+.chatboxes {
+    width: 25em;
+    margin: 0em 1.5em;
+    display: inline-block;
+}
+
 
 
 

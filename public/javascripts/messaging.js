@@ -11,9 +11,9 @@ $(document).ready(function() {
     function catchUpChat(conversation) {
         for (i = 0; i < conversation.length; i++) {
             if(conversation[i].sender === user.firstname){
-                $('#messages').append('<li><strong>'+conversation[i].sender+':&nbsp;</strong>'+conversation[i].message+'</li>');
+                $('.messages').append('<li><strong>'+conversation[i].sender+':&nbsp;</strong>'+conversation[i].message+'</li>');
             } else {
-                $('#messages').append('<li class="otheruser"><strong>'+conversation[i].sender+':&nbsp;</strong>'+conversation[i].message+'</li>');
+                $('.messages').append('<li class="otheruser"><strong>'+conversation[i].sender+':&nbsp;</strong>'+conversation[i].message+'</li>');
             }
         }
         fastScroll();
@@ -81,11 +81,11 @@ $(document).ready(function() {
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
     // Process receiving messages
-    var messages = document.getElementById('messages');
+    var messages = document.getElementsByClassName("messages");
 
     function scrollToBottom() {
         // messages.scrollTop = messages.scrollHeight; this is to scroll fast
-        $('#messages').animate({
+        $('.messages').animate({
             scrollTop: messages.scrollHeight
         }, 200);
     };
@@ -97,16 +97,16 @@ $(document).ready(function() {
         // form of output is output = {'message':input['message'], name: input['name']};
         shouldScroll = (messages.scrollTop + messages.clientHeight === messages.scrollHeight);
         if(output['name'] === user.firstname){
-            $('#messages').append('<li><strong>'+output['name']+':&nbsp;</strong>'+output['message']+'</li>');
+            $('.messages').append('<li><strong>'+output['name']+':&nbsp;</strong>'+output['message']+'</li>');
         } else {
-            $('#messages').append('<li class="otheruser"><strong>'+output['name']+':&nbsp;</strong>'+output['message']+'</li>');
+            $('.messages').append('<li class="otheruser"><strong>'+output['name']+':&nbsp;</strong>'+output['message']+'</li>');
         }
         if (shouldScroll) {
             scrollToBottom();
         }
         if (wasTyping){
             wasTyping = false;
-            $('ul#messages').css({'height':'18em'});
+            $('ul.messages').css({'height':'18em'});
             $('#typing').css({'display':'none'});
             if (shouldScroll){
                 fastScroll();
@@ -215,7 +215,7 @@ $(document).ready(function() {
             if (output['message'].length === 0 && wasTyping) {
                 wasTyping = false;
                 shouldScroll = (messages.scrollTop + messages.clientHeight === messages.scrollHeight);
-                $('ul#messages').css({'height':'18em'});
+                $('ul.messages').css({'height':'18em'});
                 $('#typing').css({'display':'none'});
                 if (shouldScroll) {
                     fastScroll();
@@ -229,7 +229,7 @@ $(document).ready(function() {
                 console.log("We recognize the other user is typing");
                 wasTyping = true;
                 shouldScroll = (messages.scrollTop + messages.clientHeight === messages.scrollHeight);
-                $('ul#messages').css({'height':'16.6em'});
+                $('ul.messages').css({'height':'16.6em'});
                 $('#typing').css({'display':'block'});
                 if (shouldScroll) {
                     fastScroll();

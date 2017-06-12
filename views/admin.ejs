@@ -9,7 +9,45 @@
   <body>
     <div class="admin">
         <h1><%= title %></h1>
-        <p>Welcome to <%= title %> Chat System</p>
+        <p>Welcome to Admin Overview Page of the Chat System</p>
+        <p><%= //chats %></p>
+        <p><%= //chats[0].Conversation[0].message %></p>
 
+    <!-- Objects are stored as 
+        [ { _id: 593ee1363a25e87dcd634f9b,
+        id: '593ee1363a25e87dcd634f9b',
+        creationTime: '1497293110803',
+        active: false,
+        Conversation: [ [Object], [Object], [Object], [Object] ],
+        Users: [ 'b', 'a' ],
+        __v: 4 },
+          { _id: 593ee1533a25e87dcd634fa0,
+            id: '593ee1533a25e87dcd634fa0',
+            creationTime: '1497293139236',
+            active: true,
+            Conversation: [ [Object], [Object], [Object], [Object] ],
+            Users: [ 'a', 'b' ],
+            __v: 4 } ] -->
+
+        <% for(i=0; i < chats.length; i++) { %>
+            <div class="chatboxes">
+                <h1 id="timer">Chat expires in <span id="timeLeft" id="timer<%= chats[i].id %>"></span></h1>
+                <div class="chat" id="chat<%= chats[i].id %>">
+                    <ul class="messages" id="m<%= chats[i].id %>">
+                    <% for(x=0; x < chats[i].Conversation.length; x++) { %>
+                        <li class="otheruser"><strong><%= chats[i].Conversation[x].sender %>:&nbsp;</strong><%= chats[i].Conversation[x].message %></li>
+                    <% } %>
+                    </ul>
+                    <div id="entermessage">
+                        <form action="">
+                            <input id="m<%= chats[i].id %>" placeholder="Enter Message" autocomplete="off" /><button id="send">Send</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        <% } %>
+
+    </div>
   </body>
 </html>

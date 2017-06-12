@@ -55,10 +55,13 @@ router.get('/loginhome', function(req, res, next) {
 });
 
 router.get('/admin', function(req, res, next) {
+  // Lean basically makes it so we have raw javascript objects, which increases run time
+  // .find({"active": true})
   if(req.isAuthenticated()) {
     ChatRoom
-    .find({"active": true})
-    .populate('Conversation')
+    .find()
+    .populate({path: 'Conversation', options:{sort: {'timeCreated': 1}}})
+    .lean()
     .exec(function (err, chatrooms) {
         if (err) return handleError(err);
         console.log(chatrooms);
