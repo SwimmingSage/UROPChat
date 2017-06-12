@@ -4,6 +4,7 @@
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
     <script src="/javascripts/admin.js"></script>
   </head>
   <body>
@@ -31,15 +32,16 @@
 
         <% for(i=0; i < chats.length; i++) { %>
             <div class="chatboxes">
-                <h1 id="timer">Chat expires in <span id="timeLeft" id="timer<%= chats[i].id %>"></span></h1>
+                <h1 id="timer">Chat expires in <span id="timer<%= chats[i].id %>"></span></h1>
                 <div class="chat" id="chat<%= chats[i].id %>">
-                    <ul class="messages" id="m<%= chats[i].id %>">
+                    <ul class="messages" id="messages<%= chats[i].id %>">
                     <% for(x=0; x < chats[i].Conversation.length; x++) { %>
                         <li class="otheruser"><strong><%= chats[i].Conversation[x].sender %>:&nbsp;</strong><%= chats[i].Conversation[x].message %></li>
                     <% } %>
                     </ul>
+                    <div class="typing" id="typing<%= chats[i].id %>">Other user is typing. . .</div>
                     <div id="entermessage">
-                        <form action="">
+                        <form action="" id="form<%= chats[i].id %>">
                             <input id="m<%= chats[i].id %>" placeholder="Enter Message" autocomplete="off" /><button id="send">Send</button>
                         </form>
                     </div>
@@ -51,3 +53,16 @@
     </div>
   </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+

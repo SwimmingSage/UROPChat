@@ -59,17 +59,28 @@ router.get('/admin', function(req, res, next) {
   // .find({"active": true})
   if(req.isAuthenticated()) {
     ChatRoom
-    .find()
+    .find({"active": true})
     .populate({path: 'Conversation', options:{sort: {'timeCreated': 1}}})
     .lean()
     .exec(function (err, chatrooms) {
         if (err) return handleError(err);
-        console.log(chatrooms);
+        // console.log(chatrooms);
         res.render('admin', {chats: chatrooms, title: 'AI Monitoring of Human Team Planning Conversations'});
     })
   } else {
     res.redirect('/');
   }
+});
+
+router.get('/getAllChat', function(req, res) {
+    ChatRoom
+    .find({"active": true})
+    .populate({path: 'Conversation', options:{sort: {'timeCreated': 1}}})
+    .lean()
+    .exec(function (err, chatrooms) {
+        if (err) return handleError(err);
+        res.send(chatrooms)
+    })
 });
 
 router.get('/messaging', function(req, res, next) {
@@ -84,7 +95,6 @@ router.get('/messaging', function(req, res, next) {
                 if (err) {
                   console.log('An error occurred while finding the user chatroom by ID');
                 } else if (userchatroom === null || !(userchatroom.active)){
-                    console.log("userchatroom was found to be",userchatroom);
                     res.redirect('/loginhome');
                 } else {
                     time = new Date();

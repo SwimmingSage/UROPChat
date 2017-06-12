@@ -94,7 +94,7 @@ $(document).ready(function() {
     };
     // When we receive a 'chat message' message...
     socket.on('recieve message', function(output) {
-        // form of output is output = {'message':input['message'], name: input['name']};
+        // form of output is output = {'message':input['message'], name: input['name'], id:input['id'], 'room': input['room']};
         shouldScroll = (messages.scrollTop + messages.clientHeight === messages.scrollHeight);
         if(output['name'] === user.firstname){
             $('.messages').append('<li><strong>'+output['name']+':&nbsp;</strong>'+output['message']+'</li>');
@@ -107,7 +107,7 @@ $(document).ready(function() {
         if (wasTyping){
             wasTyping = false;
             $('ul.messages').css({'height':'18em'});
-            $('#typing').css({'display':'none'});
+            $('.typing').css({'display':'none'});
             if (shouldScroll){
                 fastScroll();
             }
@@ -163,7 +163,6 @@ $(document).ready(function() {
     var maxTime = 20*60 + 5;
     var turnedOff = false;
     function updateTimer(){
-        console.log("UpdateTimer ran")
         time = new Date();
         currentTime = time.getTime();
         // get time remaining in seconds
@@ -206,7 +205,7 @@ $(document).ready(function() {
     var typingmodified = false;
     var wasTyping = false;
     socket.on('typing alert', function(output) {
-        // form of output is output = {'id':input['id'], name: input['name'], message: input['message']};
+        // form of output is output = {'id':input['id'], name: input['name'], message: input['message'], 'room':input['room']};
         // want to add name to this at some point
         // console.log("Output is", output);
         // console.log("the length of message is", output['message'].length);
@@ -216,7 +215,7 @@ $(document).ready(function() {
                 wasTyping = false;
                 shouldScroll = (messages.scrollTop + messages.clientHeight === messages.scrollHeight);
                 $('ul.messages').css({'height':'18em'});
-                $('#typing').css({'display':'none'});
+                $('.typing').css({'display':'none'});
                 if (shouldScroll) {
                     fastScroll();
                 }
@@ -224,13 +223,13 @@ $(document).ready(function() {
                 if (!typingmodified){
                     typingmodified = true;
                     othertyping = output['name'] + " is typing. . ."
-                    $('#typing').text(othertyping);
+                    $('.typing').text(othertyping);
                 }
                 console.log("We recognize the other user is typing");
                 wasTyping = true;
                 shouldScroll = (messages.scrollTop + messages.clientHeight === messages.scrollHeight);
                 $('ul.messages').css({'height':'16.6em'});
-                $('#typing').css({'display':'block'});
+                $('.typing').css({'display':'block'});
                 if (shouldScroll) {
                     fastScroll();
                 }
