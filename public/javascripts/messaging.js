@@ -101,12 +101,52 @@ $(document).ready(function() {
         }
     });
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Handeling Closing chat
+
+
+
+    function closeChat() {
+        $.ajax({
+            url: '/closeChat',
+            data: {
+            },
+            type: 'POST',
+            success: function(data) {
+                turnedOff = true;
+            },
+            error: function(xhr, status, error) {
+                console.log("Uh oh there was an error: " + error);
+            }
+        });
+    }
+
+    $("#closeChat").click(function(){
+        input = {'room': user.chat_room};
+        socket.emit('close Chat', input);
+    });
+
+    $("#returnHome").click(function() {
+        window.location.href = "/loginhome";
+    });
+
+    // chat is closed
+    socket.on('chat closed', function() {
+        turnedOff = true;
+        $('#closeChatSection').css({'display':'none'});
+        $('#goHome').css({'display':'block'});
+        $('#goHome').animate({'opacity':'1'}, 'slow');
+        $('#m').prop("readonly", true);
+        $('#m').val('');
+        $('#timer').html('The chat is now closed');
+    });
+
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
     // Keep track of the timer
     // max time in minutes
-    maxTime = 20*60;
-
+    maxTime = 20*60 + 5;
+    turnedOff = false;
     function updateTimer(){
         console.log("UpdateTimer ran")
         time = new Date();
@@ -115,10 +155,15 @@ $(document).ready(function() {
         remaining = Math.floor(maxTime - ((currentTime - startTime) / 1000));
         // if no time left make it impossible to send more messages, then ideally redirect once we get instructions
         // for what we want to do with them after
+        if (turnedOff) {
+            return;
+        }
         if (remaining <= 0){
+            $('.closeChatSection').css({'display':'none'});
             $('#m').prop("readonly", true);
             $('#m').val('');
             $('#timer').html('Chat has expired');
+            closeChat();
             return;
         }
         // getting proper min/sec in string form;

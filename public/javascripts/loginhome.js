@@ -19,8 +19,15 @@ $(document).ready(function() {
 
     var socket = io();
 
-    socket.on("sendToChat", function() {
+    function redirect() {
         window.location.href = "/messaging";
+    }
+
+    socket.on("sendToChat", function() {
+        $('#joinqueue').css({"display":"none", "opacity": "0"});
+        $('.joinchat').append('<p id="joinshortly">Another user has arrived, you will begin shortly</p>');
+        $('#joinshortly').animate({'opacity':'1'}, 'slow');
+        setTimeout(redirect, 5000)
     });
 
     $(".joinchat button").click(function(){
@@ -36,8 +43,7 @@ $(document).ready(function() {
                 } else {
                     $('.joinchat button').css({"display":"none", "opacity": "0"});
                     $('.joinchat p').css({"display":"block", "opacity": "0"});
-                    $('.joinchat p').animate({'opacity':'0.97'}, 'slow');
-                    console.log("Safari went rogue to join chat");
+                    $('.joinchat p').animate({'opacity':'1'}, 'slow');
                     socket.emit('joinRoom', {'userid': user.id, 'name': user.firstname});
                 }
             },

@@ -38,7 +38,7 @@ router.get('/loginhome', function(req, res, next) {
                 msSince = currentTime -= userchatroom.creationTime;
                 ageInSec = msSince / 1000;
                 maxAgeSec = 60 * 20;
-                if (ageInSec >= maxAgeSec ){
+                if (ageInSec >= maxAgeSec){
                     userchatroom.active = false;
                     userchatroom.save();
                     res.render('loginhome', {user: req.user, title: 'AI Monitoring of Human Team Planning Conversations'});
@@ -53,27 +53,10 @@ router.get('/loginhome', function(req, res, next) {
   }
 });
 
-// router.get('/loginhome1', function(req, res, next) {
-//   if(req.isAuthenticated()) {
-//     res.render('loginhome', {user: req.user, title: 'AI Monitoring of Human Team Planning Conversations'});
-//   } else {
-//     res.redirect('/');
-//   }
-// });
-
-
 router.get('/admin', function(req, res, next) {
   if(req.isAuthenticated()) {
-    // ChatRoom.find({}, function(err, allconversations) {
-    //     if (err) {
-    //         console.log("And error occured while finding the user");
-    //     }
-    //     populate(allconversations.Conversation)
-    //.populate('Conversation Users')
-    // .populate({path: 'Conversation', model: 'Message'})
-    // });
     ChatRoom
-    .find()
+    .find({"active": true})
     .populate('Conversation')
     .exec(function (err, chatrooms) {
         if (err) return handleError(err);
@@ -107,9 +90,9 @@ router.get('/messaging', function(req, res, next) {
                     ageInSec = msSince / 1000;
                     maxAgeSec = 60 * 20;
                     if (ageInSec >= maxAgeSec){
-                        res.redirect('/loginhome');
                         userchatroom.active = false;
                         userchatroom.save();
+                        res.redirect('/loginhome');
                     } else {
                         res.render('messaging', {user: req.user, title: 'AI Monitoring of Human Team Planning Conversations'});
                     }
@@ -141,6 +124,19 @@ router.get('/getStartTime', function(req, res) {
     })
 });
 
+router.get('/closeChat', function(req, res) {
+    ChatRoom.findOne({'id': req.user.chat_room}, function(err, userchatroom){
+        if (err) {
+          console.log('An error occurred');
+        }
+        if (!userchatroom.active) {
+            userchatroom.active = false;
+            userchatroom.save();
+            res.send('Success');
+        }
+    })
+});
+
 router.get('/checkInChat', function(req, res) {
     User.findOne({"id": req.user.id}, function(err, users) {
         if (err) {
@@ -149,7 +145,7 @@ router.get('/checkInChat', function(req, res) {
         ChatRoom.findOne({'id': req.user.chat_room}, function(err, userchatroom){
             if (err) {
               console.log('An error occurred');
-            } else if(userchatroom === null) {
+            } else if(userchatroom === null || !userchatroom.active) {
                 res.send("nope");
                 return;
             }
@@ -158,9 +154,10 @@ router.get('/checkInChat', function(req, res) {
             // As chat rooms time out at 20 minutes right now
             msSince = currentTime -= userchatroom.creationTime;
             ageInSec = msSince / 1000;
-            // maxAgeSec = 60 * 20;
-            maxAgeSec = 30;
+            maxAgeSec = 60 * 20;
             if (ageInSec >= maxAgeSec){
+                userchatroom.active = false;
+                userchatroom.save();
                 res.send("nope");
             } else {
                 res.send("inchat");
@@ -175,9 +172,8 @@ router.post('/signup', function(req, res, next) {
     var lastname = req.body.lastname;
     var password = req.body.password;
     var reenterpassword = req.body.reenterpassword;
-
     //to find if email already in use
-                 // as passport keeps the email as the username
+                 // as passport keeps the email as the username, or I'm making it do that at least
     User.findOne({'username': email}, function (err, users) {
       if (err) {
         console.log('An error occurred');

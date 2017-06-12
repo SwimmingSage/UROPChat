@@ -127,6 +127,19 @@ io.on('connection', function(socket) {
     output = {'id':input['id'], name: input['name'], message: input['message']};
     io.to(input['room']).emit("typing alert", output);
   });
+
+  socket.on('close Chat', function(input) {
+    // This closes the chat prematurely
+    // input = {'room': user.chat_room};
+    ChatRoom.findOne({'id': input['room']}, function(err, userchatroom){
+        if (err) {
+          console.log('An error occurred');
+        }
+        userchatroom.active = false;
+        userchatroom.save();
+        io.to(input['room']).emit("chat closed");
+    })
+  });
 });
 
 /**

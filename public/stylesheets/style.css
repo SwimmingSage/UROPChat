@@ -116,6 +116,11 @@ div.joinchat {
     opacity: 0;
 }
 
+.joinchat #joinshortly {
+    display: block;
+    opacity: 0;
+}
+
 
 /* Style for the messaging page */
 
@@ -198,11 +203,35 @@ ul span#bottomanchor {
     margin-left: 1em;
 }
 
+#entermessage form button:hover {
+    cursor: pointer;
+}
+
+.messageBottom {
+    margin:auto;
+    text-align: center;
+}
+
+.messageBottom button {
+    margin-top: 1em;
+    height: 2em;
+    font-size: 1em;
+}
+
+.messageBottom button:hover {
+    cursor:pointer;
+}
+
+#goHome {
+    display: none;
+    opacity: 0;
+}
+
 
 /* Style for admin page */
 .admin {
     text-align: center;
-    
+
 }
 
 
