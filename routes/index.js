@@ -11,8 +11,7 @@ var User = mongoose.model('User');
 var Message = mongoose.model('Message');
 var ChatRoom = mongoose.model('ChatRoom');
 
-// var maxAgeSec = 60*20 + 5;
-var maxAgeSec = 30;
+var maxAgeSec = 60*20 + 5;
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -116,12 +115,13 @@ router.get('/getUser', function(req, res) {
 });
 
 // Gets the start time of the users conversation
-router.get('/getStartTime', function(req, res) {
-    ChatRoom.findOne({'id': req.user.chat_room}, function(err, userchatroom){
-        if (err) {
-          console.log('An error occurred');
-        }
-        res.send(userchatroom.creationTime);
+router.get('/getChat', function(req, res) {
+    ChatRoom
+    .find({"id": req.user.chat_room})
+    .populate({path: 'Conversation', options:{sort: {'timeCreated': 1}}})
+    .exec(function (err, chatrooms) {
+        if (err) return handleError(err);
+        res.send(chatrooms);
     })
 });
 

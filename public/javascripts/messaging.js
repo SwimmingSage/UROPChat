@@ -8,9 +8,21 @@ $(document).ready(function() {
         socket.emit('room', room);
     }
 
+    function catchUpChat(conversation) {
+        for (i = 0; i < conversation.length; i++) {
+            if(conversation[i].sender === user.firstname){
+                $('#messages').append('<li><strong>'+conversation[i].sender+':&nbsp;</strong>'+conversation[i].message+'</li>');
+            } else {
+                $('#messages').append('<li class="otheruser"><strong>'+conversation[i].sender+':&nbsp;</strong>'+conversation[i].message+'</li>');
+            }
+        }
+        fastScroll();
+    }
+
     // This grabs the user data from backend so we can get their first name
     var user;
     var startTime;
+    var chatroom;
     $.ajax({
         url: '/getUser',
         data: {
@@ -20,13 +32,14 @@ $(document).ready(function() {
             user = data;
             getToRoom(data.chat_room);
             $.ajax({
-                url: '/getStartTime',
+                url: '/getChat',
                 data: {
                 },
                 type: 'GET',
-                success: function(data) {
-                    startTime = data;
-                    console.log("The data that is start time is", data);
+                success: function(chatroomsent) {
+                    chatroom = chatroomsent['0'];
+                    catchUpChat(chatroom.Conversation);
+                    startTime = chatroom.creationTime;
                 },
                 error: function(xhr, status, error) {
                     console.log("Uh oh there was an error: " + error);
@@ -104,8 +117,6 @@ $(document).ready(function() {
     //////////////////////////////////////////////////////////////////////////////////////////////////////
     // Handeling Closing chat
 
-
-
     function closeChat() {
         $.ajax({
             url: '/closeChat',
@@ -146,12 +157,10 @@ $(document).ready(function() {
         $('#timer').html('The chat is now closed');
     });
 
-
     /////////////////////////////////////////////////////////////////////////////////////////////////////
     // Keep track of the timer
     // max time in minutes
-    // var maxTime = 20*60 + 5;
-    var maxTime = 30;
+    var maxTime = 20*60 + 5;
     var turnedOff = false;
     function updateTimer(){
         console.log("UpdateTimer ran")
