@@ -164,7 +164,8 @@ ul.messages li {
     display: flex;
     text-align: left;
     width: 24em;
-    display: inline-block;
+/*    display: inline-block;*/
+    display: block;
     word-wrap: break-word;
     padding: 0em .5em;
 }

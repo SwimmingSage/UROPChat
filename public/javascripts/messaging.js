@@ -81,8 +81,8 @@ $(document).ready(function() {
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
     // Process receiving messages
-    var messages = document.getElementsByClassName("messages");
-
+    var messages = document.getElementById('messages');
+    console.log(messages);
     function scrollToBottom() {
         // messages.scrollTop = messages.scrollHeight; this is to scroll fast
         $('.messages').animate({

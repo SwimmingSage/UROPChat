@@ -121,7 +121,6 @@ io.on('connection', function(socket) {
   socket.on('chat message', function(input) {
     // input has format of {'room': user.chat_room, 'message':message, 'sender': user.id, 'name': user.firstname, 'id':user.id};
     // emit message to users in this room
-    console.log("The backend recieved the message that ws sent by admin??QJIFJE:JDFK:JFSKJDFL:JFKLDJKLDFJLKFDJ:KFDJKJFJFSL:K")
     addMessage(input); // This adds the message to the database
     output = {'message':input['message'], name: input['name'], id:input['id'], 'room': input['room']};
     io.to(input['room']).emit("recieve message", output);

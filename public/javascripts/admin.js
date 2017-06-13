@@ -9,6 +9,7 @@ $(document).ready(function() {
     }
 
     var chatrooms;
+    var wasTyping = {};
     $.ajax({
         url: '/getAllChat',
         data: {
@@ -17,7 +18,9 @@ $(document).ready(function() {
         success: function(sentchatrooms) {
             chatrooms = sentchatrooms;
             for (i=0; i < sentchatrooms.length; i++) {
+                id = sentchatrooms[i].id
                 getToRoom(sentchatrooms[i].id);
+                wasTyping.id = false;
             }
         },
         error: function(xhr, status, error) {
@@ -33,7 +36,7 @@ $(document).ready(function() {
         }
     }
 
-    setTimeout(initialScroll, 1000);
+    setTimeout(initialScroll, 2000);
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -71,7 +74,6 @@ $(document).ready(function() {
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
     // Process receiving messages
-    wasTyping = false;
 
     function scrollToBottom(id, element) {
         // messages.scrollTop = messages.scrollHeight; this is to scroll fast
@@ -99,8 +101,8 @@ $(document).ready(function() {
         if (shouldScroll) {
             scrollToBottom(thisid, messages);
         }
-        if (wasTyping){
-            wasTyping = false;
+        if (wasTyping[thisid]){
+            wasTyping[thisid] = false;
             $(thisid).css({'height':'18em'});
             $('#typing'+output['room']).css({'display':'none'});
             if (shouldScroll){
@@ -155,38 +157,32 @@ $(document).ready(function() {
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // socket.on('typing alert', function(output) {
-    //     // form of output is output = {'id':input['id'], name: input['name'], message: input['message'], 'room':input['room']};
-    //     // want to add name to this at some point
-    //     // console.log("Output is", output);
-    //     // console.log("the length of message is", output['message'].length);
-    //     // ignore signs that I am typing
 
-    //     if (output['message'].length === 0 && wasTyping) {
-    //         wasTyping = false;
-    //         shouldScroll = (messages.scrollTop + messages.clientHeight === messages.scrollHeight);
-    //         $('ul.messages').css({'height':'18em'});
-    //         $('.typing').css({'display':'none'});
-    //         if (shouldScroll) {
-    //             fastScroll();
-    //         }
-    //     } else if(output['message'].length > 0 && !wasTyping) {
-    //         if (!typingmodified){
-    //             typingmodified = true;
-    //             othertyping = output['name'] + " is typing. . ."
-    //             $('.typing').text(othertyping);
-    //         }
-    //         console.log("We recognize the other user is typing");
-    //         wasTyping = true;
-    //         shouldScroll = (messages.scrollTop + messages.clientHeight === messages.scrollHeight);
-    //         $('ul.messages').css({'height':'16.6em'});
-    //         $('.typing').css({'display':'block'});
-    //         if (shouldScroll) {
-    //             fastScroll();
-    //         }
-    //     }
-    // });
-    // setInterval(checkTyping, 200);
+    socket.on('typing alert', function(output) {
+        // form of output is output = {'id':input['id'], name: input['name'], message: input['message'], 'room':input['room']};
+        // want to add name to this at some point
+        // console.log("Output is", output);
+        // console.log("the length of message is", output['message'].length);
+        // ignore signs that I am typing
+        roomid = output['room'];
+        messages = document.getElementById('messages'+roomid);
+        shouldScroll = (messages.scrollTop + messages.clientHeight === messages.scrollHeight);
+
+        if (output['message'].length === 0 && wasTyping[roomid]) {
+            wasTyping[roomid] = false;
+            $('ul#messages'+roomid).css({'height':'18em'});
+            $('#typing'+roomid).css({'display':'none'});
+        } else if(output['message'].length > 0 && !wasTyping[roomid]) {
+            console.log("We recognize the other user is typing");
+            wasTyping[roomid] = true;
+            $('ul#messages'+roomid).css({'height':'16.6em'});
+            $('#typing'+roomid).css({'display':'block'});
+        }
+        if (shouldScroll) {
+            fastScroll(messages);
+        }
+    });
+    setInterval(checkTyping, 200);
 
 });
 
