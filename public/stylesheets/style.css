@@ -7,6 +7,14 @@ body {
     margin: 0px;
 }
 
+a {
+    outline: none;
+}
+
+button {
+    outline: none;
+}
+
 /* Style for front home page */
 
 .loginhome {
@@ -92,14 +100,14 @@ button.submithome:hover {
 }
 
 
-/* Style for the login home page */
+/* Style for the login home page buttons, and all buttons in general */
 
-div.joinchat {
+div.styledbutton {
     text-align: center;
     margin-top: 2em;
 }
 
-.joinchat button {
+.styledbutton button {
     font-size: 1em;
     font-weight: bold;
     padding: .2em .5em;
@@ -108,19 +116,19 @@ div.joinchat {
     margin-top: 1em;
 }
 
-.joinchat button:hover {
+.styledbutton button:hover {
     cursor: pointer;
     background-color: white;
     transition: 0.2s;
     transform: scale(1.05);
 }
 
-.joinchat p {
+.styledbutton p {
     display: none;
     opacity: 0;
 }
 
-.joinchat #joinshortly {
+.styledbutton #joinshortly {
     display: block;
     opacity: 0;
 }
@@ -301,6 +309,83 @@ ul span#bottomanchor {
     margin: 0em 1.5em;
     display: inline-block;
 }
+
+/* Style for chatarchive page */
+.adminbutton button {
+    margin-top: -1em;
+}
+
+#chatarchivebutton button {
+    margin-bottom: 1em;
+}
+
+div.archivechatboxes {
+    width: 60em;
+    margin: auto;
+    margin-bottom: .5em;
+    display: block;
+    position: relative;
+}
+
+div.upperarchive {
+    border: 2px solid black;
+    border-radius: .3em;
+}
+
+div.upperarchive:hover {
+    transform: scale(1.01);
+    transition: .2s;
+    cursor: pointer;
+}
+
+div.archivechatboxes h1 {
+    margin: 0;
+    padding: 0.3em 0em;
+}
+
+div.archivechatboxes span {
+    position: absolute;
+    right: 1.5em;
+    top: 1em;
+}
+
+div.archivechat {
+    text-align: center;
+    margin: auto;
+    margin-top: .3em;
+    border-radius: 1em;
+    display: none;
+/*    opacity: 0;*/
+    border: 1px solid black;
+    width: 58em;
+}
+
+ul.archivemessages {
+    /* height: 18em; */
+/*    width: 100%;*/
+/*    overflow-y: auto;*/
+    position: relative;
+    list-style: none;
+    padding: 0em;
+    margin: 0px;
+    margin: .9em 0em;
+}
+
+.archivemessages li {
+    overflow: auto;
+    display: flex;
+    text-align: left;
+    /* width: 100%; */
+    /* display: inline-block; */
+    display: block;
+    word-wrap: break-word;
+    padding: 0em .5em;
+}
+
+.archivemessages li.otheruser {
+    background-color: #f1f1f1;
+}
+
 
 
 

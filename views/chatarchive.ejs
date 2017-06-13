@@ -4,15 +4,14 @@
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="/javascripts/admin.js"></script>
+    <script src="/javascripts/chatarchive.js"></script>
   </head>
   <body>
     <div class="admin">
         <h1><%= title %></h1>
         <p>Welcome to Admin Overview Page of the Live Chats</p>
-        <div class="styledbutton adminbutton" id="adminSection">
-            <a href="/chatarchive"><button>View Old Chats</button></a>
+        <div class="styledbutton adminbutton" id="chatarchivebutton">
+            <a href="/admin"><button>View Live Chats</button></a>
         </div>
 
     <!-- Objects are stored as 
@@ -32,24 +31,21 @@
             __v: 4 } ] -->
 
         <% for(i=0; i < chats.length; i++) { %>
-            <div class="chatboxes">
-                <h1 id="timer">Chat expires in <span id="timer<%= chats[i].id %>"></span></h1>
-                <div class="chat" id="chat<%= chats[i].id %>">
-                    <ul class="messages" id="messages<%= chats[i].id %>">
+            <div class="archivechatboxes">
+                <div class="upperarchive" id='<%= chats[i].id %>'>
+                    <h1>Chat between <%= chats[i].Users[0] %> and <%= chats[i].Users[1] %></h1>
+                    <span>&#10133</span>
+                </div>
+                <div class="archivechat" id="chat<%= chats[i].id %>">
+                    <ul class="archivemessages">
                     <% for(x=0; x < chats[i].Conversation.length; x++) { %>
-                        <% if (chats[i].Conversation[x].sender != 'Admin') { %>
+                        <% if (chats[i].Conversation[x].sender === chats[i].Users[0]) { %>
                             <li class="otheruser"><strong><%= chats[i].Conversation[x].sender %>:&nbsp;</strong><%= chats[i].Conversation[x].message %></li>
-                        <% } else { %>
+                        <% } else if (chats[i].Conversation[x].sender === chats[i].Users[1]){ %>
                             <li><strong><%= chats[i].Conversation[x].sender %>:&nbsp;</strong><%= chats[i].Conversation[x].message %></li>
                         <% } %>
                     <% } %>
                     </ul>
-                    <div class="typing" id="typing<%= chats[i].id %>">A user is typing. . .</div>
-                    <div id="entermessage">
-                        <form action="" id="form<%= chats[i].id %>">
-                            <input id="m<%= chats[i].id %>" placeholder="Enter Message" autocomplete="off" /><button id="send">Send</button>
-                        </form>
-                    </div>
                 </div>
             </div>
 
@@ -58,16 +54,5 @@
     </div>
   </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
 
 

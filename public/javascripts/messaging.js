@@ -174,7 +174,7 @@ $(document).ready(function() {
             return;
         }
         warningTime = 5 * 60;
-        if (0 < remaining <= warningTime && !warningGiven){
+        if (0 < remaining && remaining <= warningTime && !warningGiven){
             warningGiven = true;
             giveWarning();
         }

@@ -14,9 +14,14 @@
         <p>Welcome to <%= title %> Chat System</p>
         <p>You are succesfully logged in <%= user.firstname %>!</p>
     </div>
-    <div class="joinchat">
+    <div class="styledbutton" id="joinroomsection">
         <button>Join Chat Room</button>
         <p id="joinqueue">You have been added to the queue and will join a chat room shortly</p>
     </div>
+    <% if (user.admin) { %>
+    <div class="styledbutton" id="adminSection">
+        <a href="/admin"><button>Admin Page</button></a>
+    </div>
+    <% } %>
   </body>
 </html>

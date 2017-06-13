@@ -57,7 +57,7 @@ router.get('/loginhome', function(req, res, next) {
 router.get('/admin', function(req, res, next) {
   // Lean basically makes it so we have raw javascript objects, which increases run time
   // .find({"active": true})
-  if(req.isAuthenticated()) {
+  if(req.isAuthenticated() && req.user.admin) {
     ChatRoom
     .find({"active": true})
     .populate({path: 'Conversation', options:{sort: {'timeCreated': 1}}})
@@ -82,6 +82,24 @@ router.get('/getAllChat', function(req, res) {
         res.send(chatrooms)
     })
 });
+
+router.get('/chatarchive', function(req, res, next) {
+  // Lean basically makes it so we have raw javascript objects, which increases run time
+  // .find({"active": true})
+  if(req.isAuthenticated() && req.user.admin) {
+    ChatRoom
+    .find({"active": false})
+    .populate({path: 'Conversation', options:{sort: {'timeCreated': 1}}})
+    .lean()
+    .exec(function (err, chatrooms) {
+        if (err) return handleError(err);
+        res.render('chatarchive', {chats: chatrooms, title: 'AI Monitoring of Human Team Planning Conversations'});
+    })
+  } else {
+    res.redirect('/');
+  }
+});
+
 
 router.get('/messaging', function(req, res, next) {
     if(req.isAuthenticated()) {
