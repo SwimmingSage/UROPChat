@@ -36,7 +36,11 @@
                 <div class="chat" id="chat<%= chats[i].id %>">
                     <ul class="messages" id="messages<%= chats[i].id %>">
                     <% for(x=0; x < chats[i].Conversation.length; x++) { %>
-                        <li class="otheruser"><strong><%= chats[i].Conversation[x].sender %>:&nbsp;</strong><%= chats[i].Conversation[x].message %></li>
+                        <% if (chats[i].Conversation[x].sender != 'Admin') { %>
+                            <li class="otheruser"><strong><%= chats[i].Conversation[x].sender %>:&nbsp;</strong><%= chats[i].Conversation[x].message %></li>
+                        <% } else { %>
+                            <li><strong><%= chats[i].Conversation[x].sender %>:&nbsp;</strong><%= chats[i].Conversation[x].message %></li>
+                        <% } %>
                     <% } %>
                     </ul>
                     <div class="typing" id="typing<%= chats[i].id %>">A user is typing. . .</div>

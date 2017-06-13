@@ -36,7 +36,7 @@ $(document).ready(function() {
         }
     }
 
-    setTimeout(initialScroll, 2000);
+    setTimeout(initialScroll, 1000);
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -88,12 +88,13 @@ $(document).ready(function() {
     socket.on('recieve message', function(output) {
         // form of output is output = {'message':input['message'], name: input['name'], id:input['id'], 'room': input['room']};
         // <ul class="messages" id="m<%= chats[i].id %>">
+        console.log(output);
         thisid = output['room']
         console.log("This id is", thisid);
         messages = document.getElementById('messages' + thisid);
         console.log("Messages is", messages);
         shouldScroll = (messages.scrollTop + messages.clientHeight === messages.scrollHeight);
-        if(output['name'] != "Admin"){
+        if(output['name'] === "Admin"){
             $('#messages' + thisid).append('<li><strong>'+output['name']+':&nbsp;</strong>'+output['message']+'</li>');
         } else {
             $('#messages' + thisid).append('<li class="otheruser"><strong>'+output['name']+':&nbsp;</strong>'+output['message']+'</li>');
@@ -103,7 +104,7 @@ $(document).ready(function() {
         }
         if (wasTyping[thisid]){
             wasTyping[thisid] = false;
-            $(thisid).css({'height':'18em'});
+            $('#messages' + thisid).css({'height':'18em'});
             $('#typing'+output['room']).css({'display':'none'});
             if (shouldScroll){
                 fastScroll(messages);
@@ -182,7 +183,6 @@ $(document).ready(function() {
             fastScroll(messages);
         }
     });
-    setInterval(checkTyping, 200);
 
 });
 

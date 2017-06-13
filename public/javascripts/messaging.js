@@ -196,11 +196,18 @@ $(document).ready(function() {
     setInterval(updateTimer, 200);
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
-
+    isTyping = false;
     function checkTyping(){
         message = $('#m').val();
-        input = {'room': user.chat_room, 'name': user.firstname, 'id':user.id, 'message': message};
-        socket.emit('user typing', input);
+        if (message.length > 0) {
+            isTyping = true;
+            input = {'room': user.chat_room, 'name': user.firstname, 'id':user.id, 'message': message};
+            socket.emit('user typing', input);
+        } else if(isTyping && message.length === 0) {
+            isTyping = false;
+            input = {'room': user.chat_room, 'name': user.firstname, 'id':user.id, 'message': message};
+            socket.emit('user typing', input);
+        }
     }
     var typingmodified = false;
     var wasTyping = false;
