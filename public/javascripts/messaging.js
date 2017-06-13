@@ -162,6 +162,7 @@ $(document).ready(function() {
     // max time in minutes
     var maxTime = 20*60 + 5;
     var turnedOff = false;
+    var warningGiven = false;
     function updateTimer(){
         time = new Date();
         currentTime = time.getTime();
@@ -171,6 +172,11 @@ $(document).ready(function() {
         // for what we want to do with them after
         if (turnedOff) {
             return;
+        }
+        warningTime = 5 * 60;
+        if (0 < remaining <= 1130 && !warningGiven){
+            warningGiven = true;
+            giveWarning();
         }
         if (remaining <= 0){
             $('#closeChatSection').css({'display':'none'});
@@ -244,6 +250,20 @@ $(document).ready(function() {
         }
     });
     setInterval(checkTyping, 200);
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Coding for the pop up with 5 minutes remaining
+
+    function giveWarning(){
+        $('#timewarning').css({"display":"block"});
+        $('#timewarning').animate({"opacity":"1"}, "slow");
+    }
+
+    $(".closebox").click(function() {
+        $('.useractionpopup').css({"display":"none", "opacity":"0"});
+    });
+
+
 
 });
 
