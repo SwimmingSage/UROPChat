@@ -16,12 +16,44 @@ var maxAgeSec = 60*20 + 5;
 /* GET home page. */
 router.get('/', function(req, res, next) {
   if(req.isAuthenticated()) {
-    res.render('loginhome', {user: req.user, title: 'AI Monitoring of Human Team Planning Conversations'});
+    res.redirect('/loginhome');
   } else {
     res.render('index', { title: 'AI Monitoring of Human Team Planning Conversations' });
   }
 });
 
+// Get intro page
+router.get('/intro', function(req, res, next) {
+  if(req.isAuthenticated()) {
+    if (req.user.admin) {
+    res.redirect('/admin');
+    } else {
+    res.render('intro', {user: req.user, title: 'AI Monitoring of Human Team Planning Conversations'});
+    }
+  } else {
+    res.render('index', { title: 'AI Monitoring of Human Team Planning Conversations' });
+  }
+});
+
+//get consent form page
+router.get('/consentform', function(req, res, next) {
+  if(req.isAuthenticated()) {
+    res.render('consentform', {user: req.user, title: 'AI Monitoring of Human Team Planning Conversations'});
+  } else {
+    res.render('index', { title: 'AI Monitoring of Human Team Planning Conversations' });
+  }
+});
+
+//get consent form page
+router.get('/scenario', function(req, res, next) {
+  if(req.isAuthenticated()) {
+    res.render('scenario', {user: req.user, title: 'AI Monitoring of Human Team Planning Conversations'});
+  } else {
+    res.render('index', { title: 'AI Monitoring of Human Team Planning Conversations' });
+  }
+});
+
+// This is really the queue page, was login home back in the day
 router.get('/loginhome', function(req, res, next) {
   if(req.isAuthenticated()) {
     User.findOne({"id": req.user.id}, function(err, users) {

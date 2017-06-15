@@ -23,7 +23,6 @@ var User = mongoose.model('User');
 var Message = mongoose.model('Message');
 var ChatRoom = mongoose.model('ChatRoom');
 
-
 /**
  * Create HTTP server.
  */
@@ -142,7 +141,7 @@ io.on('connection', function(socket) {
         }
         userchatroom.active = false;
         userchatroom.save();
-        io.to(input['room']).emit("chat closed");
+        io.to(input['room']).emit("chat closed", input);
     })
   });
 });

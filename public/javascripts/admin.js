@@ -4,11 +4,11 @@ $(document).ready(function() {
 
     // Send the user to the proper room
     function getToRoom(room) {
-        console.log("The room attempted to join is", room);
         socket.emit('multiroom', room);
     }
 
     var chatrooms;
+    var closed = {};
     var wasTyping = {};
     $.ajax({
         url: '/getAllChat',
@@ -20,7 +20,8 @@ $(document).ready(function() {
             for (i=0; i < sentchatrooms.length; i++) {
                 id = sentchatrooms[i].id
                 getToRoom(sentchatrooms[i].id);
-                wasTyping.id = false;
+                wasTyping[id] = false;
+                closed[id] = false;
             }
         },
         error: function(xhr, status, error) {
@@ -30,13 +31,12 @@ $(document).ready(function() {
 
 
     function initialScroll(){
-        for (i=0; i < chatrooms.length; i++) {
-                thisElement = document.getElementById('messages' + chatrooms[i].id);
-                fastScroll(thisElement);
-        }
+        $('.messages').each(function(i, obj) {
+            thisElement = document.getElementById(obj.id);
+            fastScroll(thisElement);
+        });
     }
-
-    setTimeout(initialScroll, 1000);
+    window.onload = initialScroll;
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -129,9 +129,6 @@ $(document).ready(function() {
         //     return;
         // }
         if (remaining <= 0){
-            $('#closeChatSection').css({'display':'none'});
-            $('#goHome').css({'display':'block'});
-            $('#goHome').animate({'opacity':'1'}, 'slow');
             $('#m'+ id).prop("readonly", true);
             $('#m'+ id).val('');
             $('#timer'+ id).html('0:00');
@@ -150,14 +147,16 @@ $(document).ready(function() {
 
     function updateTimes() {
         for (i=0; i < chatrooms.length; i++) {
-            updateTimer(chatrooms[i].creationTime, chatrooms[i].id);
+            roomid = chatrooms[i].id 
+            if(!closed[roomid]) {
+                updateTimer(chatrooms[i].creationTime, chatrooms[i].id);
+            }
         }
     }
 
     setInterval(updateTimes, 400);
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
     socket.on('typing alert', function(output) {
         // form of output is output = {'id':input['id'], name: input['name'], message: input['message'], 'room':input['room']};
@@ -184,6 +183,17 @@ $(document).ready(function() {
         }
     });
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Where I will put the stuff for closing a chat
+    socket.on('chat closed', function(output) {
+        // output  = {'room': user.chat_room};
+        roomid = output.room
+        closed[roomid] = true;
+        $('#m'+ roomid).prop("readonly", true);
+        $('#m'+ roomid).val('');
+        $('#timer'+output['room']).html('0:00');
+        $('#messages' + output['room']).append('<li><strong>Chat has been closed early</strong></li');
+    });
 });
 
 

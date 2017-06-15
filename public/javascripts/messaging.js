@@ -136,25 +136,26 @@ $(document).ready(function() {
     }
 
     $("#closeChat").click(function(){
-        console.log("closeChat ran");
+        $('.useractionpopup').css({"display":"none", "opacity":"0"});
         input = {'room': user.chat_room};
         socket.emit('close Chat', input);
     });
 
-    $("#returnHome").click(function() {
-        console.log("We should be redirected");
-        window.location.href = "/loginhome";
-    });
+    // $("#returnHome").click(function() {
+    //     console.log("We should be redirected");
+    //     window.location.href = "/loginhome";
+    // });
 
     // chat is closed
-    socket.on('chat closed', function() {
+    socket.on('chat closed', function(output) {
+        // output = {'room': user.chat_room}; This is for the admin
         turnedOff = true;
         $('#closeChatSection').css({'display':'none'});
-        $('#goHome').css({'display':'block'});
-        $('#goHome').animate({'opacity':'1'}, 'slow');
+        $('#beginSurvey').css({'display':'block'});
+        $('#beginSurvey').animate({'opacity':'1'}, 'slow');
         $('#m').prop("readonly", true);
         $('#m').val('');
-        $('#timer').html('The chat is now closed');
+        $('#timer').html('Chat closed');
     });
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -180,11 +181,11 @@ $(document).ready(function() {
         }
         if (remaining <= 0){
             $('#closeChatSection').css({'display':'none'});
-            $('#goHome').css({'display':'block'});
-            $('#goHome').animate({'opacity':'1'}, 'slow');
+            $('#beginSurvey').css({'display':'block'});
+            $('#beginSurvey').animate({'opacity':'1'}, 'slow');
             $('#m').prop("readonly", true);
             $('#m').val('');
-            $('#timer').html('Chat has expired');
+            $('#timer').html('Chat closed');
             closeChat();
             return;
         }
@@ -206,10 +207,12 @@ $(document).ready(function() {
     function checkTyping(){
         message = $('#m').val();
         if (message.length > 0) {
+            console.log("We should have emitted a message that the user is typing")
             isTyping = true;
             input = {'room': user.chat_room, 'name': user.firstname, 'id':user.id, 'message': message};
             socket.emit('user typing', input);
         } else if(isTyping && message.length === 0) {
+            console.log("We should have emitted a message saying the user is no longer typing")
             isTyping = false;
             input = {'room': user.chat_room, 'name': user.firstname, 'id':user.id, 'message': message};
             socket.emit('user typing', input);
@@ -223,6 +226,7 @@ $(document).ready(function() {
         // console.log("Output is", output);
         // console.log("the length of message is", output['message'].length);
         // ignore signs that I am typing
+        console.log("We got the typing alert with this output", output);
         if (output['id'] != user.id) {
             if (output['message'].length === 0 && wasTyping) {
                 wasTyping = false;
@@ -263,6 +267,11 @@ $(document).ready(function() {
         $('.useractionpopup').css({"display":"none", "opacity":"0"});
     });
 
+
+    $("#opencloseChat").click(function() {
+        $('#closechatpop').css({"display":"block"});
+        $('#closechatpop').animate({"opacity":"1"}, "slow");
+    });
 
 
 });

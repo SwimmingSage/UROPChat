@@ -14,24 +14,50 @@
 <!--         <p>You have succesfully joined a chat with <%= user.firstname %>!</p> -->
 
     </div>
-    <h1 id="timer">Chat expires in <span id="timeLeft"></span></h1>
-    <div class="chat">
-        <ul class="messages" id='messages'>
-        </ul>
-        <div class="typing">Other user is typing. . .</div>
-        <div id="entermessage">
-            <form action="">
-                <input id="m" placeholder="Enter Message" autocomplete="off" /><button id="send">Send</button>
-            </form>
+        <table style="width:100%">
+            <tr>
+                <td>
+                    <div class="chatsection">
+                        <h3 id="timer">Chat expires in <span id="timeLeft"></span></h3>
+                        <div class="chat">
+                            <ul class="messages" id='messages'>
+                            </ul>
+                            <div class="typing">Other user is typing. . .</div>
+                            <div id="entermessage">
+                                <form action="">
+                                    <input id="m" placeholder="Enter Message" autocomplete="off" /><button id="send">Send</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <h3><strong>Information:</strong></h3>
+                    <div class='infosection'>
+                        <ul>
+                            <li>Bridges 2 and Helipad in Mountain Island have been broken (indicated by the warning signs).</li>
+                            <li>The travel times for the helicopter are as follows:
+                                <ul>
+                                    <li>Mainland <-> Village Island 5 min (each way)</li>
+                                    <li>Mainland <-> Mountain Island 5 min (each way)</li>
+                                </ul>
+                            </li>
+                            <li>Repairs times for road crew takes 5 minutes.</li>
+                        </ul>
+                    </div>
+                    <img src="images/demomap.jpg">
+                </td>
+            </tr>
+        </table>
+        <div class="messageBottom" id="closeChatSection">
+            <button id="opencloseChat">CloseChat</button>
+            <p>Please only close the chat if you are completely finished. Both users must close the chat to have it finish prematurely.</p>
         </div>
-    </div>
-    <div class="messageBottom" id="closeChatSection">
-        <button id="closeChat">CloseChat</button>
-        <p>Please only close the chat if you are completely finished</p>
-    </div>
 
-    <div class="messageBottom" id="goHome">
-        <button id="returnHome">Return Home</button>
+    <div class="messageBottom" id="beginSurvey">
+        <p>Please fill out the survery below and email in your consent form to <strong>mattwoicik@gmail.com</strong> to recieve compensation if you have not done so already. Thank you for participating!/p>
+        <a href="https://goo.gl/forms/UMMX8mKzoNw3wtBc2" target="_blank"><button id="returnHome">Fill out Survery</button></a>
+        <a href="mailto:mattwoicik@gmail.com?subject=Consent Form AIMHTPC&body=Here is my consent form to participate in the AIMHTPC Study"><button>Email Consent Form</button></a>
     </div>
 
     <div class="useractionpopup" id="timewarning">
@@ -39,6 +65,14 @@
         <span class="closebox">&times;</span>
         <h1>5 Minute Warning</h1>
         <p class="levelinfo">Warning, you have 5 minutes or less remaining for this conversation.</p>
+      </div>
+    </div>
+    <div class="useractionpopup" id="closechatpop">
+      <div>
+        <span class="closebox">&times;</span>
+        <h1>Warning</h1>
+        <p class="levelinfo">Warning, are you sure you want to close the chat? Make sure you have concluded the task at hand.</p>
+        <button id="closeChat">Close Chat</button>
       </div>
     </div>
   </body>

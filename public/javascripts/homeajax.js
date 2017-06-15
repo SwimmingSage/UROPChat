@@ -49,7 +49,8 @@ $(document).ready(function() {
             type: 'POST',
             success: function(data) {
               if(data === "loggedin")
-                window.location.href = "/loginhome";
+                // window.location.href = "/loginhome";
+                window.location.href = "/intro";
             },
             error: function(xhr, status, error) {
               console.log("Uh oh there was an error: " + error);
@@ -89,7 +90,8 @@ $(document).ready(function() {
       type: 'POST',
       success: function(data) {
         if(data === "loggedin")
-          window.location.href = "/loginhome";
+          // window.location.href = "/loginhome";
+          window.location.href = "/intro";
       },
       error: function(xhr, status, error) {
         $("#invalidusernamepassword").show();
