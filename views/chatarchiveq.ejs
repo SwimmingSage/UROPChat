@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <div>
+
+        <% for(i=0; i < chats.length; i++) { %>
+            <table>
+                <tr>
+                    <th>Name</th>
+                    <th>Message</th>
+                    <th>time</th>
+                </tr>
+                <% for(x=0; x < chats[i].Conversation.length; x++) { %>
+                <tr>
+                    <th><%= chats[i].Conversation[x].sender %></th>
+                    <th><%= chats[i].Conversation[x].message %></th>
+                    <th><%= chats[i].Conversation[x].timeCreated %></th>
+                </tr>
+                <% } %>
+            </table>
+        <% } %>
+
+    </div>
+  </body>
+</html>
