@@ -11,13 +11,13 @@
                 <tr>
                     <th>Name</th>
                     <th>Message</th>
-                    <th>time</th>
+                    <th>Time (sec)</th>
                 </tr>
                 <% for(x=0; x < chats[i].Conversation.length; x++) { %>
                 <tr>
                     <th><%= chats[i].Conversation[x].sender %></th>
                     <th><%= chats[i].Conversation[x].message %></th>
-                    <th><%= chats[i].Conversation[x].timeCreated %></th>
+                    <th><%= Math.round(100 * ((chats[i].Conversation[x].timeCreated - chats[i].creationTime)/1000))/100 %></th>
                 </tr>
                 <% } %>
             </table>
