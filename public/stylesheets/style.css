@@ -111,8 +111,18 @@ button.submithome:hover {
     margin:auto;
 }
 
-.introtext ul {
+.introtext div {
+    width: 100%;
+    text-align: left;
+}
 
+.introtext ul {
+    margin-top: -.5em;
+    display: inline-block;
+}
+
+.introtext ul li {
+    text-align: left;
 }
 
 /* Style for the consent form page */
@@ -161,6 +171,20 @@ button.submithome:hover {
 
 .scenarioinfo ul {
     margin: .4em 0em;
+}
+
+.scenarioinfo img {
+    width:100%;
+    height: auto;
+}
+
+.scenarioinfo table {
+    width: 100%;
+}
+
+#scenariobutton {
+    margin-top: .2em;
+    margin-bottom: 3em;
 }
 
 .red {
@@ -293,6 +317,16 @@ ul span#bottomanchor {
 #entermessage form button:hover {
     cursor: pointer;
 }
+
+.infocol {
+    width:100%;
+}
+
+.infocol img {
+    width: 100%;
+    height: auto;
+}
+
 
 .infosection ul {
 }

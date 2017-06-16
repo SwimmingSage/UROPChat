@@ -19,6 +19,12 @@ var messageschema = new Schema({
     sender:                 {type: String, required: true},
 });
 
+var planschema = new Schema({
+    stepnumber:             {type: Number},
+    highlevel:              {type: String},
+    parameter:              {type: String},
+});
+
 var chatroomschema = new Schema({
     // Users:                  [{type: String , required: true}],
     Users:                  [{type: String}],
@@ -26,12 +32,16 @@ var chatroomschema = new Schema({
     id:                     {type: String},
     creationTime:           {type: String, required: true},
     active:                 {type: Boolean, default: true},
+    plans:                  [{type: Schema.Types.ObjectId, ref: 'Message'}],
+    user1plan:              [{type: Schema.Types.ObjectId, ref: 'Plan'}],
+    user2plan:              [{type: Schema.Types.ObjectId, ref: 'Plan'}],
 });
 
 User.plugin(passportLocalMongoose);
 
 module.exports = mongoose.model('User', User);
 mongoose.model('Message', messageschema);
+mongoose.model('Plan', planschema);
 mongoose.model('ChatRoom', chatroomschema);
 
 // var Message = mongoose.model('Message', messageschema);

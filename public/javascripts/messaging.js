@@ -139,6 +139,7 @@ $(document).ready(function() {
 
     $("#closeChat").click(function(){
         $('.useractionpopup').css({"display":"none", "opacity":"0"});
+        $('#closeChatSection').css({'display':'none'});
         input = {'room': user.chat_room, 'user': user.id};
         if (otherUserClose) {
             socket.emit('close Chat', input);
