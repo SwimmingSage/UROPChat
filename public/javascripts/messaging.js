@@ -117,6 +117,8 @@ $(document).ready(function() {
     //////////////////////////////////////////////////////////////////////////////////////////////////////
     // Handeling Closing chat
 
+    otherUserClose = false;
+
     function closeChat() {
         $.ajax({
             url: '/closeChat',
@@ -137,8 +139,21 @@ $(document).ready(function() {
 
     $("#closeChat").click(function(){
         $('.useractionpopup').css({"display":"none", "opacity":"0"});
-        input = {'room': user.chat_room};
-        socket.emit('close Chat', input);
+        input = {'room': user.chat_room, 'user': user.id};
+        if (otherUserClose) {
+            socket.emit('close Chat', input);
+        } else {
+            $('.messages').append('<li><strong>Your partner has been alerted of your desire to close the chat</strong></li>');
+            socket.emit('close attempt', input);
+        }
+    });
+
+    socket.on('attempt close', function(output) {
+        // input = {'room': user.chat_room, 'user': user.id};
+        if (output['user'] != user.id) {
+            otherUserClose = true;
+            $('.messages').append('<li class="otheruser"><strong>Your partner wishes to close the chat, close click the close chat button below to close it if you are both done</strong></li>');
+        }
     });
 
     // $("#returnHome").click(function() {

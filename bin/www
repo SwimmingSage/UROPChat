@@ -29,6 +29,7 @@ var ChatRoom = mongoose.model('ChatRoom');
 
 var server = http.createServer(app);
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // start socket.io
 var io = require('socket.io').listen(server);
 
@@ -45,7 +46,6 @@ io.on('connection', function(socket) {
             }
         }   
     });
-
 
     socket.on('room', function(room) {
         if(socket.room) {
@@ -132,9 +132,15 @@ io.on('connection', function(socket) {
     io.to(input['room']).emit("typing alert", output);
   });
 
+  socket.on('close attempt', function(input) {
+    // This gives notice the other user is trying to close the chat prematurely
+    // input = {'room': user.chat_room, 'user': user.id};
+    io.to(input['room']).emit("attempt close", input);
+  });
+
   socket.on('close Chat', function(input) {
     // This closes the chat prematurely
-    // input = {'room': user.chat_room};
+    // input = {'room': user.chat_room, 'user': user.id};
     ChatRoom.findOne({'id': input['room']}, function(err, userchatroom){
         if (err) {
           console.log('An error occurred');
@@ -146,6 +152,7 @@ io.on('connection', function(socket) {
   });
 });
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
  * Listen on provided port, on all network interfaces.
  */
