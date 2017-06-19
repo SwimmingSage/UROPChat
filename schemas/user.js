@@ -21,8 +21,8 @@ var messageschema = new Schema({
 
 var planschema = new Schema({
     stepnumber:             {type: Number},
-    highlevel:              {type: String},
-    parameter:              {type: String},
+    action:              {type: String},
+    location:              {type: String},
 });
 
 var chatroomschema = new Schema({

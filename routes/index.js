@@ -14,7 +14,8 @@ var ChatRoom = mongoose.model('ChatRoom');
 
 var maxAgeSec = 60*20 + 5;
 
-/* GET home page. */
+////////////////////////////////////////////////////////////////////////////////////////////////
+// Initial pages
 router.get('/', function(req, res, next) {
   if(req.isAuthenticated()) {
     res.redirect('/loginhome');
@@ -87,6 +88,9 @@ router.get('/loginhome', function(req, res, next) {
   }
 });
 
+////////////////////////////////////////////////////////////////////////////////////////////////
+// Admin page stuff
+
 router.get('/admin', function(req, res, next) {
   // Lean basically makes it so we have raw javascript objects, which increases run time
   // .find({"active": true})
@@ -135,6 +139,8 @@ router.get('/chatarchive', function(req, res, next) {
 });
 
 router.get('/chatarchiveq', function(req, res, next) {
+    // .populate({path: 'user1plan', options:{sort: {'stepnumber': 1}}})
+    // .populate({path: 'user2plan', options:{sort: {'stepnumber': 1}}})
     ChatRoom
     .find({"active": false})
     .populate({path: 'Conversation', options:{sort: {'timeCreated': 1}}})
@@ -145,6 +151,8 @@ router.get('/chatarchiveq', function(req, res, next) {
     })
 });
 
+////////////////////////////////////////////////////////////////////////////////////////////////
+// Associated things for the messaging page
 
 router.get('/messaging', function(req, res, next) {
     if(req.isAuthenticated()) {
@@ -242,6 +250,27 @@ router.get('/checkInChat', function(req, res) {
     })
 });
 
+////////////////////////////////////////////////////////////////////////////////////////////////
+// Submit plan page
+
+router.get('/submitplan', function(req, res, next) {
+    if(req.isAuthenticated()) {
+        ChatRoom.findOne({'id': req.user.chat_room}, function(err, userchatroom){
+            if (err) {
+              console.log('An error occurred while finding the user chatroom by ID');
+            } else if (userchatroom === null || userchatroom.active){
+                res.redirect('/loginhome');
+            } else {
+                res.render('submitplan', {user: req.user, title: 'AI Monitoring of Human Team Planning Conversations'});
+            }
+        });
+    } else {
+        res.redirect('/');
+    }
+});
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+// Sign Up and login stuff
 router.post('/signup', function(req, res, next) {
     var email = req.body.email;
     var firstname = req.body.firstname;

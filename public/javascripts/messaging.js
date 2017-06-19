@@ -118,6 +118,7 @@ $(document).ready(function() {
     // Handeling Closing chat
 
     otherUserClose = false;
+    var turnedOff = false;
 
     function closeChat() {
         $.ajax({
@@ -141,9 +142,9 @@ $(document).ready(function() {
         $('.useractionpopup').css({"display":"none", "opacity":"0"});
         $('#closeChatSection').css({'display':'none'});
         input = {'room': user.chat_room, 'user': user.id};
-        if (otherUserClose) {
+        if (otherUserClose && !turnedOff) {
             socket.emit('close Chat', input);
-        } else {
+        } else if (!turnedOff){
             $('.messages').append('<li><strong>Your partner has been alerted of your desire to close the chat</strong></li>');
             socket.emit('close attempt', input);
         }
@@ -167,18 +168,17 @@ $(document).ready(function() {
         // output = {'room': user.chat_room}; This is for the admin
         turnedOff = true;
         $('#closeChatSection').css({'display':'none'});
-        $('#beginSurvey').css({'display':'block'});
-        $('#beginSurvey').animate({'opacity':'1'}, 'slow');
+        $('#planSubmit').css({'display':'block'});
+        $('#planSubmit').animate({'opacity':'1'}, 'slow');
         $('#m').prop("readonly", true);
         $('#m').val('');
-        $('#timer').html('Chat closed');
+        $('#timer').html('Chat closed, proceed below');
     });
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
     // Keep track of the timer
     // max time in minutes
     var maxTime = 20*60 + 5;
-    var turnedOff = false;
     var warningGiven = false;
     function updateTimer(){
         time = new Date();
@@ -196,9 +196,12 @@ $(document).ready(function() {
             giveWarning();
         }
         if (remaining <= 0){
+            input = {'room': user.chat_room, 'user': user.id};
+            socket.emit('close Chat', input);
+            turnedOff = true;
             $('#closeChatSection').css({'display':'none'});
-            $('#beginSurvey').css({'display':'block'});
-            $('#beginSurvey').animate({'opacity':'1'}, 'slow');
+            $('#planSubmit').css({'display':'block'});
+            $('#planSubmit').animate({'opacity':'1'}, 'slow');
             $('#m').prop("readonly", true);
             $('#m').val('');
             $('#timer').html('Chat closed');

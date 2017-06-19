@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="/javascripts/submitplan.js"></script>
+  </head>
+  <body>
+
+    <div class="loginhome">
+        <h1><%= title %></h1>
+<!--         <p>You have succesfully joined a chat with <%= user.firstname %>!</p> -->
+    </div>
+    <div class="planSubmission">
+        <img src="images/map.jpg">
+        <ul class="upperul" id="step1">
+            <li class="upperli"><strong>1.</strong><!-- </li>  Only way to get around inherint whitespace in inlineblock html-->
+            <li class="upperli"><button><span id="action1">Action</span> <div class="downarrow">&#10095</div></button>
+                <ul class="lowerul">
+                    <li class="goto">Go to</li>
+                    <li class="package">Drop Package</li>
+                    <li class="surveil">Surveil</li>
+                    <li class="intercept">Intercept</li>
+                </ul>
+            <!-- </li> -->
+            <li class="upperli"><button><span id="location1">Location</span><div class="downarrow">&#10095</div></button>
+                <ul class="lowerul">
+                    <li class="mb">Main Base</li>
+                    <li class="pc">Package Center</li>
+                    <li class="p1">P1</li>
+                    <li class="p2">P2</li>
+                    <li class="p3">P3</li>
+                    <li class="p4">P4</li>
+                    <li class="r1">Region1</li>
+                    <li class="r2">Region2</li>
+                    <li class="uav1">UAV1</li>
+                    <li class="uav2">UAV2</li>
+                </ul>
+            <!-- </li> -->
+        </ul>
+    </div>
+
+
+    <div class="messageBottom" id="submitsection">
+        <button id="addAction">Add Action</button>
+        <button id="submitplan">Submit Plan</button>
+    </div>
+    <div class="messageBottom" id="beginSurvey">
+        <p>Please fill out the survery below and email in your consent form to <strong>mattwoicik@gmail.com</strong> to recieve compensation if you have not done so already. Thank you for participating!</p>
+        <a href="https://goo.gl/forms/UMMX8mKzoNw3wtBc2" target="_blank"><button id="returnHome">Fill out Survery</button></a>
+    </div>
+
+    <div class="buffer"></div>
+    
+  </body>
+</html>

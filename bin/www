@@ -145,10 +145,13 @@ io.on('connection', function(socket) {
     ChatRoom.findOne({'id': input['room']}, function(err, userchatroom){
         if (err) {
           console.log('An error occurred');
+        } else if (!userchatroom.active) {
+            return
+        } else {
+            userchatroom.active = false;
+            userchatroom.save();
+            io.to(input['room']).emit("chat closed", input);
         }
-        userchatroom.active = false;
-        userchatroom.save();
-        io.to(input['room']).emit("chat closed", input);
     })
   });
 });

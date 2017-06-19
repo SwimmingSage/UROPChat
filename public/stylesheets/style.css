@@ -327,32 +327,37 @@ ul span#bottomanchor {
     height: auto;
 }
 
-
-.infosection ul {
-}
-
-.infosection li{
-    text-align: left;
+.infosection {
+    margin-top: -1em;
 }
 
 .messageBottom {
     width:40em;
     margin:auto;
     text-align: center;
-    margin-bottom: 3em;
+/*    margin-bottom: 3em;*/
 }
 
 .messageBottom button {
     margin-top: 1em;
+    outline: none;
+    border:1px solid black;
     height: 2em;
     font-size: 1em;
+    background-color: #E8E8EE;
 }
 
 .messageBottom button:hover {
     cursor:pointer;
+    transition: 0.2s;
+    background-color: #D3D3D3;
 }
 
-#beginSurvey {
+.messageBottom button:active {
+    background-color: #bdbdbd;
+}
+
+#planSubmit {
     display: none;
     opacity: 0;
 }
@@ -428,6 +433,14 @@ ul span#bottomanchor {
     color: black;
     text-decoration: none;
     cursor: pointer;
+}
+
+.buffer {
+    margin-bottom: 2em;
+}
+
+.buffer h1 {
+    margin-bottom: 5px;
 }
 
 /* Style for admin page */
@@ -520,14 +533,94 @@ ul.archivemessages {
 }
 
 
-/* Section for the survey page */
+/* Section for the submit plan page */
 
-.survery {
-    text-align: center;
+.planSubmission {
+    text-align: left;
+    margin: auto;
+    width: 45em;
 }
 
+.planSubmission img {
+    width:100%;
+    height: auto;
+}
 
+.planSubmission ul.upperul {
+    display: block;
+    padding: 0;
+    padding-left: 5em;
+    position: relative;
+}
 
+.planSubmission ul li.upperli {
+    position: relative;
+    display: inline-block;
+    margin-left: .4em;
+}
+
+.planSubmission ul li.upperli span {
+    padding-right: 5px;
+}
+
+.planSubmission ul li.upperli button{
+    position: relative;
+    display: inline-block;
+    font-size: 1em;
+    background-color: white;
+    border: none;
+    outline: none;
+    border:1px solid black;
+}
+
+.planSubmission ul li.upperli button:hover{
+    cursor: pointer;
+    transition: 0.2s;
+    background-color: #d3d3d3;
+}
+
+.planSubmission ul li div.downarrow {;
+    display: inline-block;
+    transform: rotate(90deg);
+/*    padding-left: 10px;*/
+}
+
+.planSubmission ul.lowerul {
+    display: none;
+    opacity: 0;
+    z-index: 1;
+    list-style: none;
+    padding: 0;
+    position: absolute;
+    height: 6.5em;
+    overflow-y: scroll;
+}
+
+.planSubmission ul.lowerul li {
+    background-color: #E8E8EE;
+    border-bottom: 1px solid black;
+    padding: 3px 3px 3px 5px;
+}
+
+.planSubmission ul.lowerul li:hover {
+    transition: .2s;
+    background-color: #d3d3d3;
+    cursor: pointer;
+}
+
+.planSubmission ul.lowerul li:active {
+    background-color: #939393;
+}
+
+#beginSurvey {
+    display: none;
+    opacity: 0;
+}
+
+.buffer {
+    height: 3em;
+    width: 100%;
+}
 
 
 
