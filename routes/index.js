@@ -144,6 +144,8 @@ router.get('/chatarchiveq', function(req, res, next) {
     ChatRoom
     .find({"active": false})
     .populate({path: 'Conversation', options:{sort: {'timeCreated': 1}}})
+    .populate({path: 'user1plan', options:{sort: {'stepnumber': 1}}})
+    .populate({path: 'user2plan', options:{sort: {'stepnumber': 1}}})
     .lean()
     .exec(function (err, chatrooms) {
         if (err) return handleError(err);
@@ -294,7 +296,6 @@ router.post('/addPlan', function(req, res) {
     var plan = JSON.parse(req.body.plan);
     var plannumber;
     createstep = function(step, act, loc) {
-        console.log("We just ran createstep");
         var plan_step = new Plan({
             user:            req.user.id,
             stepnumber:      step,
@@ -316,7 +317,6 @@ router.post('/addPlan', function(req, res) {
         });
     })
     .then(chat => {
-        console.log("We are in the first then");
         if (chat.user1plan.length != 0) {
             if(chat.user1plan[0].user != req.user.id) {
                 plannumber = 2;
@@ -333,9 +333,6 @@ router.post('/addPlan', function(req, res) {
     .then(chat => {
         for (i=0; i < plan.length; i++) {
             thisStep = plan[i];
-            console.log("The plan is", plan);
-            console.log("The step right here is", thisStep);
-            console.log("plannumber is set to be", plannumber);
             newStep = createstep(thisStep.stepnumber, thisStep.action, thisStep.location);
             if(plannumber === 1) {
                 chat.user1plan.push(newStep);
@@ -346,7 +343,6 @@ router.post('/addPlan', function(req, res) {
         return chat;
     })
     .then(chat => {
-        console.log("The chat should have just saved");
         chat.save();
     })
     .then(() => {res.send('success')})

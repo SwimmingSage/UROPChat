@@ -12,12 +12,31 @@
                     <th>Name</th>
                     <th>Messages</th>
                     <th>Time (sec)</th>
+                    <th>User 1 Action</th>
+                    <th>User 2 Action</th>
                 </tr>
-                <% for(x=0; x < chats[i].Conversation.length; x++) { %>
+                <% //for(x=0; x < chats[i].Conversation.length; x++) { %>
+                <% for(x=0; x < Math.max(chats[i].Conversation.length, chats[i].user1plan.length, chats[i].user2plan.length); x++) { %>
                 <tr>
-                    <th><%= chats[i].Conversation[x].sender %></th>
-                    <th><%= chats[i].Conversation[x].message %></th>
-                    <th><%= Math.round(100 * ((chats[i].Conversation[x].timeCreated - chats[i].creationTime)/1000))/100 %></th>
+                    <% if (chats[i].Conversation[x] != undefined) { %>
+                    <td><%= chats[i].Conversation[x].sender %></td>
+                    <td><%= chats[i].Conversation[x].message %></td>
+                    <td><%= Math.round(100 * ((chats[i].Conversation[x].timeCreated - chats[i].creationTime)/1000))/100 %></td>
+                    <% } else { %>
+                    <td><%= "" %></td>
+                    <td><%= "" %></td>
+                    <td><%= "" %></td>
+                    <% } %>
+                    <% if (chats[i].user1plan[x] != undefined) { %>
+                    <td><%= chats[i].user1plan[x].action %> <%= chats[i].user1plan[x].location %></td>
+                    <% } else { %>
+                    <td><%= "" %></td>
+                    <% } %>
+                    <% if (chats[i].user2plan[x] != undefined) { %>
+                    <td><%= chats[i].user2plan[x].action %> <%= chats[i].user2plan[x].location %></td>
+                    <% } else { %>
+                    <td><%= "" %></td>
+                    <% } %>
                 </tr>
                 <% } %>
             </table>

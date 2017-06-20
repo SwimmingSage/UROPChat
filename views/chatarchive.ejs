@@ -33,7 +33,7 @@
         <% for(i=0; i < chats.length; i++) { %>
             <div class="archivechatboxes">
                 <div class="upperarchive" id='<%= chats[i].id %>'>
-                    <h1>Chat between <%= chats[i].Users[0].firstname %> and <%= chats[i].Users[1].firstname %></h1>
+                    <h1>Chat between <%= chats[i].Users[0] %> and <%= chats[i].Users[1] %></h1>
                     <span>&#10133;</span>
                 </div>
                 <div class="archivechat" id="chat<%= chats[i].id %>">
