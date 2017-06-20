@@ -79,6 +79,7 @@ io.on('connection', function(socket) {
                 console.log("And error occured while storing a user");
             }
             users.chat_room = newChat.id;
+            users.planSubmitted = false;
             users.save();
         });
     }

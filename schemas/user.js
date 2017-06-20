@@ -9,6 +9,7 @@ var User = new Schema({
     lastname:               {type: String , required: true},
     // email:                  {type: String , required: true, index: {unique: true}},
     chat_room:              {type: String},
+    planSubmitted:          {type: Boolean, default: false},
     admin:                  {type: Boolean, default: false},
     id:                     {type: String},
 });
@@ -28,12 +29,11 @@ var planschema = new Schema({
 
 var chatroomschema = new Schema({
     // Users:                  [{type: String , required: true}],
-    Users:                  [{type: Schema.Types.ObjectId, ref: 'User'}],
+    Users:                  [{type: String}],
     Conversation:           [{type: Schema.Types.ObjectId, ref: 'Message'}],
     id:                     {type: String},
     creationTime:           {type: String, required: true},
     active:                 {type: Boolean, default: true},
-    plans:                  [{type: Schema.Types.ObjectId, ref: 'Message'}],
     user1plan:              [{type: Schema.Types.ObjectId, ref: 'Plan'}],
     user2plan:              [{type: Schema.Types.ObjectId, ref: 'Plan'}],
 });

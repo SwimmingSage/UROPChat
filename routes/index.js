@@ -127,7 +127,6 @@ router.get('/chatarchive', function(req, res, next) {
   if(req.isAuthenticated() && req.user.admin) {
     ChatRoom
     .find({"active": false})
-    .populate({path: 'Users'})
     .populate({path: 'Conversation', options:{sort: {'timeCreated': 1}}})
     .lean()
     .exec(function (err, chatrooms) {
@@ -199,6 +198,17 @@ router.get('/getUser', function(req, res) {
     });
 });
 
+router.get('/getUserSubmit', function(req, res) {
+    User.findOne({"id": req.user.id}, function(err, users) {
+        if (err) {
+            console.log("And error occured while finding the user");
+        }
+        users.planSubmitted = true;
+        users.save();
+        res.send(users);
+    });
+});
+
 // Gets the start time of the users conversation
 router.get('/getChat', function(req, res) {
     ChatRoom
@@ -259,7 +269,7 @@ router.get('/submitplan', function(req, res, next) {
         ChatRoom.findOne({'id': req.user.chat_room}, function(err, userchatroom){
             if (err) {
               console.log('An error occurred while finding the user chatroom by ID');
-            } else if (userchatroom === null || userchatroom.active){
+            } else if (userchatroom === null || userchatroom.active || req.user.planSubmitted){
                 res.redirect('/loginhome');
             } else {
                 res.render('submitplan', {user: req.user, title: 'AI Monitoring of Human Team Planning Conversations'});
@@ -270,73 +280,78 @@ router.get('/submitplan', function(req, res, next) {
     }
 });
 
-// router.post('/addPlan', function(req, res) {
-//     var plan = req.body.plan;
-//     var plannumber;
-//     console.log(plan)
-//     findRoom = function() {
-//         ChatRoom
-//         .findOne({"id": req.user.chat_room})
-//         .populate('user1plan', 'user2plan')
-//         .exec(function (err, userchatroom) {
-//             if (err) {
-//               console.log('An error occurred while finding the user chatroom by ID');
-//             }
-//             return new Promise(function(resolve, reject){
-//                 resolve(userchatroom);
-//             });
-//         })
-//         // ChatRoom.findOne({'id': req.user.chat_room}, function(err, userchatroom){
-//         //     if (err) {
-//         //       console.log('An error occurred');
-//         //     }
-//         //     return new Promise(function(resolve, reject){
-//         //         resolve(userchatroom);
-//         //     });
-//         // })
+// We had this in below
+// ChatRoom.findOne({'id': req.user.chat_room}, function(err, userchatroom){
+//     if (err) {
+//       console.log('An error occurred');
 //     }
-//     createstep = function(step, act, loc) {
-//         var plan_step = new Plan({
-//             user:            req.user.id,
-//             stepnumber:      step,
-//             action:          act,
-//             location:        loc,
-//         })
-//         plan_step.save();
-//         return plan_step;
-//     }
-//     findRoom()
-//     .then(chat => {
-//         if (chat.user1plan.length != 0) {
-//             if(chat.user1plan[0].user != req.user.id) {
-//                 plannumber = 2;
-//             }
-//             else{
-//                 plannumber = 1;
-//             }
-//         } else {
-//             plannumber = 1;
-//         }
-//         return chat;
-//     })
-//     .then(chat => {
-//         for (i=1; i <= plan.length; i++) {
-//             thisStep = plan[i];
-//             newStep = createstep(thisStep['stepnumber'], thisStep['action'], thisStep['location']);
-//             if(plannumber === 1) {
-//                 chat.user1plan.push(newStep);
-//             } else {
-//                 chat.user2plan.push(newStep);
-//             }
-//         }
-//         return chat;
-//     })
-//     .then(chat => {
-//         chat.save();
-//     })
-//     .then(() => {res.send('success')})
-//     .catch(error => { console.log(error) });
-// });
+//     return new Promise(function(resolve, reject){
+//         resolve(userchatroom);
+//     });
+// })
+
+router.post('/addPlan', function(req, res) {
+    var plan = JSON.parse(req.body.plan);
+    var plannumber;
+    createstep = function(step, act, loc) {
+        console.log("We just ran createstep");
+        var plan_step = new Plan({
+            user:            req.user.id,
+            stepnumber:      step,
+            action:          act,
+            location:        loc,
+        })
+        plan_step.save();
+        return plan_step;
+    }
+    ChatRoom
+    .findOne({"id": req.user.chat_room})
+    .populate('user1plan', 'user2plan')
+    .exec(function (err, userchatroom) {
+        if (err) {
+          console.log('An error occurred while finding the user chatroom by ID');
+        }
+        return new Promise(function(resolve, reject){
+            resolve(userchatroom);
+        });
+    })
+    .then(chat => {
+        console.log("We are in the first then");
+        if (chat.user1plan.length != 0) {
+            if(chat.user1plan[0].user != req.user.id) {
+                plannumber = 2;
+            } else{
+                chat.user1plan = [];
+                chat.save();
+                plannumber = 1;
+            }
+        } else {
+            plannumber = 1;
+        }
+        return chat;
+    })
+    .then(chat => {
+        for (i=0; i < plan.length; i++) {
+            thisStep = plan[i];
+            console.log("The plan is", plan);
+            console.log("The step right here is", thisStep);
+            console.log("plannumber is set to be", plannumber);
+            newStep = createstep(thisStep.stepnumber, thisStep.action, thisStep.location);
+            if(plannumber === 1) {
+                chat.user1plan.push(newStep);
+            } else {
+                chat.user2plan.push(newStep);
+            }
+        }
+        return chat;
+    })
+    .then(chat => {
+        console.log("The chat should have just saved");
+        chat.save();
+    })
+    .then(() => {res.send('success')})
+    .catch(error => { console.log(error) });
+});
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // Sign Up and login stuff

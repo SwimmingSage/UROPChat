@@ -4,7 +4,7 @@ $(document).ready(function() {
     var user;
     var chatroom;
     $.ajax({
-        url: '/getUser',
+        url: '/getUserSubmit',
         data: {
         },
         type: 'GET',
@@ -81,33 +81,33 @@ $(document).ready(function() {
     });
 
 
-    // $("#submitplan").click(function() {
-    //     plans = []
-    //     for (i=1; i <= stepnumber; i++) {
-    //         newobj = {'stepnumber': i};
-    //         newobj['action'] = $("#action" + i).text();
-    //         newobj['location'] = $("#location" + i).text();
-    //         plans.push(newobj)
-    //     }
-    //     console.log(plans)
-    //     $.ajax({
-    //         url: '/addPlan',
-    //         data: {
-    //             plan: plans,
-    //         },
-    //         type: 'GET',
-    //         success: function(data) {
-    //             if (data === "success") {
-    //                 $(".messageBottom").css({"display":"none", "opacity":"0"});
-    //                 $("#beginSurvey").css({"display":"block"});
-    //                 $("#beginSurvey").animate({"opacity":"1"}, "slow");
-    //             }
-    //         },
-    //         error: function(xhr, status, error) {
-    //             console.log("Uh oh there was an error: " + error);
-    //         }
-    //     });
-    // });
+    $("#submitplan").click(function() {
+        plans = []
+        for (i=1; i <= stepnumber; i++) {
+            newobj = {'stepnumber': i};
+            newobj['action'] = $("#action" + i).text();
+            newobj['location'] = $("#location" + i).text();
+            plans.push(newobj)
+        }
+        console.log(plans)
+        $.ajax({
+            url: '/addPlan',
+            data: {
+                plan: JSON.stringify(plans),
+            },
+            type: 'POST',
+            success: function(data) {
+                if (data === "success") {
+                    $(".messageBottom").css({"display":"none", "opacity":"0"});
+                    $("#beginSurvey").css({"display":"block"});
+                    $("#beginSurvey").animate({"opacity":"1"}, "slow");
+                }
+            },
+            error: function(xhr, status, error) {
+                console.log("Uh oh there was an error: " + error);
+            }
+        });
+    });
 
 
 });

@@ -167,8 +167,8 @@ $(document).ready(function() {
         // output = {'room': user.chat_room}; This is for the admin
         turnedOff = true;
         $('#closeChatSection').css({'display':'none'});
-        $('#beginSurvey').css({'display':'block'});
-        $('#beginSurvey').animate({'opacity':'1'}, 'slow');
+        $('#planSubmit').css({'display':'block'});
+        $('#planSubmit').animate({'opacity':'1'}, 'slow');
         $('#m').prop("readonly", true);
         $('#m').val('');
         $('#timer').html('Chat closed');
@@ -197,8 +197,8 @@ $(document).ready(function() {
         }
         if (remaining <= 0){
             $('#closeChatSection').css({'display':'none'});
-            $('#beginSurvey').css({'display':'block'});
-            $('#beginSurvey').animate({'opacity':'1'}, 'slow');
+            $('#planSubmit').css({'display':'block'});
+            $('#planSubmit').animate({'opacity':'1'}, 'slow');
             $('#m').prop("readonly", true);
             $('#m').val('');
             $('#timer').html('Chat closed');
