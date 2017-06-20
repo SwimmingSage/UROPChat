@@ -52,6 +52,13 @@ $(document).ready(function() {
         $('.planSubmission').append(newAction);
     });
 
+    $("#removeAction").click(function() {
+        if (stepnumber > 1) {
+            $("#step"+stepnumber).remove();
+            stepnumber -= 1;
+        }
+    });
+
     $(document).on("click", ".upperul li button", function() {
         // console.log("We clicked it");
         // $(".lowerul").css({"display":"none", "opacity":"0"});
@@ -68,10 +75,39 @@ $(document).ready(function() {
     $(document).on("click", ".lowerul li", function() {
         $(".lowerul").css({"display":"none", "opacity":"0"});
         newtext = $(this).text();
-        console.log(newtext);
+        // console.log(newtext);
         element = $(this).parent("ul").siblings("button").children("span");
         element.text(newtext);
     });
+
+
+    // $("#submitplan").click(function() {
+    //     plans = []
+    //     for (i=1; i <= stepnumber; i++) {
+    //         newobj = {'stepnumber': i};
+    //         newobj['action'] = $("#action" + i).text();
+    //         newobj['location'] = $("#location" + i).text();
+    //         plans.push(newobj)
+    //     }
+    //     console.log(plans)
+    //     $.ajax({
+    //         url: '/addPlan',
+    //         data: {
+    //             plan: plans,
+    //         },
+    //         type: 'GET',
+    //         success: function(data) {
+    //             if (data === "success") {
+    //                 $(".messageBottom").css({"display":"none", "opacity":"0"});
+    //                 $("#beginSurvey").css({"display":"block"});
+    //                 $("#beginSurvey").animate({"opacity":"1"}, "slow");
+    //             }
+    //         },
+    //         error: function(xhr, status, error) {
+    //             console.log("Uh oh there was an error: " + error);
+    //         }
+    //     });
+    // });
 
 
 });

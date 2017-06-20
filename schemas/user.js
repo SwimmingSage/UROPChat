@@ -20,14 +20,15 @@ var messageschema = new Schema({
 });
 
 var planschema = new Schema({
+    user:                   {type: String},
     stepnumber:             {type: Number},
-    action:              {type: String},
-    location:              {type: String},
+    action:                 {type: String},
+    location:               {type: String},
 });
 
 var chatroomschema = new Schema({
     // Users:                  [{type: String , required: true}],
-    Users:                  [{type: String}],
+    Users:                  [{type: Schema.Types.ObjectId, ref: 'User'}],
     Conversation:           [{type: Schema.Types.ObjectId, ref: 'Message'}],
     id:                     {type: String},
     creationTime:           {type: String, required: true},

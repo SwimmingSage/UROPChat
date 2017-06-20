@@ -127,6 +127,7 @@ router.get('/chatarchive', function(req, res, next) {
   if(req.isAuthenticated() && req.user.admin) {
     ChatRoom
     .find({"active": false})
+    .populate({path: 'Users'})
     .populate({path: 'Conversation', options:{sort: {'timeCreated': 1}}})
     .lean()
     .exec(function (err, chatrooms) {
@@ -268,6 +269,74 @@ router.get('/submitplan', function(req, res, next) {
         res.redirect('/');
     }
 });
+
+// router.post('/addPlan', function(req, res) {
+//     var plan = req.body.plan;
+//     var plannumber;
+//     console.log(plan)
+//     findRoom = function() {
+//         ChatRoom
+//         .findOne({"id": req.user.chat_room})
+//         .populate('user1plan', 'user2plan')
+//         .exec(function (err, userchatroom) {
+//             if (err) {
+//               console.log('An error occurred while finding the user chatroom by ID');
+//             }
+//             return new Promise(function(resolve, reject){
+//                 resolve(userchatroom);
+//             });
+//         })
+//         // ChatRoom.findOne({'id': req.user.chat_room}, function(err, userchatroom){
+//         //     if (err) {
+//         //       console.log('An error occurred');
+//         //     }
+//         //     return new Promise(function(resolve, reject){
+//         //         resolve(userchatroom);
+//         //     });
+//         // })
+//     }
+//     createstep = function(step, act, loc) {
+//         var plan_step = new Plan({
+//             user:            req.user.id,
+//             stepnumber:      step,
+//             action:          act,
+//             location:        loc,
+//         })
+//         plan_step.save();
+//         return plan_step;
+//     }
+//     findRoom()
+//     .then(chat => {
+//         if (chat.user1plan.length != 0) {
+//             if(chat.user1plan[0].user != req.user.id) {
+//                 plannumber = 2;
+//             }
+//             else{
+//                 plannumber = 1;
+//             }
+//         } else {
+//             plannumber = 1;
+//         }
+//         return chat;
+//     })
+//     .then(chat => {
+//         for (i=1; i <= plan.length; i++) {
+//             thisStep = plan[i];
+//             newStep = createstep(thisStep['stepnumber'], thisStep['action'], thisStep['location']);
+//             if(plannumber === 1) {
+//                 chat.user1plan.push(newStep);
+//             } else {
+//                 chat.user2plan.push(newStep);
+//             }
+//         }
+//         return chat;
+//     })
+//     .then(chat => {
+//         chat.save();
+//     })
+//     .then(() => {res.send('success')})
+//     .catch(error => { console.log(error) });
+// });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // Sign Up and login stuff

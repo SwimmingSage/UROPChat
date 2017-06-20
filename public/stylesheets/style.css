@@ -551,6 +551,7 @@ ul.archivemessages {
     padding: 0;
     padding-left: 5em;
     position: relative;
+    margin: .5em 0em;
 }
 
 .planSubmission ul li.upperli {
