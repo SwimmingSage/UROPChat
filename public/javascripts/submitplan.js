@@ -98,7 +98,8 @@ $(document).ready(function() {
             type: 'POST',
             success: function(data) {
                 if (data === "success") {
-                    $(".messageBottom").css({"display":"none", "opacity":"0"});
+                    // $(".messageBottom").css({"display":"none", "opacity":"0"});
+                    $("#submitplan").text("Resubmit Plan");
                     $("#beginSurvey").css({"display":"block"});
                     $("#beginSurvey").animate({"opacity":"1"}, "slow");
                 }

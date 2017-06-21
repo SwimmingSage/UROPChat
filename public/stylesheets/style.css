@@ -237,7 +237,6 @@ div.styledbutton {
     opacity: 0;
 }
 
-
 /* Style for the messaging page */
 
 .chattitle {
@@ -613,6 +612,27 @@ ul.archivemessages {
 
 
 /* Section for the submit plan page */
+
+table.plansubmitupper {
+    width: 100%;
+}
+
+td.plansubmitleft {
+    width:50%;
+}
+
+.plansubmitleft img {
+    width:100%;
+    height: auto;
+}
+
+td.plansubmitright {
+    width:50%;
+}
+
+.plansubmitright ul {
+    margin:0;
+}
 
 .planSubmission {
     text-align: left;

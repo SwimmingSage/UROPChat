@@ -295,7 +295,7 @@ router.get('/submitplan', function(req, res, next) {
 router.post('/addPlan', function(req, res) {
     var plan = JSON.parse(req.body.plan);
     var plannumber;
-    createstep = function(step, act, loc) {
+    createstep = function(step, act, loc, chat) {
         var plan_step = new Plan({
             user:            req.user.id,
             stepnumber:      step,
@@ -303,11 +303,17 @@ router.post('/addPlan', function(req, res) {
             location:        loc,
         })
         plan_step.save();
+        if(plannumber === 1) {
+            chat.user1plan.push(plan_step);
+        } else {
+            chat.user2plan.push(plan_step);
+        }
         return plan_step;
     }
     ChatRoom
     .findOne({"id": req.user.chat_room})
-    .populate('user1plan', 'user2plan')
+    .populate({path: 'user1plan', options:{sort: {'stepnumber': 1}}})
+    .populate({path: 'user2plan', options:{sort: {'stepnumber': 1}}})
     .exec(function (err, userchatroom) {
         if (err) {
           console.log('An error occurred while finding the user chatroom by ID');
@@ -333,12 +339,7 @@ router.post('/addPlan', function(req, res) {
     .then(chat => {
         for (i=0; i < plan.length; i++) {
             thisStep = plan[i];
-            newStep = createstep(thisStep.stepnumber, thisStep.action, thisStep.location);
-            if(plannumber === 1) {
-                chat.user1plan.push(newStep);
-            } else {
-                chat.user2plan.push(newStep);
-            }
+            createstep(thisStep.stepnumber, thisStep.action, thisStep.location, chat);
         }
         return chat;
     })

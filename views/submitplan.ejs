@@ -12,8 +12,66 @@
         <h1><%= title %></h1>
 <!--         <p>You have succesfully joined a chat with <%= user.firstname %>!</p> -->
     </div>
+    <div>
+        <table class="plansubmitupper">
+            <tr>
+                <td class="plansubmitleft">
+                    <img src="images/map.jpg">
+                </td>
+                <td class="plansubmitright infosection">
+                    <h3><strong>Information:</strong></h3>
+                    <table>
+                        <tr>
+                            <td>Fuel Capacity:</td>
+                            <td>20 units (initially full)</td>
+                        </tr>
+                        <tr>
+                            <td>Fuel cost of moving a tile (left, right, up, down):</td>
+                            <td>1 unit</td>
+                        </tr>
+                        <tr>
+                            <td>Fuel cost of surveilling a region:</td>
+                            <td>2 units</td>
+                        </tr>
+                        <tr>
+                            <td>Fuel cost of dropping of a package:</td>
+                            <td>1 unit</td>
+                        </tr>
+                        <tr>
+                            <td>Fuel cost of intercepting an enemy UAV:</td>
+                            <td>3 units</td>
+                        </td>
+                        <tr>
+                            <td>Package Load Capacity:</td>
+                            <td>2 packages (starts with 2 on-board)</td>
+                        </tr>
+                        <tr>
+                            <td>Must go back to main base to recharge</td>
+                            <td>(you recharge for “free” instantaneously)</td>
+                        </tr>
+                        <tr>
+                            <td>Must go to package center to reload packages</td>
+                            <td>(you reload for “free” instantaneously)</td>
+                        </tr>
+                    </table>
+                    <h3>Tasks:</h3>
+                    <ul>
+                        <li>Drop medical packages to:
+                            <ul>
+                                <li>P1: Police - A middle aged man who has valiantly served Agrodo for 20 years.</li>
+                                <li>P2: Climber - A young man whose wife recently had their second baby.</li>
+                                <li>P3: Soldier - A man who fight bravely for the nation of Agordo to afford to care for his parents.</li>
+                                <li>P4: Mayor - The mayor of Agordo's sole city, he has served for two decades.</li>
+                            </ul>
+                        </li>
+                        <li>Intercept Enemy UAVs</li>
+                        <li>Surveil Regions</li>
+                    </ul>
+                </td>
+            </tr>
+        </tabe>
+    </table>
     <div class="planSubmission">
-        <img src="images/map.jpg">
         <ul class="upperul" id="step1">
             <li class="upperli"><strong>1.</strong><!-- </li>  Only way to get around inherint whitespace in inlineblock html-->
             <li class="upperli"><button><span id="action1">Action</span> <div class="downarrow">&#10095</div></button>
