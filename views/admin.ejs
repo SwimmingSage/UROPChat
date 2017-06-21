@@ -34,8 +34,8 @@
         <% for(i=0; i < chats.length; i++) { %>
             <div class="chatboxes">
                 <h1 id="timer">Chat expires in <span id="timer<%= chats[i].id %>"></span></h1>
-                <div class="chat" id="chat<%= chats[i].id %>">
-                    <ul class="messages" id="messages<%= chats[i].id %>">
+                <div class="chat adminchat" id="chat<%= chats[i].id %>">
+                    <ul class="messages adminmessages" id="messages<%= chats[i].id %>">
                     <% for(x=0; x < chats[i].Conversation.length; x++) { %>
                         <% if (chats[i].Conversation[x].sender != 'Admin') { %>
                             <li class="otheruser"><strong><%= chats[i].Conversation[x].sender %>:&nbsp;</strong><%= chats[i].Conversation[x].message %></li>

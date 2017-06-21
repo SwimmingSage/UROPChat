@@ -5,6 +5,7 @@ html {
 
 body {
     margin: 0px;
+    font-size: 16px;
 }
 
 a {
@@ -231,35 +232,69 @@ div.styledbutton {
     opacity: 0;
 }
 
+#joinqueue {
+    display: none;
+    opacity: 0;
+}
+
 
 /* Style for the messaging page */
 
+.chattitle {
+    margin: .2em 0em .2em 0em;
+}
+
 .chatsection {
-    width:25em;
+/*    width:25em;*/
+    width: 100%;
+    height: 100%;
     text-align: center;
     margin:auto;
 }
 
+.chatsection h4 {
+    margin: .1em 0em 0em .3em;
+    text-align: left;
+}
+
+.chatsection ul {
+    text-align: left;
+    margin:0;
+}
+
+.chatsection #timer {
+    font-size: 2em;
+    font-size: 1.5em;
+/*    margin: .4em 0em;*/
+    margin: 0;
+}
+
 .chat {
-    width: 25em;
-    height: 20em;
-    border: 1px solid black;
+/*    width: 25em;*/
+    width: 100%;
+/*    height: 20em;*/
+    height: 70vh;
+    height: 40vh;
     text-align: center;
     margin: auto;
     position: relative;
+    border: 1px solid black;
 }
 
 .chat div.typing {
     position: absolute;
     right: 1em;
-    bottom: 2.3em;
+    /*bottom: 2.3em;*/
+    bottom: 3em;
     display: none;
 }
 
 ul.messages {
     /* we want this to switch to 16.6em */
-    height: 18em;
-    width: 100%;
+/*    height: 18em;*/
+    height: calc(100% - 47px);
+/*    width: 100%;*/
+    width: 40vw;
     overflow-y: auto;
     position: relative;
     list-style: none;
@@ -275,7 +310,7 @@ ul.messages li {
     overflow: auto;
     display: flex;
     text-align: left;
-    width: 24em;
+/*    width: 24em;*/
 /*    display: inline-block;*/
     display: block;
     word-wrap: break-word;
@@ -292,7 +327,8 @@ ul span#bottomanchor {
 }
 
 #entermessage {
-    height: 2em;
+/*    height: 2em;*/
+    height: auto;
     position: absolute;
     bottom: 0em;
     width: 100%;
@@ -304,10 +340,14 @@ ul span#bottomanchor {
 }
 
 #entermessage form input {
+    border:1px solid black;
     height: 2em;
-    width: 28em;
+    /*width: 28em;*/
+    width: 100%;
+    box-sizing: border-box;
     margin:0em;
-    padding: 0em 1em;
+    /*padding: 0em 1em;*/
+    padding: 1em;
 }
 
 #entermessage form input:focus {
@@ -316,25 +356,50 @@ ul span#bottomanchor {
 }
 
 #entermessage form button {
-    height: 2em;
-    margin-left: 1em;
+    border: 1px solid black;
+    /* height: 2em; */
+    width: 100%;
+    font-size: .8em;
+    box-sizing: border-box;
+    margin: 0;
+    background-color: #E8E8E8;
+    /* margin-left: 1em; */
 }
 
 #entermessage form button:hover {
     cursor: pointer;
+    transition: 0.2s;
+    background-color: #D0D0D0;
+}
+
+#entermessage form button:active {
+    cursor: pointer;
+    background-color: #B0B0B0;
+}
+
+.chatcol {
+    width: 40vw;
 }
 
 .infocol {
-    width:100%;
+    text-align: center;
+    width:60vw;
 }
 
 .infocol img {
     width: 100%;
+    width:85%;
     height: auto;
 }
 
 .infosection {
-    margin-top: -1em;
+    text-align: left;
+    margin-left: .5em;
+}
+
+.infosection h3 {
+/*    margin: .2em 0em;*/
+    margin: 0em;
 }
 
 .messageBottom {
@@ -462,6 +527,14 @@ ul span#bottomanchor {
     display: inline-block;
 }
 
+.adminchat {
+    height: 20em;
+}
+
+ul.adminmessages {
+    width:100%;
+    height: 17em;
+}
 /* Style for chatarchive page */
 .adminbutton button {
     margin-top: -1em;

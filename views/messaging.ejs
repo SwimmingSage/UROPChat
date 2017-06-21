@@ -10,13 +10,13 @@
   <body>
 
     <div class="loginhome">
-        <h1><%= title %></h1>
+        <h1 class="chattitle"><%= title %></h1>
 <!--         <p>You have succesfully joined a chat with <%= user.firstname %>!</p> -->
 
     </div>
     <table style="width:100%">
         <tr>
-            <td>
+            <td class="chatcol">
                 <div class="chatsection">
                     <h3 id="timer">Chat expires in <span id="timeLeft"></span></h3>
                     <div class="chat">
@@ -29,36 +29,61 @@
                             </form>
                         </div>
                     </div>
+<!--                     <ul>
+                        <li>Must go back to main base to recharge (you recharge for “free” instantaneously)</li>
+                        <li>Must go to package center to reload packages (you reload for “free” instantaneously)</li>
+                    </ul> -->
+                    <h4>Tasks:</h4>
+                    <ul>
+                        <li>Drop medical packages to:
+                            <ul>
+                                <li>P1: Police - A middle aged man who has valiantly served Agrodo for 20 years.</li>
+                                <li>P2: Climber - A young man whose wife recently had their second baby.</li>
+                                <li>P3: Soldier - A man who fight bravely for the nation of Agordo to afford to care for his parents.</li>
+                                <li>P4: Mayor - The mayor of Agordo's sole city, he has served for two decades.</li>
+                            </ul>
+                        </li>
+                        <li>Intercept Enemy UAVs</li>
+                        <li>Surveil Regions</li>
+                    </ul>
                 </div>
             </td>
             <td class="infocol">
-                <h3><strong>Information: (more info below)</strong></h3>
                 <div class='infosection'>
+                    <h3><strong>Information: (more info below)</strong></h3>
                     <table>
                         <tr>
                             <td>Fuel Capacity:</td>
-                            <td>20 units</td>
+                            <td>20 units (initially full)</td>
                         </tr>
                         <tr>
-                            <td>Package Load Capacity:</td>
-                            <td>2 packages (start with 2 packages)</td>
-                        </tr>
-                        <tr>
-                            <td>Cost of moving a tile (left, right, up, down):</td>
+                            <td>Fuel cost of moving a tile (left, right, up, down):</td>
                             <td>1 unit</td>
                         </tr>
                         <tr>
-                            <td>Cost of surveilling a region:</td>
+                            <td>Fuel cost of surveilling a region:</td>
                             <td>2 units</td>
                         </tr>
                         <tr>
-                            <td>Cost of dropping of a package:</td>
+                            <td>Fuel cost of dropping of a package:</td>
                             <td>1 unit</td>
                         </tr>
                         <tr>
-                            <td>Cost of intercepting enemy UAV:</td>
+                            <td>Fuel cost of intercepting an enemy UAV:</td>
                             <td>3 units</td>
                         </td>
+                        <tr>
+                            <td>Package Load Capacity:</td>
+                            <td>2 packages (starts with 2 on-board)</td>
+                        </tr>
+                        <tr>
+                            <td>Must go back to main base to recharge</td>
+                            <td>(you recharge for “free” instantaneously)</td>
+                        </tr>
+                        <tr>
+                            <td>Must go to package center to reload packages</td>
+                            <td>(you reload for “free” instantaneously)</td>
+                        </tr>
                     </table>
                 </div>
                 <img src="images/map.jpg">
@@ -80,16 +105,16 @@
         <a href="/submitplan"><button>Proceed</button></a>
     </div>
 
-    <div class="scenarioinfo scenariotext buffer">
+<!--     <div class="scenariotext buffer">
         <h1>Additional Info:</h1>
         <h4>Tasks:</h4>
         <ul>
             <li>Drop medical packages to:
                 <ul>
-                    <li>P1: Police - A middle aged man with high cholestrol, due to his high donut diet, however he is a valiant officer hard at work to keep his people safe, as he has done for the last 20 years.</li>
-                    <li>P2: Climber - A young man whose wife recently had their second baby. He was also recently promoted at the company where he works and things are really starting to look up for him.</li>
-                    <li>P3: Soldier - A man who has fought bravely for the nation of Agordo through thick and thin. He once took a bullet by standing in front of a civilian caught in mid fire when Agordo was attacked long ago.</li>
-                    <li>P4: Mayor - The mayor of Agordo's sole city, he has served for two decades and done great work to improve the school systems by increasing funding for them.</li>
+                    <li>P1: Police - A middle aged man who has valiantly served Agrodo for 20 years.</li>
+                    <li>P2: Climber - A young man whose wife recently had their second baby.</li>
+                    <li>P3: Soldier - A man who fight bravely for the nation of Agordo to afford to care for his parents.</li>
+                    <li>P4: Mayor - The mayor of Agordo's sole city, he has served for two decades.</li>
                 </ul>
             </li>
             <li>Intercept Enemy UAVs</li>
@@ -100,7 +125,7 @@
             <li>Must go back to main base to recharge (recharge for “free” instantaneously)</li>
             <li>Must go to package center to reload packages (reload for “free” instantaneously)</li>
         </ul>
-    </div>
+    </div> -->
 
     <!-- The popups that the user will get(not really pop ups, modals) -->
     <div class="useractionpopup" id="timewarning">

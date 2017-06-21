@@ -104,7 +104,7 @@ $(document).ready(function() {
         }
         if (wasTyping[thisid]){
             wasTyping[thisid] = false;
-            $('#messages' + thisid).css({'height':'18em'});
+            $('#messages' + thisid).css({'height':'17em'});
             $('#typing'+output['room']).css({'display':'none'});
             if (shouldScroll){
                 fastScroll(messages);
@@ -170,12 +170,12 @@ $(document).ready(function() {
 
         if (output['message'].length === 0 && wasTyping[roomid]) {
             wasTyping[roomid] = false;
-            $('ul#messages'+roomid).css({'height':'18em'});
+            $('ul#messages'+roomid).css({'height':'17em'});
             $('#typing'+roomid).css({'display':'none'});
         } else if(output['message'].length > 0 && !wasTyping[roomid]) {
             console.log("We recognize the other user is typing");
             wasTyping[roomid] = true;
-            $('ul#messages'+roomid).css({'height':'16.6em'});
+            $('ul#messages'+roomid).css({'height':'15.6em'});
             $('#typing'+roomid).css({'display':'block'});
         }
         if (shouldScroll) {

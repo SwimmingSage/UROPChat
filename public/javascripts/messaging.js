@@ -96,7 +96,7 @@ $(document).ready(function() {
     socket.on('recieve message', function(output) {
         // form of output is output = {'message':input['message'], name: input['name'], id:input['id'], 'room': input['room']};
         shouldScroll = (messages.scrollTop + messages.clientHeight === messages.scrollHeight);
-        if(output['name'] === user.firstname){
+        if(output['id'] === user.id){
             $('.messages').append('<li><strong>'+output['name']+':&nbsp;</strong>'+output['message']+'</li>');
         } else {
             $('.messages').append('<li class="otheruser"><strong>'+output['name']+':&nbsp;</strong>'+output['message']+'</li>');
@@ -104,9 +104,9 @@ $(document).ready(function() {
         if (shouldScroll) {
             scrollToBottom();
         }
-        if (wasTyping){
+        if (wasTyping && output['id'] != user.id){
             wasTyping = false;
-            $('ul.messages').css({'height':'18em'});
+            $('ul.messages').css({'height':'calc(100% - 47px)'});
             $('.typing').css({'display':'none'});
             if (shouldScroll){
                 fastScroll();
@@ -247,7 +247,8 @@ $(document).ready(function() {
             if (output['message'].length === 0 && wasTyping) {
                 wasTyping = false;
                 shouldScroll = (messages.scrollTop + messages.clientHeight === messages.scrollHeight);
-                $('ul.messages').css({'height':'18em'});
+                // $('ul.messages').css({'height':'18em'});
+                $('ul.messages').css({'height':'calc(100% - 47px)'});
                 $('.typing').css({'display':'none'});
                 if (shouldScroll) {
                     fastScroll();
@@ -261,7 +262,7 @@ $(document).ready(function() {
                 console.log("We recognize the other user is typing");
                 wasTyping = true;
                 shouldScroll = (messages.scrollTop + messages.clientHeight === messages.scrollHeight);
-                $('ul.messages').css({'height':'16.6em'});
+                $('ul.messages').css({'height':'calc(100% - 70px)'});
                 $('.typing').css({'display':'block'});
                 if (shouldScroll) {
                     fastScroll();
