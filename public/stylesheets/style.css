@@ -221,10 +221,10 @@ div.styledbutton {
     transform: scale(1.05);
 }
 
-.styledbutton p {
+/*.styledbutton p {
     display: none;
     opacity: 0;
-}
+}*/
 
 .styledbutton #joinshortly {
     display: block;
