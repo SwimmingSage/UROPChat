@@ -20,7 +20,7 @@ router.get('/', function(req, res, next) {
   if(req.isAuthenticated()) {
     res.redirect('/loginhome');
   } else {
-    res.render('index', { title: 'AI Monitoring of Human Team Planning Conversations' });
+    res.render('index', { title: 'Emergency Response Planning' });
   }
 });
 
@@ -30,28 +30,28 @@ router.get('/intro', function(req, res, next) {
     if (req.user.admin) {
     res.redirect('/admin');
     } else {
-    res.render('intro', {user: req.user, title: 'AI Monitoring of Human Team Planning Conversations'});
+    res.render('intro', {user: req.user, title: 'Emergency Response Planning'});
     }
   } else {
-    res.render('index', { title: 'AI Monitoring of Human Team Planning Conversations' });
+    res.render('index', { title: 'Emergency Response Planning' });
   }
 });
 
 //get consent form page
 router.get('/consentform', function(req, res, next) {
   if(req.isAuthenticated()) {
-    res.render('consentform', {user: req.user, title: 'AI Monitoring of Human Team Planning Conversations'});
+    res.render('consentform', {user: req.user, title: 'Emergency Response Planning'});
   } else {
-    res.render('index', { title: 'AI Monitoring of Human Team Planning Conversations' });
+    res.render('index', { title: 'Emergency Response Planning' });
   }
 });
 
 //get consent form page
 router.get('/scenario', function(req, res, next) {
   if(req.isAuthenticated()) {
-    res.render('scenario', {user: req.user, title: 'AI Monitoring of Human Team Planning Conversations'});
+    res.render('scenario', {user: req.user, title: 'Emergency Response Planning'});
   } else {
-    res.render('index', { title: 'AI Monitoring of Human Team Planning Conversations' });
+    res.render('index', { title: 'Emergency Response Planning' });
   }
 });
 
@@ -66,7 +66,7 @@ router.get('/loginhome', function(req, res, next) {
             if (err) {
               console.log('An error occurred while finding the user chatroom by ID');
             } else if (userchatroom === null || !(userchatroom.active)){
-                res.render('loginhome', {user: req.user, title: 'AI Monitoring of Human Team Planning Conversations'});
+                res.render('loginhome', {user: req.user, title: 'Emergency Response Planning'});
             } else {
                 time = new Date();
                 currentTime = time.getTime();
@@ -76,7 +76,7 @@ router.get('/loginhome', function(req, res, next) {
                 if (ageInSec >= maxAgeSec){
                     userchatroom.active = false;
                     userchatroom.save();
-                    res.render('loginhome', {user: req.user, title: 'AI Monitoring of Human Team Planning Conversations'});
+                    res.render('loginhome', {user: req.user, title: 'Emergency Response Planning'});
                 } else {
                     res.redirect('/messaging');
                 }
@@ -102,7 +102,7 @@ router.get('/admin', function(req, res, next) {
     .exec(function (err, chatrooms) {
         if (err) return handleError(err);
         // console.log(chatrooms);
-        res.render('admin', {chats: chatrooms, title: 'AI Monitoring of Human Team Planning Conversations'});
+        res.render('admin', {chats: chatrooms, title: 'Emergency Response Planning'});
     })
   } else {
     res.redirect('/');
@@ -131,7 +131,7 @@ router.get('/chatarchive', function(req, res, next) {
     .lean()
     .exec(function (err, chatrooms) {
         if (err) return handleError(err);
-        res.render('chatarchive', {chats: chatrooms, title: 'AI Monitoring of Human Team Planning Conversations'});
+        res.render('chatarchive', {chats: chatrooms, title: 'Emergency Response Planning'});
     })
   } else {
     res.redirect('/');
@@ -180,7 +180,7 @@ router.get('/messaging', function(req, res, next) {
                         userchatroom.save();
                         res.redirect('/loginhome');
                     } else {
-                        res.render('messaging', {user: req.user, title: 'AI Monitoring of Human Team Planning Conversations'});
+                        res.render('messaging', {user: req.user, title: 'Emergency Response Planning'});
                     }
                 }
             })
@@ -274,7 +274,7 @@ router.get('/submitplan', function(req, res, next) {
             } else if (userchatroom === null || userchatroom.active || req.user.planSubmitted){
                 res.redirect('/loginhome');
             } else {
-                res.render('submitplan', {user: req.user, title: 'AI Monitoring of Human Team Planning Conversations'});
+                res.render('submitplan', {user: req.user, title: 'Emergency Response Planning'});
             }
         });
     } else {
