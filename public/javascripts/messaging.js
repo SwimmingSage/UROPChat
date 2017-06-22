@@ -146,6 +146,7 @@ $(document).ready(function() {
         } else {
             $('.messages').append('<li><strong>Your partner has been alerted of your desire to close the chat</strong></li>');
             socket.emit('close attempt', input);
+            fastScroll();
         }
     });
 
@@ -154,6 +155,7 @@ $(document).ready(function() {
         if (output['user'] != user.id) {
             otherUserClose = true;
             $('.messages').append('<li class="otheruser"><strong>Your partner wishes to close the chat, close click the close chat button below to close it if you are both done</strong></li>');
+            fastScroll();
         }
     });
 
