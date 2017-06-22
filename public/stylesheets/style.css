@@ -782,6 +782,7 @@ td.planside {
     padding: 3px 3px 3px 5px;
     width:100%;
     box-sizing: border-box;
+    cursor: pointer;
 }
 .planSubmission ul.lowerul li.leftcol {
     border-left: 1px solid black;
