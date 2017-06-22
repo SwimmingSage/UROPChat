@@ -268,15 +268,16 @@ router.get('/checkInChat', function(req, res) {
 
 router.get('/submitplan', function(req, res, next) {
     if(req.isAuthenticated()) {
-        ChatRoom.findOne({'id': req.user.chat_room}, function(err, userchatroom){
-            if (err) {
-              console.log('An error occurred while finding the user chatroom by ID');
-            } else if (userchatroom === null || userchatroom.active || req.user.planSubmitted){
-                res.redirect('/loginhome');
-            } else {
-                res.render('submitplan', {user: req.user, title: 'Emergency Response Planning'});
-            }
-        });
+        res.render('submitplan', {user: req.user, title: 'Emergency Response Planning'});
+        // ChatRoom.findOne({'id': req.user.chat_room}, function(err, userchatroom){
+        //     if (err) {
+        //       console.log('An error occurred while finding the user chatroom by ID');
+        //     } else if (userchatroom === null || userchatroom.active || req.user.planSubmitted){
+        //         res.redirect('/loginhome');
+        //     } else {
+        //         res.render('submitplan', {user: req.user, title: 'Emergency Response Planning'});
+        //     }
+        // });
     } else {
         res.redirect('/');
     }

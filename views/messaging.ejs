@@ -14,7 +14,7 @@
 <!--         <p>You have succesfully joined a chat with <%= user.firstname %>!</p> -->
 
     </div>
-    <table style="width:100%">
+    <table class="messagingtable">
         <tr>
             <td class="chatcol">
                 <div class="chatsection">
@@ -29,6 +29,8 @@
                             </form>
                         </div>
                     </div>
+                    <h4>Goal:</h4>
+                    <p>Prioritize and come up with a <span class="red">plan to resolve at least <strong>4</strong> tasks using no more than <strong>30</strong> units of fuel</span>. You are starting from the main base.</p>
                     <h4>Tasks:</h4>
                     <ul>
                         <li>Drop medical packages to:
@@ -45,44 +47,44 @@
                 </div>
             </td>
             <td class="infocol">
+                <img src="images/map.jpg">
                 <div class='infosection'>
                     <h3><strong>Information:</strong></h3>
                     <table>
                         <tr>
-                            <td>Fuel Capacity:</td>
+                            <td class="bullet">Fuel Capacity:</td>
                             <td>20 units (initially full)</td>
                         </tr>
                         <tr>
-                            <td>Fuel cost of moving a tile (left, right, up, down):</td>
+                            <td class="bullet">Fuel cost of moving a tile (left, right, up, down):</td>
                             <td>1 unit</td>
                         </tr>
                         <tr>
-                            <td>Fuel cost of surveilling a region:</td>
+                            <td class="bullet">Fuel cost of surveilling a region:</td>
                             <td>2 units</td>
                         </tr>
                         <tr>
-                            <td>Fuel cost of dropping of a package:</td>
+                            <td class="bullet">Fuel cost of dropping of a package:</td>
                             <td>1 unit</td>
                         </tr>
                         <tr>
-                            <td>Fuel cost of intercepting an enemy UAV:</td>
+                            <td class="bullet">Fuel cost of intercepting an enemy UAV:</td>
                             <td>3 units</td>
                         </td>
                         <tr>
-                            <td>Package Load Capacity:</td>
+                            <td class="bullet">Package Load Capacity:</td>
                             <td>2 packages (starts with 2 on-board)</td>
                         </tr>
                         <tr>
-                            <td>Must go back to main base to recharge</td>
+                            <td class="bullet">Must go back to main base to recharge</td>
                             <td>(you recharge for “free” instantaneously)</td>
                         </tr>
                         <tr>
-                            <td>Must go to package center to reload packages</td>
+                            <td class="bullet">Must go to package center to reload packages</td>
                             <td>(you reload for “free” instantaneously)</td>
                         </tr>
                     </table>
                 </div>
-                <img src="images/map.jpg">
             </td>
         </tr>
     </table>
