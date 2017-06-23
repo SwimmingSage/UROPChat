@@ -2,7 +2,8 @@ $(document).ready(function() {
 
   $("#signup").click(function(){
     //get values in input boxes
-    var email = $("#inputemail").val();
+    var rawemail = $("#inputemail").val();
+    var email = rawemail.toLowerCase();
     var firstname = $("#inputfirstname").val();
     var lastname = $("#inputlastname").val();
     var password = $("#inputpassword").val();
