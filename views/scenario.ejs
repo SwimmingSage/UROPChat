@@ -4,11 +4,17 @@
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/javascripts/scenario.js"></script>
   </head>
   <body>
 
     <div class="upperheader">
         <h1><%= title %></h1>
+    </div>
+    <div class="counttracker">
+        <p>Reading Scenario: <span id="prepspan"></span></p>
+        <p>Ready to Begin: <span id="readyspan"></span></p>
     </div>
     <div class="scenariotext">
         <h2>Scenario Description</h2>

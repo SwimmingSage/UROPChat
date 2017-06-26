@@ -35,6 +35,8 @@ var server = http.createServer(app);
 var io = require('socket.io').listen(server);
 
 queue = [];
+prepCount = 0;
+readyCount = 0;
 
 io.on('connection', function(socket) {
     console.log('a user connected');
@@ -46,6 +48,14 @@ io.on('connection', function(socket) {
                 break; 
             }
         }   
+        if (socket.room === "preproom") {
+            prepCount -= 1;
+            readyprepchange();
+
+        } else if (socket.room === "readyroom") {
+            readyCount -= 1;
+            readyprepchange();
+        }
     });
 
     socket.on('room', function(room) {
@@ -60,6 +70,31 @@ io.on('connection', function(socket) {
         // socket.room = room;
         socket.join(room);
     });
+
+    // handling que system
+    readyprepchange = function() {
+        output = {'prepCount': prepCount, 'readyCount': readyCount};
+        io.to('preproom').emit("userchange", output);
+        io.to('readyroom').emit("userchange", output);
+    }
+
+    socket.on('in prep', function() {
+        socket.join('preproom');
+        socket.room = "preproom"
+        prepCount += 1;
+        console.log("1 got added from inprep");
+        readyprepchange();
+    });
+
+    socket.on('in ready', function() {
+        console.log("in ready got called in the backend");
+        socket.join('readyroom');
+        socket.room = "readyroom";
+        readyCount += 1;
+        prepCount -= 1;
+        readyprepchange();
+    });
+
 
 
     createChat = function(user1name, user2name){

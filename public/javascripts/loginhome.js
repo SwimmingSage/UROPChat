@@ -45,6 +45,7 @@ $(document).ready(function() {
                     $('#joinroomsection p').css({"display":"block", "opacity": "0"});
                     $('#joinroomsection p').animate({'opacity':'1'}, 'slow');
                     socket.emit('joinRoom', {'userid': user.id, 'name': user.firstname});
+                    socket.emit('in ready');
                 }
             },
             error: function(xhr, status, error) {
@@ -52,6 +53,15 @@ $(document).ready(function() {
             }
         });
     })
+
+    // Handle the count tracker
+    socket.emit('in prep');
+
+    socket.on('userchange', function(output) {
+        // output = {'prepCount': prepCount, 'readyCount': readyCount};
+        $('#prepspan').text(output.prepCount);
+        $('#readyspan').text(output.readyCount);
+    });
 
 });
 

@@ -198,6 +198,13 @@ button.submithome:hover {
     color: red;
 }
 
+.counttracker {
+    position: absolute;
+    right: 3em;
+    top: 2em;
+    font-size: 1.2em;
+}
+
 
 /* Style for the login home page buttons, and all buttons in general */
 
