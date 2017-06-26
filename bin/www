@@ -47,11 +47,9 @@ io.on('connection', function(socket) {
             }
         }   
         if (socket.room === "preproom") {
-            prepCount -= 1;
             readyprepchange();
 
         } else if (socket.room === "readyroom") {
-            readyCount -= 1;
             readyprepchange();
         }
     });
@@ -71,10 +69,9 @@ io.on('connection', function(socket) {
 
     // handling que system
     readyprepchange = function() {
-        // output = {'prepCount': prepCount, 'readyCount': readyCount};
-        // output = {'prepCount': io.sockets.adapter.rooms['preproom'].length, 'readyCount': io.sockets.adapter.rooms['readyroom'].length};
-        // io.to('preproom').emit("userchange", output);
-        // io.to('readyroom').emit("userchange", output);
+        output = {'prepCount': io.sockets.adapter.rooms['preproom'].length, 'readyCount': io.sockets.adapter.rooms['readyroom'].length};
+        io.to('preproom').emit("userchange", output);
+        io.to('readyroom').emit("userchange", output);
     }
 
     socket.on('in prep', function() {
