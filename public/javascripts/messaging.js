@@ -174,6 +174,8 @@ $(document).ready(function() {
         $('#m').prop("readonly", true);
         $('#m').val('');
         $('#timer').html('Chat closed');
+        $('.messages').append('<li><strong>The Chat has been closed, please proceed below.</strong></li>');
+        fastScroll();
     });
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////

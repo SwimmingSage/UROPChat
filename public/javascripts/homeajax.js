@@ -4,6 +4,8 @@ $(document).ready(function() {
     //get values in input boxes
     var rawemail = $("#inputemail").val();
     var email = rawemail.toLowerCase();
+    console.log("raw email is", rawemail);
+    console.log("Non raw email is", email);
     var firstname = $("#inputfirstname").val();
     var lastname = $("#inputlastname").val();
     var password = $("#inputpassword").val();
@@ -72,8 +74,11 @@ $(document).ready(function() {
   $("#login").click(function(){
 
     //get values in input boxes
-    var emaillogin = $("#inputemaillogin").val();
+    var rawemaillogin = $("#inputemaillogin").val();
+    var emaillogin = rawemaillogin.toLowerCase();
     var passwordlogin = $("#inputpasswordlogin").val();
+    console.log("raw email is", rawemaillogin);
+    console.log("Non raw emaill is", emaillogin);
     $('li.error').css({"display":"none"});
     //have to check if combo is valid or not
     if(emaillogin.length === 0 || passwordlogin.length === 0){
