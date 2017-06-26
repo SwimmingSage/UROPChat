@@ -54,14 +54,14 @@ $(document).ready(function() {
         });
     })
 
-    // Handle the count tracker
-    socket.emit('in prep');
+    // // Handle the count tracker
+    // socket.emit('in prep');
 
-    socket.on('userchange', function(output) {
-        // output = {'prepCount': prepCount, 'readyCount': readyCount};
-        $('#prepspan').text(output.prepCount);
-        $('#readyspan').text(output.readyCount);
-    });
+    // socket.on('userchange', function(output) {
+    //     // output = {'prepCount': prepCount, 'readyCount': readyCount};
+    //     $('#prepspan').text(output.prepCount);
+    //     $('#readyspan').text(output.readyCount);
+    // });
 
 });
 
