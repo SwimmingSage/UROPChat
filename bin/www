@@ -35,8 +35,6 @@ var server = http.createServer(app);
 var io = require('socket.io').listen(server);
 
 queue = [];
-prepCount = 0;
-readyCount = 0;
 
 io.on('connection', function(socket) {
     console.log('a user connected');
@@ -73,7 +71,8 @@ io.on('connection', function(socket) {
 
     // handling que system
     readyprepchange = function() {
-        output = {'prepCount': prepCount, 'readyCount': readyCount};
+        // output = {'prepCount': prepCount, 'readyCount': readyCount};
+        output = {'prepCount': io.sockets.adapter.rooms['preproom'].length, 'readyCount': io.sockets.adapter.rooms['readyroom'].length};
         io.to('preproom').emit("userchange", output);
         io.to('readyroom').emit("userchange", output);
     }
@@ -81,17 +80,13 @@ io.on('connection', function(socket) {
     socket.on('in prep', function() {
         socket.join('preproom');
         socket.room = "preproom"
-        prepCount += 1;
-        console.log("1 got added from inprep");
         readyprepchange();
     });
 
     socket.on('in ready', function() {
-        console.log("in ready got called in the backend");
+        socket.leave("preproom")
         socket.join('readyroom');
         socket.room = "readyroom";
-        readyCount += 1;
-        prepCount -= 1;
         readyprepchange();
     });
 
