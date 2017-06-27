@@ -69,7 +69,17 @@ io.on('connection', function(socket) {
 
     // handling que system
     readyprepchange = function() {
-        output = {'prepCount': io.sockets.adapter.rooms['preproom'].length, 'readyCount': io.sockets.adapter.rooms['readyroom'].length};
+        if (io.sockets.adapter.rooms['preproom'] === undefined) {
+            preproomcount = 0;
+        } else {
+            preproomcount = io.sockets.adapter.rooms['preproom'].length;
+        }
+        if (io.sockets.adapter.rooms['readyroom'] === undefined) {
+            readyroomcount = 0;
+        } else {
+            readyroomcount = io.sockets.adapter.rooms['preproom'].length;
+        }
+        output = {'prepCount': preproomcount, 'readyCount': readyroomcount};
         io.to('preproom').emit("userchange", output);
         io.to('readyroom').emit("userchange", output);
     }
