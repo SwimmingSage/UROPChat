@@ -37,11 +37,7 @@
                 <div class="chat adminchat" id="chat<%= chats[i].id %>">
                     <ul class="messages adminmessages" id="messages<%= chats[i].id %>">
                     <% for(x=0; x < chats[i].Conversation.length; x++) { %>
-                        <% if (chats[i].Conversation[x].sender != 'Admin') { %>
-                            <li class="otheruser"><strong><%= chats[i].Conversation[x].sender %>:&nbsp;</strong><%= chats[i].Conversation[x].message %></li>
-                        <% } else { %>
-                            <li><strong><%= chats[i].Conversation[x].sender %>:&nbsp;</strong><%= chats[i].Conversation[x].message %></li>
-                        <% } %>
+                        <li><strong><%= chats[i].Conversation[x].sender %>:&nbsp;</strong><%= chats[i].Conversation[x].message %></li>
                     <% } %>
                     </ul>
                     <div class="typing" id="typing<%= chats[i].id %>">A user is typing. . .</div>
@@ -54,7 +50,9 @@
             </div>
 
         <% } %>
-
+        <% if (chats.length === 0) { %> 
+            <h1>There are currently no live chats</h1>
+        <% } %>
     </div>
   </body>
 </html>

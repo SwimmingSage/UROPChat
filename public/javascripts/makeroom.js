@@ -8,10 +8,13 @@ $(document).ready(function() {
             type: 'GET',
             success: function(data) {
                 // in this case data is the chatrooms id
-                newRoom = '<div class="archivechatboxes">' +
-                            '<div class="upperarchive" id=' + data + '>' +
-                              '<h1>Chat ' + data +'</h1>' +
-                              '<span><button>Assign</button></span>' +
+                newRoom = '<div class="chatrooms">' +
+                            '<div class="chatroomdiv" id=' + data + '>' +
+                              '<h1>Chat: ' + data +'</h1>' +
+                              '<div class="selectroom">' +
+                                '<button>Assign</button>' +
+                                '<p class="assigned">Assigned</p>' +
+                              '</div>' +
                             '</div>' +
                           '</div>'
                 $(".admin").append(newRoom);
@@ -22,13 +25,29 @@ $(document).ready(function() {
         });
     })
 
-    // $(document).on("click", ".lowerul li", function() {
-    //     $(".lowerul").css({"display":"none", "opacity":"0"});
-    //     newtext = $(this).text();
-    //     // console.log(newtext);
-    //     element = $(this).parent("ul").siblings("button").children("span");
-    //     element.text(newtext);
-    // });
+    $(document).on("click", ".selectroom button", function() {
+        chatID = $(this).parent("div").parent("div").attr('id');
+        console.log("chatID came out to be", chatID);
+        $(this).css({"display":"none"});
+        // Now to make the backend call if this is correct
+        $.ajax({
+            url: '/makeUnavailable',
+            data: {
+                chat: chatID,
+            },
+            type: 'POST',
+            success: function(data) {
+                if (data === "success") {
+                    $("#" + chatID + " div p").css({"display": "block"});
+                    $("#" + chatID + " div p").animate({"opacity": "1"}, 400);
+                    console.log("This was a success");
+                }
+            },
+            error: function(xhr, status, error) {
+                console.log("Uh oh there was an error: " + error);
+            }
+        });
+    });
 
     // Handle the count tracker
     // socket.emit('in prep');

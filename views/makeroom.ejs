@@ -11,15 +11,18 @@
         <h1><%= title %></h1>
         <p>Welcome to Admin Overview Page of the Live Chats</p>
         <div class="styledbutton adminbutton" id="adminSection">
-            <a href="/makeroom"><button>View Usable Chat Rooms</button></a>
+            <a href="/admin"><button>View Live Chat Rooms</button></a>
             <button id="chatcreate">Create Chat Room</button>
         </div>
 
         <% for(i=0; i < chats.length; i++) { %>
-            <div class="archivechatboxes">
-                <div class="upperarchive" id='<%= chats[i].id %>'>
-                    <h1>Chat <%= chats[i].id %></h1>
-                    <span><button>Assign</button></span>
+            <div class="chatrooms">
+                <div class="chatroomdiv" id='<%= chats[i].id %>'>
+                    <h1>Chat: <%= chats[i].id %></h1>
+                    <div class="selectroom">
+                        <button>Assign</button>
+                        <p class="assigned">Assigned</p>
+                    </div>
                 </div>
             </div>
 

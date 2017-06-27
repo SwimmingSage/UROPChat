@@ -6,6 +6,7 @@ var LocalStrategy = require('passport-local').Strategy;
 
 var router = require('express').Router();
 var mongoose = require('mongoose')
+var Promise = require('promise');
 
 var User = mongoose.model('User');
 var Plan = mongoose.model('Plan');
@@ -63,28 +64,53 @@ router.get('/admin', function(req, res, next) {
 });
 
 router.get('/makeroom', function(req, res, next) {
+  //Lean basically makes it so we have raw javascript objects, which increases run time
+  if(req.isAuthenticated() && req.user.admin) {
+    ChatRoom
+    .find({"available": true})
+    .lean()
+    .exec(function (err, chatrooms) {
+        if (err) return handleError(err);
+
+        res.render('makeroom', {chats: chatrooms, title: 'Emergency Response Planning'});
+    })
+  } else {
+    res.redirect('/');
+  }
+});
+
+router.post('/makeUnavailable', function(req, res, next) {
+    ChatRoom.findOne({'id': req.body.chat}, function(err, userchatroom){
+        if (err) {
+          console.log('An error occurred');
+        } 
+        userchatroom.available = false;
+        userchatroom.save();
+        res.send("success");
+    })
+});
+
+router.get('/makeChat', function(req, res, next) {
   // Lean basically makes it so we have raw javascript objects, which increases run time
     makechat = function() {
         var new_chat = new ChatRoom({
-            Users:          [user1name, user2name],
-            creationTime:   currentTime,
         })
         return new Promise(function(resolve, reject){
             resolve(new_chat);
-        });
+        })
+        .then(chat => {
+            chat.id = chat._id.toString();
+            return chat;
+        })
+        .then(chat => {
+            chat.save();
+            return chat;
+        })
+        .then(chat => {
+            res.send(chat.id);
+        })
+        .catch(error => { console.log(error) });
     }
-    .then(chat => {
-        chat.id = chat._id.toString();
-        return chat;
-    })
-    .then(chat => {
-        chat.save();
-        return chat;
-    })
-    .then(chat => {
-        res.send(chat.id);
-    })
-    .catch(error => { console.log(error) });
 
     makechat();
   
@@ -104,7 +130,7 @@ router.get('/getAllChat', function(req, res) {
 router.get('/chatarchive', function(req, res, next) {
   //Lean basically makes it so we have raw javascript objects, which increases run time
   ChatRoom
-  .find({"active": true})
+  .find({"complete": true})
   if(req.isAuthenticated() && req.user.admin) {
     ChatRoom
     .find({"active": false})
