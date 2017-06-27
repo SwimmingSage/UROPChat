@@ -20,31 +20,17 @@ $(document).ready(function() {
     }
 
     // This grabs the user data from backend so we can get their first name
-    var user;
     var startTime;
     var chatroom;
     $.ajax({
-        url: '/getUser',
+        url: '/getChat',
         data: {
         },
         type: 'GET',
-        success: function(data) {
-            user = data;
-            getToRoom(data.chat_room);
-            $.ajax({
-                url: '/getChat',
-                data: {
-                },
-                type: 'GET',
-                success: function(chatroomsent) {
-                    chatroom = chatroomsent['0'];
-                    catchUpChat(chatroom.Conversation);
-                    startTime = chatroom.creationTime;
-                },
-                error: function(xhr, status, error) {
-                    console.log("Uh oh there was an error: " + error);
-                }
-            });
+        success: function(chatroomsent) {
+            chatroom = chatroomsent['0'];
+            catchUpChat(chatroom.Conversation);
+            startTime = chatroom.creationTime;
         },
         error: function(xhr, status, error) {
             console.log("Uh oh there was an error: " + error);

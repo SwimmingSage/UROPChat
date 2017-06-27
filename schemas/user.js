@@ -8,8 +8,8 @@ var User = new Schema({
     firstname:              {type: String , required: true},
     lastname:               {type: String , required: true},
     // email:                  {type: String , required: true, index: {unique: true}},
-    chat_room:              {type: String},
-    planSubmitted:          {type: Boolean, default: false},
+    // chat_room:              {type: String},
+    // planSubmitted:          {type: Boolean, default: false},
     admin:                  {type: Boolean, default: false},
     id:                     {type: String},
 });
@@ -28,12 +28,13 @@ var planschema = new Schema({
 });
 
 var chatroomschema = new Schema({
-    // Users:                  [{type: String , required: true}],
-    Users:                  [{type: String}],
     Conversation:           [{type: Schema.Types.ObjectId, ref: 'Message'}],
+    Users:                  [{type: String}],
     id:                     {type: String},
-    creationTime:           {type: String, required: true},
-    active:                 {type: Boolean, default: true},
+    startTime:              {type: String},
+    active:                 {type: Boolean, default: false},
+    completed:              {type: Boolean, default: false},
+    available:              {type: Boolean, default: true},
     user1plan:              [{type: Schema.Types.ObjectId, ref: 'Plan'}],
     user2plan:              [{type: Schema.Types.ObjectId, ref: 'Plan'}],
 });

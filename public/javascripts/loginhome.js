@@ -1,22 +1,5 @@
 $(document).ready(function() {
 
-    // This grabs the user data from backend so we can get their first name
-    var user;
-    $.ajax({
-        url: '/getUser',
-        data: {
-        },
-        type: 'GET',
-        success: function(data) {
-            //$('where I want to put data').text(data);
-            user = data;
-        },
-        error: function(xhr, status, error) {
-            console.log("Uh oh there was an error: " + error);
-        }
-    });
-
-
     var socket = io();
 
     function redirect() {
@@ -30,22 +13,35 @@ $(document).ready(function() {
         setTimeout(redirect, 5000)
     });
 
+    var userIP;
+    $.get("http://ipinfo.io", function(response) {
+        userIP = response.ip;
+        console.log(userIP);
+        // This gives the user's IP address in string format
+    }, "jsonp");
+
     $("#joinroomsection button").click(function(){
+        $(".error").css({"display":"none"});
+        var roomnumber = $("#inputroom").text();
+        var name = $("#inputname").text();
         $.ajax({
-            url: '/checkInChat',
+            url: '/checkChat',
             data: {
+                roomID: roomnumber,
             },
             type: 'GET',
             success: function(data) {
                 //$('where I want to put data').text(data);
-                if(data === "inchat") {
-                    window.location.href = "/messaging";
+                if(data === "noroom") {
+                    $("#noroom").css({"display":"block"});
+                } else if (data === "expired") {
+                    $("#chatused").css({"display":"block"});
                 } else {
                     $('#joinroomsection button').css({"display":"none", "opacity": "0"});
                     $('#joinroomsection p').css({"display":"block", "opacity": "0"});
                     $('#joinroomsection p').animate({'opacity':'1'}, 'slow');
-                    socket.emit('joinRoom', {'userid': user.id, 'name': user.firstname});
-                    socket.emit('in ready');
+                    socket.emit('joinRoom', {'room': roomnumber, 'name': name, 'ip': userIP});
+                    // socket.emit('in ready');
                 }
             },
             error: function(xhr, status, error) {

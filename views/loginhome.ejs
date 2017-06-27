@@ -11,7 +11,6 @@
 
     <div class="loginhome">
         <h1><%= title %></h1>
-<!--         <p>You are succesfully logged in, <%= user.firstname %>. <br> -->
         Please click below to join the chat room. </p>
     </div>
 <!--     <div class="counttracker">
@@ -19,13 +18,18 @@
         <p>Ready to Begin: <span id="readyspan"></span></p>
     </div> -->
     <div class="styledbutton" id="joinroomsection">
+        <div class="enterform">
+            <ul>
+                <li><input type="text" placeholder="Name (optional)" name="name" class="inputinfo" id="inputname" maxlength="35"></li>
+                <li><input type="text" placeholder="Room ID" name="firstname" class="inputinfo" id="inputroom" maxlength="100"></li>
+
+                <li class="error" id="noroom">- This room ID does not correspond to a room</li>
+                <li class="error" id="chatused">- This chat room has already been used</li>
+                <li class="error" id="iferror">If you believe this is an error email Mattwoicik@gmail.com</li>
+            </ul>
+        </div>
         <button>Join Chat Room</button>
         <p id="joinqueue">You have been added to the queue and will join a chat room shortly.</p>
     </div>
-    <% if (user.admin) { %>
-    <div class="styledbutton" id="adminSection">
-        <a href="/admin"><button>Admin Page</button></a>
-    </div>
-    <% } %>
   </body>
 </html>

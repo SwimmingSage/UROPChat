@@ -34,18 +34,18 @@ var server = http.createServer(app);
 // start socket.io
 var io = require('socket.io').listen(server);
 
-queue = [];
+// queue = [];
 
 io.on('connection', function(socket) {
     console.log('a user connected');
     // When a user disconnects from out app...
     socket.on('disconnect', function() {
-        for (i = 0; i < queue.length; i++) {
-            if (queue[i][1] === socket.id) { 
-                queue.splice(i);
-                break; 
-            }
-        }   
+        // for (i = 0; i < queue.length; i++) {
+        //     if (queue[i][1] === socket.id) { 
+        //         queue.splice(i);
+        //         break; 
+        //     }
+        // }   
         if (socket.room === "preproom") {
             readyprepchange();
 
@@ -99,43 +99,33 @@ io.on('connection', function(socket) {
 
 
 
-    createChat = function(user1name, user2name){
-        time = new Date();
-        currentTime = time.getTime();
-        var new_chat = new ChatRoom({
-            Users:          [user1name, user2name],
-            creationTime:   currentTime,
-        })
-        new_chat.id = new_chat._id.toString();
-        new_chat.save();
-        return new_chat
-    }
-    updateUser = function(userid, chatid){
-        User.findOne({"id": userid}, function(err, users) {
-            if (err) {
-                console.log("And error occured while storing a user");
-            }
-            users.chat_room = newChat.id;
-            users.planSubmitted = false;
-            users.save();
-        });
-    }
+    // createChat = function(user1IP, user2IP){
+    //     time = new Date();
+    //     currentTime = time.getTime();
+    //     var new_chat = new ChatRoom({
+    //         Users:          [user1name, user2name],
+    //         creationTime:   currentTime,
+    //     })
+    //     new_chat.id = new_chat._id.toString();
+    //     new_chat.save();
+    //     return new_chat
+    // }
     socket.on('joinRoom', function(input) {
-        // Input is {'userid': user.id, 'name': user.firstname}
-        if (!([input['userid'], socket.id, input['name']] in queue)){
-            queue.push([input['userid'], socket.id, input['name']]);
-        }
-        if (queue.length >= 2) {
-            [user1ID, user1Socket, user1name] = queue.shift();
-            [user2ID, user2Socket, user2name] = queue.shift();
-            // This makes a new chat room with these 2 new users
-            newChat = createChat(user1name, user2name);
-            // This adds this chat room to the user object
-            updateUser(user1ID, newChat);
-            updateUser(user2ID, newChat);
-            io.to(user1Socket).emit("sendToChat");
-            io.to(user2Socket).emit("sendToChat");
-        }
+        // Input is {'room': roomnumber, 'name': name, 'ip': userIP}
+        var room = io.sockets.adapter.rooms[input['room']];
+        console.log(room)
+        // if (queue.length >= 2) {
+        //     [user1ID, user1Socket, user1name] = queue.shift();
+        //     [user2ID, user2Socket, user2name] = queue.shift();
+        //     // This makes a new chat room with these 2 new users
+        //     newChat = createChat(user1name, user2name);
+        //     // This adds this chat room to the user object
+        //     updateUser(user1ID, newChat);
+        //     updateUser(user2ID, newChat);
+        //     io.to(user1Socket).emit("sendToChat");
+        //     io.to(user2Socket).emit("sendToChat");
+        // }
+
     });
   addMessage = function(input){
     ChatRoom.findOne({'id': input['room']}, function(err, userchatroom){

@@ -17,75 +17,28 @@ var maxAgeSec = 60*20 + 5;
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // Initial pages
 router.get('/', function(req, res, next) {
-  if(req.isAuthenticated()) {
-    res.redirect('/loginhome');
-  } else {
-    res.render('index', { title: 'Emergency Response Planning' });
-  }
+  // res.render('index', {title: 'Emergency Response Planning'});
+  res.redirect('/intro');
 });
 
 // Get intro page
 router.get('/intro', function(req, res, next) {
-  if(req.isAuthenticated()) {
-    if (req.user.admin) {
-    res.redirect('/admin');
-    } else {
-    res.render('intro', {user: req.user, title: 'Emergency Response Planning'});
-    }
-  } else {
-    res.render('index', { title: 'Emergency Response Planning' });
-  }
+  res.render('intro', {user: req.user, title: 'Emergency Response Planning'});
 });
 
 //get consent form page
 router.get('/consentform', function(req, res, next) {
-  if(req.isAuthenticated()) {
-    res.render('consentform', {user: req.user, title: 'Emergency Response Planning'});
-  } else {
-    res.render('index', { title: 'Emergency Response Planning' });
-  }
+  res.render('consentform', {user: req.user, title: 'Emergency Response Planning'});
 });
 
 //get consent form page
 router.get('/scenario', function(req, res, next) {
-  if(req.isAuthenticated()) {
-    res.render('scenario', {user: req.user, title: 'Emergency Response Planning'});
-  } else {
-    res.render('index', { title: 'Emergency Response Planning' });
-  }
+  res.render('scenario', {user: req.user, title: 'Emergency Response Planning'});
 });
 
 // This is really the queue page, was login home back in the day
 router.get('/loginhome', function(req, res, next) {
-  if(req.isAuthenticated()) {
-    User.findOne({"id": req.user.id}, function(err, users) {
-        if (err) {
-            console.log("And error occured while finding the user");
-        }
-        ChatRoom.findOne({'id': users.chat_room}, function(err, userchatroom){
-            if (err) {
-              console.log('An error occurred while finding the user chatroom by ID');
-            } else if (userchatroom === null || !(userchatroom.active)){
-                res.render('loginhome', {user: req.user, title: 'Emergency Response Planning'});
-            } else {
-                time = new Date();
-                currentTime = time.getTime();
-                // As chat rooms time out at 20 minutes right now
-                msSince = currentTime -= userchatroom.creationTime;
-                ageInSec = msSince / 1000;
-                if (ageInSec >= maxAgeSec){
-                    userchatroom.active = false;
-                    userchatroom.save();
-                    res.render('loginhome', {user: req.user, title: 'Emergency Response Planning'});
-                } else {
-                    res.redirect('/messaging');
-                }
-            }
-        })
-    })
-  } else {
-    res.redirect('/');
-  }
+  res.render('loginhome', {title: 'Emergency Response Planning'});
 });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -105,8 +58,36 @@ router.get('/admin', function(req, res, next) {
         res.render('admin', {chats: chatrooms, title: 'Emergency Response Planning'});
     })
   } else {
-    res.redirect('/');
+    res.render('index', {title: 'Emergency Response Planning'});
   }
+});
+
+router.get('/makeroom', function(req, res, next) {
+  // Lean basically makes it so we have raw javascript objects, which increases run time
+    makechat = function() {
+        var new_chat = new ChatRoom({
+            Users:          [user1name, user2name],
+            creationTime:   currentTime,
+        })
+        return new Promise(function(resolve, reject){
+            resolve(new_chat);
+        });
+    }
+    .then(chat => {
+        chat.id = chat._id.toString();
+        return chat;
+    })
+    .then(chat => {
+        chat.save();
+        return chat;
+    })
+    .then(chat => {
+        res.send(chat.id);
+    })
+    .catch(error => { console.log(error) });
+
+    makechat();
+  
 });
 
 router.get('/getAllChat', function(req, res) {
@@ -157,58 +138,27 @@ router.get('/chatarchiveq', function(req, res, next) {
 // Associated things for the messaging page
 
 router.get('/messaging', function(req, res, next) {
-    if(req.isAuthenticated()) {
-        // req.user must not update instantaneously so we must find the current user in the database to get their
-        // chat room
-        User.findOne({"id": req.user.id}, function(err, users) {
-            if (err) {
-                console.log("And error occured while finding the user");
-            }
-            ChatRoom.findOne({'id': users.chat_room}, function(err, userchatroom){
-                if (err) {
-                  console.log('An error occurred while finding the user chatroom by ID');
-                } else if (userchatroom === null || !(userchatroom.active)){
-                    res.redirect('/loginhome');
-                } else {
-                    time = new Date();
-                    currentTime = time.getTime();
-                    // As chat rooms time out at 20 minutes right now
-                    msSince = currentTime -= userchatroom.creationTime;
-                    ageInSec = msSince / 1000;
-                    if (ageInSec >= maxAgeSec){
-                        userchatroom.active = false;
-                        userchatroom.save();
-                        res.redirect('/loginhome');
-                    } else {
-                        res.render('messaging', {user: req.user, title: 'Emergency Response Planning'});
-                    }
-                }
-            })
-        });
-    } else {
-        res.redirect('/');
-    }
-});
-
-// Gets the user data to the frontend for some pages where this is nice to have
-router.get('/getUser', function(req, res) {
-    User.findOne({"id": req.user.id}, function(err, users) {
-        if (err) {
-            console.log("And error occured while finding the user");
-        }
-        res.send(users);
-    });
-});
-
-router.get('/getUserSubmit', function(req, res) {
-    User.findOne({"id": req.user.id}, function(err, users) {
-        if (err) {
-            console.log("And error occured while finding the user");
-        }
-        users.planSubmitted = true;
-        users.save();
-        res.send(users);
-    });
+    // ChatRoom.findOne({'id': users.chat_room}, function(err, userchatroom){
+    //     if (err) {
+    //       console.log('An error occurred while finding the user chatroom by ID');
+    //     } else if (userchatroom === null || !(userchatroom.active)){
+    //         res.redirect('/loginhome');
+    //     } else {
+    //         time = new Date();
+    //         currentTime = time.getTime();
+    //         // As chat rooms time out at 20 minutes right now
+    //         msSince = currentTime -= userchatroom.creationTime;
+    //         ageInSec = msSince / 1000;
+    //         if (ageInSec >= maxAgeSec){
+    //             userchatroom.active = false;
+    //             userchatroom.save();
+    //             res.redirect('/loginhome');
+    //         } else {
+    //             res.render('messaging', {title: 'Emergency Response Planning'});
+    //         }
+    //     }
+    // })
+    res.render('messaging', {title: 'Emergency Response Planning'});
 });
 
 // Gets the start time of the users conversation
@@ -222,44 +172,70 @@ router.get('/getChat', function(req, res) {
     })
 });
 
-router.post('/closeChat', function(req, res) {
-    ChatRoom.findOne({'id': req.user.chat_room}, function(err, userchatroom){
+// router.post('/closeChat', function(req, res) {
+//     ChatRoom.findOne({'id': req.user.chat_room}, function(err, userchatroom){
+//         if (err) {
+//           console.log('An error occurred');
+//         }
+//         if (userchatroom.active) {
+//             userchatroom.active = false;
+//             userchatroom.save();
+//             res.send('Success');
+//         }
+//     })
+// });
+
+// router.get('/checkInChat', function(req, res) {
+//     User.findOne({"id": req.user.id}, function(err, users) {
+//         if (err) {
+//             console.log("And error occured while finding the user");
+//         }
+//         ChatRoom.findOne({'id': req.user.chat_room}, function(err, userchatroom){
+//             if (err) {
+//               console.log('An error occurred');
+//             } else if(userchatroom === null || !userchatroom.active) {
+//                 res.send("nope");
+//                 return;
+//             }
+//             time = new Date();
+//             currentTime = time.getTime();
+//             // As chat rooms time out at 20 minutes right now
+//             msSince = currentTime -= userchatroom.creationTime;
+//             ageInSec = msSince / 1000;
+//             if (ageInSec >= maxAgeSec){
+//                 userchatroom.active = false;
+//                 userchatroom.save();
+//                 res.send("nope");
+//             } else {
+//                 res.send("inchat");
+//             }
+//         })
+//     })
+// });
+
+router.get('/checkChat', function(req, res) {
+    var roomID = req.body.roomID;
+    ChatRoom.findOne({'id': roomID}, function(err, userchatroom){
         if (err) {
           console.log('An error occurred');
+        } else if(userchatroom === null) {
+            res.send("noroom");
+            return;
+        } else if(userchatroom.creationTime === null) {
+            res.send();
         }
-        if (userchatroom.active) {
-            userchatroom.active = false;
+        time = new Date();
+        currentTime = time.getTime();
+        // As chat rooms time out at 20 minutes right now
+        msSince = currentTime -= userchatroom.creationTime;
+        ageInSec = msSince / 1000;
+        if (ageInSec >= maxAgeSec){
+            userchatroom.completed = true;
             userchatroom.save();
-            res.send('Success');
+            res.send("expired");
+        } else {
+            res.send();
         }
-    })
-});
-
-router.get('/checkInChat', function(req, res) {
-    User.findOne({"id": req.user.id}, function(err, users) {
-        if (err) {
-            console.log("And error occured while finding the user");
-        }
-        ChatRoom.findOne({'id': req.user.chat_room}, function(err, userchatroom){
-            if (err) {
-              console.log('An error occurred');
-            } else if(userchatroom === null || !userchatroom.active) {
-                res.send("nope");
-                return;
-            }
-            time = new Date();
-            currentTime = time.getTime();
-            // As chat rooms time out at 20 minutes right now
-            msSince = currentTime -= userchatroom.creationTime;
-            ageInSec = msSince / 1000;
-            if (ageInSec >= maxAgeSec){
-                userchatroom.active = false;
-                userchatroom.save();
-                res.send("nope");
-            } else {
-                res.send("inchat");
-            }
-        })
     })
 });
 
@@ -267,31 +243,22 @@ router.get('/checkInChat', function(req, res) {
 // Submit plan page
 
 router.get('/submitplan', function(req, res, next) {
-    if(req.isAuthenticated()) {
-        res.render('submitplan', {user: req.user, title: 'Emergency Response Planning'});
-        // ChatRoom.findOne({'id': req.user.chat_room}, function(err, userchatroom){
-        //     if (err) {
-        //       console.log('An error occurred while finding the user chatroom by ID');
-        //     } else if (userchatroom === null || userchatroom.active || req.user.planSubmitted){
-        //         res.redirect('/loginhome');
-        //     } else {
-        //         res.render('submitplan', {user: req.user, title: 'Emergency Response Planning'});
-        //     }
-        // });
-    } else {
-        res.redirect('/');
-    }
+    // if(req.isAuthenticated()) {
+    //     res.render('submitplan', {user: req.user, title: 'Emergency Response Planning'});
+    //     ChatRoom.findOne({'id': req.user.chat_room}, function(err, userchatroom){
+    //         if (err) {
+    //           console.log('An error occurred while finding the user chatroom by ID');
+    //         } else if (userchatroom === null || userchatroom.active || req.user.planSubmitted){
+    //             res.redirect('/loginhome');
+    //         } else {
+    //             res.render('submitplan', {user: req.user, title: 'Emergency Response Planning'});
+    //         }
+    //     });
+    // } else {
+    //     res.redirect('/');
+    // }
+    res.render('submitplan', {title: 'Emergency Response Planning'});
 });
-
-// We had this in below
-// ChatRoom.findOne({'id': req.user.chat_room}, function(err, userchatroom){
-//     if (err) {
-//       console.log('An error occurred');
-//     }
-//     return new Promise(function(resolve, reject){
-//         resolve(userchatroom);
-//     });
-// })
 
 router.post('/addPlan', function(req, res) {
     var plan = JSON.parse(req.body.plan);
@@ -392,7 +359,11 @@ router.post('/signup', function(req, res, next) {
 router.post('/login', passport.authenticate('local'), function(req, res) {
     // If this function gets called, authentication was successful.
     // `req.user` contains the authenticated user.
-    res.send("loggedin");
+    if (req.user.admin) {
+        res.send("admin");
+    } else {
+        res.send("loggedin");
+    }
     return;
   });
 

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="/javascripts/makeroom.js"></script>
+  </head>
+  <body>
+    <div class="admin">
+        <h1><%= title %></h1>
+        <p>Welcome to Admin Overview Page of the Live Chats</p>
+        <div class="styledbutton adminbutton" id="adminSection">
+            <a href="/makeroom"><button>View Usable Chat Rooms</button></a>
+            <button id="chatcreate">Create Chat Room</button>
+        </div>
+
+        <% for(i=0; i < chats.length; i++) { %>
+            <div class="archivechatboxes">
+                <div class="upperarchive" id='<%= chats[i].id %>'>
+                    <h1>Chat <%= chats[i].id %></h1>
+                    <span><button>Assign</button></span>
+                </div>
+            </div>
+
+        <% } %>
+
+    </div>
+  </body>
+</html>
+
+
+
+
+
+

@@ -1,4 +1,5 @@
 $(document).ready(function() {
+    // Not being used
     // var socket = io();
 
     // socket.emit('in prep');
