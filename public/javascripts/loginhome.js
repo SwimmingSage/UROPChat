@@ -10,7 +10,8 @@ $(document).ready(function() {
         $('#joinqueue').css({"display":"none", "opacity": "0"});
         $('#joinroomsection').append('<p id="joinshortly">Another user has arrived, you will begin shortly!</p>');
         $('#joinshortly').animate({'opacity':'1'}, 'slow');
-        setTimeout(redirect, 5000)
+        console.log("We would have been sent to the chat");
+        // setTimeout(redirect, 5000)
     });
 
     var userIP;
