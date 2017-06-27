@@ -112,8 +112,18 @@ io.on('connection', function(socket) {
     // }
     socket.on('joinRoom', function(input) {
         // Input is {'room': roomnumber, 'name': name, 'ip': userIP}
+        console.log();
+        console.log();
+        console.log();
         var room = io.sockets.adapter.rooms[input['room']];
-        console.log(room)
+        console.log("The room in socket before is", room);
+        if (room === undefined) {
+            socket.join(input['room'])
+            room = io.sockets.adapter.rooms[input['room']];
+        } else {
+
+        }
+        console.log("The room in socket after is", room);
         // if (queue.length >= 2) {
         //     [user1ID, user1Socket, user1name] = queue.shift();
         //     [user2ID, user2Socket, user2name] = queue.shift();

@@ -239,15 +239,15 @@ router.get('/getChat', function(req, res) {
 //     })
 // });
 
-router.get('/checkChat', function(req, res) {
-    var roomID = req.body.roomID;
+router.post('/checkChat', function(req, res) {
+    var roomID = req.body.room;
     ChatRoom.findOne({'id': roomID}, function(err, userchatroom){
         if (err) {
           console.log('An error occurred');
-        } else if(userchatroom === null) {
+        } else if(userchatroom === null || userchatroom.available) {
             res.send("noroom");
             return;
-        } else if(userchatroom.creationTime === null) {
+        } else if(userchatroom.creationTime === undefined) {
             res.send();
         }
         time = new Date();

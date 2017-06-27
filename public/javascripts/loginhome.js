@@ -22,16 +22,16 @@ $(document).ready(function() {
 
     $("#joinroomsection button").click(function(){
         $(".error").css({"display":"none"});
-        var roomnumber = $("#inputroom").text();
-        var name = $("#inputname").text();
+        var roomnumber = $("#inputroom").val();
+        console.log(roomnumber);
+        var name = $("#inputname").val();
         $.ajax({
             url: '/checkChat',
             data: {
-                roomID: roomnumber,
+                room: roomnumber,
             },
-            type: 'GET',
+            type: 'POST',
             success: function(data) {
-                //$('where I want to put data').text(data);
                 if(data === "noroom") {
                     $("#noroom").css({"display":"block"});
                 } else if (data === "expired") {
