@@ -67,35 +67,35 @@ io.on('connection', function(socket) {
         socket.join(room);
     });
 
-    // handling que system
-    readyprepchange = function() {
-        if (io.sockets.adapter.rooms['preproom'] === undefined) {
-            preproomcount = 0;
-        } else {
-            preproomcount = io.sockets.adapter.rooms['preproom'].length;
-        }
-        if (io.sockets.adapter.rooms['readyroom'] === undefined) {
-            readyroomcount = 0;
-        } else {
-            readyroomcount = io.sockets.adapter.rooms['preproom'].length;
-        }
-        output = {'prepCount': preproomcount, 'readyCount': readyroomcount};
-        io.to('preproom').emit("userchange", output);
-        io.to('readyroom').emit("userchange", output);
-    }
+    // handling queue system
+    // readyprepchange = function() {
+    //     if (io.sockets.adapter.rooms['preproom'] === undefined) {
+    //         preproomcount = 0;
+    //     } else {
+    //         preproomcount = io.sockets.adapter.rooms['preproom'].length;
+    //     }
+    //     if (io.sockets.adapter.rooms['readyroom'] === undefined) {
+    //         readyroomcount = 0;
+    //     } else {
+    //         readyroomcount = io.sockets.adapter.rooms['preproom'].length;
+    //     }
+    //     output = {'prepCount': preproomcount, 'readyCount': readyroomcount};
+    //     io.to('preproom').emit("userchange", output);
+    //     io.to('readyroom').emit("userchange", output);
+    // }
 
-    socket.on('in prep', function() {
-        socket.join('preproom');
-        socket.room = "preproom"
-        readyprepchange();
-    });
+    // socket.on('in prep', function() {
+    //     socket.join('preproom');
+    //     socket.room = "preproom"
+    //     readyprepchange();
+    // });
 
-    socket.on('in ready', function() {
-        socket.leave("preproom")
-        socket.join('readyroom');
-        socket.room = "readyroom";
-        readyprepchange();
-    });
+    // socket.on('in ready', function() {
+    //     socket.leave("preproom")
+    //     socket.join('readyroom');
+    //     socket.room = "readyroom";
+    //     readyprepchange();
+    // });
 
 
 
