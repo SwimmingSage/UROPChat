@@ -11,7 +11,7 @@ $(document).ready(function() {
         $('#joinroomsection').append('<p id="joinshortly">Another user has arrived, you will begin shortly!</p>');
         $('#joinshortly').animate({'opacity':'1'}, 'slow');
         console.log("We would have been sent to the chat");
-        // setTimeout(redirect, 5000)
+        setTimeout(redirect, 5000)
     });
 
     makeCookies = function(room, name) {
