@@ -207,8 +207,8 @@ $(document).ready(function() {
         currentTime = time.getTime();
         // get time remaining in seconds
         // remaining = Math.floor(maxTime - ((currentTime - startTime) / 1000));
-        timeSince = (currentTime - startTime)
-        remaining = Math.floor((timeRemainig - timeSince)/1000)
+        timeSince = (Number(currentTime) - Number(startTime))
+        remaining = Math.floor((Number(timeRemainig) - timeSince)/1000)
         console.log("remaining is", remaining);
         console.log("timeSince is", timeSince);
         console.log("startTime is", startTime);
