@@ -209,6 +209,7 @@ $(document).ready(function() {
         // remaining = Math.floor(maxTime - ((currentTime - startTime) / 1000));
         timeSince = (currentTime - startTime)
         remaining = Math.floor((timeRemainig - timeSince)/1000)
+        consoele.log("updateTimer ran and ran and did it run!");
         // if no time left make it impossible to send more messages, then ideally redirect once we get instructions
         // for what we want to do with them after
         if (turnedOff) {
