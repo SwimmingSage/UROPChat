@@ -200,6 +200,7 @@ router.post('/getChat', function(req, res) {
         chatroom = chatrooms[0];
         if (chatroom.completed) {
             res.send("expired");
+            return;
         }
         time = new Date();
         currentTime = time.getTime();
