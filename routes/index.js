@@ -58,7 +58,7 @@ router.get('/admin', function(req, res, next) {
         time = new Date();
         currentTime = time.getTime();
         for (i=0; i < chatrooms.length; i++) {
-            msSince = currentTime - Number(chatrooms[i].creationTime);
+            msSince = currentTime - chatrooms[i].startTime;
             ageInSec = msSince / 1000;
             if (ageInSec >= maxAgeSec){
                 console.log("The chat is too old");
@@ -140,7 +140,7 @@ router.get('/getAllChat', function(req, res) {
         time = new Date();
         currentTime = time.getTime();
         for (i=0; i < chatrooms.length; i++) {
-            msSince = currentTime - Number(chatrooms[i].creationTime);
+            msSince = currentTime - chatrooms[i].startTime;
             ageInSec = msSince / 1000;
             if (ageInSec >= maxAgeSec){
                 chatroom[i].completed = true;
@@ -206,7 +206,7 @@ router.post('/getChat', function(req, res) {
         time = new Date();
         currentTime = time.getTime();
         // As chat rooms time out at 20 minutes right now
-        msSince = currentTime - chatroom.creationTime;
+        msSince = currentTime - chatroom.startTime;
         ageInSec = msSince / 1000;
         if (ageInSec >= maxAgeSec){
             chatroom.completed = true;
@@ -239,13 +239,13 @@ router.post('/checkChat', function(req, res) {
         } else if(userchatroom === null || userchatroom.available) {
             res.send("noroom");
             return;
-        } else if(userchatroom.creationTime === undefined) {
+        } else if(userchatroom.startTime === undefined) {
             res.send();
         }
         time = new Date();
         currentTime = time.getTime();
         // As chat rooms time out at 20 minutes right now
-        msSince = currentTime -= userchatroom.creationTime;
+        msSince = currentTime -= userchatroom.startTime;
         ageInSec = msSince / 1000;
         if (ageInSec >= maxAgeSec){
             userchatroom.completed = true;
