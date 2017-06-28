@@ -208,7 +208,7 @@ router.post('/getChat', function(req, res) {
         msSince = currentTime - chatroom.startTime;
         ageInSec = msSince / 1000;
         timeRemaining = maxAgeSec - ageInSec;
-        if (timeRemaining >= 0) {
+        if (timeRemaining <= 0) {
             chatroom.completed = true;
             chatroom.save();
             res.redirect("/loginhome");
