@@ -174,10 +174,10 @@ router.post('/getChat', function(req, res) {
     .populate({path: 'Conversation', options:{sort: {'timeCreated': 1}}})
     .exec(function (err, chatrooms) {
         if (err) return handleError(err);
-        if (userchatroom.completed) {
+        chatroom = chatrooms[0];
+        if (chatroom.completed) {
             res.redirect("/loginhome");
         }
-        chatroom = chatrooms[0];
         time = new Date();
         currentTime = time.getTime();
         // As chat rooms time out at 20 minutes right now
@@ -227,7 +227,11 @@ router.post('/checkChat', function(req, res) {
             userchatroom.save();
             res.send("expired");
         } else {
+            if (userchatroom.active) {
+                res.send("active")
+            } else {
             res.send();
+            }
         }
     })
 });

@@ -50,6 +50,9 @@ $(document).ready(function() {
                     $("#noroom").css({"display":"block"});
                 } else if (data === "expired") {
                     $("#chatused").css({"display":"block"});
+                } else if (data === "active") {
+                    makeCookies(roomnumber, username);
+                    window.location.href = "/messaging";
                 } else {
                     $('#joinroomsection button').css({"display":"none", "opacity": "0"});
                     $('#joinroomsection p').css({"display":"block", "opacity": "0"});
