@@ -52,11 +52,23 @@ router.get('/admin', function(req, res, next) {
     ChatRoom
     .find({"active": true})
     .populate({path: 'Conversation', options:{sort: {'timeCreated': 1}}})
-    .lean()
     .exec(function (err, chatrooms) {
         if (err) return handleError(err);
-        // console.log(chatrooms);
-        res.render('admin', {chats: chatrooms, title: 'Emergency Response Planning'});
+        returndata = [];
+        time = new Date();
+        currentTime = time.getTime();
+        for (i=0; i < chatrooms.length; i++) {
+            msSince = currentTime - chatrooms[i].creationTime;
+            ageInSec = msSince / 1000;
+            if (ageInSec >= maxAgeSec){
+                chatroom[i].completed = true;
+                chatroom[i].active = false;
+                chatroom[i].save();
+            } else {
+                returndata.push(chatrooms[i]);
+            }
+        }
+        res.render('admin', {chats: returndata, title: 'Emergency Response Planning'});
     })
   } else {
     res.render('index', {title: 'Emergency Response Planning'});
@@ -126,7 +138,7 @@ router.get('/getAllChat', function(req, res) {
         time = new Date();
         currentTime = time.getTime();
         for (i=0; i < chatrooms.length; i++) {
-            msSince = currentTime - chatroom.creationTime;
+            msSince = currentTime - chatrooms[i].creationTime;
             ageInSec = msSince / 1000;
             if (ageInSec >= maxAgeSec){
                 chatroom[i].completed = true;
