@@ -33,6 +33,9 @@ $(document).ready(function() {
             },
             type: 'POST',
             success: function(chatroomsent) {
+                if (chatroomsent = "expired") {
+                    window.location.href = "/loginhome";
+                }
                 chatroom = chatroomsent;
                 console.log("We got the chatroom on the front end as", chatroom);
                 catchUpChat(chatroom.Conversation);
@@ -213,6 +216,7 @@ $(document).ready(function() {
             $('#m').val('');
             $('#timer').html('Chat closed');
             closeChat();
+            turnedOff = true;
             return;
         }
         // getting proper min/sec in string form;

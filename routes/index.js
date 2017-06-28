@@ -199,7 +199,7 @@ router.post('/getChat', function(req, res) {
         if (err) return handleError(err);
         chatroom = chatrooms[0];
         if (chatroom.completed) {
-            res.redirect("/loginhome");
+            res.send("expired");
         }
         time = new Date();
         currentTime = time.getTime();
