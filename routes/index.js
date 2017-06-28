@@ -61,10 +61,12 @@ router.get('/admin', function(req, res, next) {
             msSince = currentTime - chatrooms[i].creationTime;
             ageInSec = msSince / 1000;
             if (ageInSec >= maxAgeSec){
+                console.log("The chat is too old");
                 chatroom[i].completed = true;
                 chatroom[i].active = false;
                 chatroom[i].save();
             } else {
+                console.log("The chat is not too old, it is in sec", ageInSec);
                 returndata.push(chatrooms[i]);
             }
         }
