@@ -24,11 +24,11 @@ $(document).ready(function() {
         fastScroll();
     }
 
-    getChat = function() {
+    getChat = function(chatroom) {
         $.ajax({
             url: '/getChat',
             data: {
-                room: room,
+                room: chatroom,
             },
             type: 'POST',
             success: function(chatroomsent) {
@@ -51,7 +51,7 @@ $(document).ready(function() {
 
         name = Cookies.get('name');
         room = Cookies.get('room');
-        getChat(room);
+        getChat(chatroom);
     } else {
         window.location.href = "/loginhome";
     }
