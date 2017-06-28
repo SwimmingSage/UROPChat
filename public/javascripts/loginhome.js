@@ -14,38 +14,17 @@ $(document).ready(function() {
         // setTimeout(redirect, 5000)
     });
 
-    function getCookie(cname) {
-        var name = cname + "=";
-        var decodedCookie = decodeURIComponent(document.cookie);
-        var ca = decodedCookie.split(';');
-        for(var i = 0; i <ca.length; i++) {
-            var c = ca[i];
-            while (c.charAt(0) == ' ') {
-                c = c.substring(1);
-            }
-            if (c.indexOf(name) == 0) {
-                return c.substring(name.length, c.length);
-            }
-        }
-        return "";
-    }
-
-    createCookie = function(room, username) {
-        console.log("The current cookie is below");
-        console.log(document.cookie, "is the cookie");
-        console.log("We have no cookie right now");
-        var d = new Date();
-        d.setTime(d.getTime() + (2*24*60*60*1000)); // this way the cookie expires in 2 days
-        // if there are cookies
+    makeCookies = function(room, name) {
+        // if there is already a preexisting cookie remove it
         if (document.cookie != "") {
-            document.cookie = "name=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-            document.cookie = "room=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            Cookies.expire('room');
+            Cookies.expire('name');
         }
-        document.cookie = "name=" + username + "; expires=" + d.toUTCString() + ";path=/";
-        document.cookie = "room=" + room + "; expires=" + d.toUTCString() + ";path=/"
-        console.log("The cookie now is " + document.cookie);
-        console.log("The name is", getCookie("name"));
-        console.log("The room is", getCookie("room"));
+        Cookies.set('name', name);
+        Cookies.set('room', room);
+        console.log("The cookie document is now", document.cookie);
+        console.log("The name attribute of the cookie is", Cookies.get('name'))
+        console.log("The room attribute of the cookie is", Cookies.get('room'))
     }
 
     var userIP;
@@ -58,7 +37,7 @@ $(document).ready(function() {
     $("#joinroomsection button").click(function(){
         $(".error").css({"display":"none"});
         var roomnumber = $("#inputroom").val();
-        var name = $("#inputname").val();
+        var username = $("#inputname").val();
         // createCookie(roomnumber, name);
         $.ajax({
             url: '/checkChat',
@@ -75,8 +54,8 @@ $(document).ready(function() {
                     $('#joinroomsection button').css({"display":"none", "opacity": "0"});
                     $('#joinroomsection p').css({"display":"block", "opacity": "0"});
                     $('#joinroomsection p').animate({'opacity':'1'}, 'slow');
-                    createCookie(roomnumber, name);
-                    socket.emit('joinRoom', {'room': roomnumber, 'name': name, 'ip': userIP});
+                    makeCookies(roomnumber, username);
+                    socket.emit('joinRoom', {'room': roomnumber, 'name': username, 'ip': userIP});
                     // socket.emit('in ready');
                 }
             },

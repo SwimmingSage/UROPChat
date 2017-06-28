@@ -164,37 +164,32 @@ router.get('/chatarchiveq', function(req, res, next) {
 // Associated things for the messaging page
 
 router.get('/messaging', function(req, res, next) {
-    // ChatRoom.findOne({'id': users.chat_room}, function(err, userchatroom){
-    //     if (err) {
-    //       console.log('An error occurred while finding the user chatroom by ID');
-    //     } else if (userchatroom === null || !(userchatroom.active)){
-    //         res.redirect('/loginhome');
-    //     } else {
-    //         time = new Date();
-    //         currentTime = time.getTime();
-    //         // As chat rooms time out at 20 minutes right now
-    //         msSince = currentTime -= userchatroom.creationTime;
-    //         ageInSec = msSince / 1000;
-    //         if (ageInSec >= maxAgeSec){
-    //             userchatroom.active = false;
-    //             userchatroom.save();
-    //             res.redirect('/loginhome');
-    //         } else {
-    //             res.render('messaging', {title: 'Emergency Response Planning'});
-    //         }
-    //     }
-    // })
     res.render('messaging', {title: 'Emergency Response Planning'});
 });
 
 // Gets the start time of the users conversation
-router.get('/getChat', function(req, res) {
+router.post('/getChat', function(req, res) {
     ChatRoom
-    .find({"id": req.user.chat_room})
+    .find({"id": req.body.room})
     .populate({path: 'Conversation', options:{sort: {'timeCreated': 1}}})
     .exec(function (err, chatrooms) {
         if (err) return handleError(err);
-        res.send(chatrooms);
+        if (userchatroom.completed) {
+            res.redirect("/loginhome");
+        }
+        chatroom = chatrooms[0];
+        time = new Date();
+        currentTime = time.getTime();
+        // As chat rooms time out at 20 minutes right now
+        msSince = currentTime -= chatroom.creationTime;
+        ageInSec = msSince / 1000;
+        if (ageInSec >= maxAgeSec){
+            chatroom.completed = true;
+            chatroom.save();
+            res.redirect("/loginhome");
+        } else {
+            res.send(chatrooms);
+        }
     })
 });
 

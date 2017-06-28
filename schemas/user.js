@@ -18,6 +18,7 @@ var messageschema = new Schema({
     message:                {type: String, required: true},
     timeCreated:            {type: Number, required: true},
     sender:                 {type: String, required: true},
+    ipofSender:             {type: String, required: true},
 });
 
 var planschema = new Schema({
