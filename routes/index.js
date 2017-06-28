@@ -208,6 +208,11 @@ router.post('/getChat', function(req, res) {
         msSince = currentTime - chatroom.startTime;
         ageInSec = msSince / 1000;
         timeRemaining = maxAgeSec - ageInSec;
+        console.log("maxAgeSec is", maxAgeSec);
+        console.log("ageInSec is", ageInSec);
+        console.log();
+        console.log("timeRemaining is registered as", timeRemaining);
+        console.log();
         if (timeRemaining <= 0) {
             chatroom.completed = true;
             chatroom.save();
