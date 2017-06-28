@@ -35,6 +35,7 @@ var server = http.createServer(app);
 var io = require('socket.io').listen(server);
 
 // queue = [];
+rooms = [];
 
 io.on('connection', function(socket) {
     console.log('a user connected');
@@ -115,18 +116,37 @@ io.on('connection', function(socket) {
         console.log();
         console.log();
         console.log();
+        console.log("The room in question is", input['room']);
         var room = io.sockets.adapter.rooms[input['room']];
+        socket.ip = input['ip'];
         console.log("The room in socket before is", room);
         if (room === undefined) {
-            socket.join(input['room'])
+            socket.join(input['room']);
             room = io.sockets.adapter.rooms[input['room']];
         } else {
-
+            var takenIP = false;
+            for (var key in room.sockets) {
+                console.log("This key is", key);
+                othersocket = io.sockets.connected[key];
+                if (othersocket.ip === socket.ip) {
+                    console.log("There was an IP match, takenIP made true");
+                    takenIP = true;
+                    break;
+                }
+            }
+            if (!takenIP) {
+                socket.join(input['room']);
+            }
         }
         console.log("The room in socket after is", room);
+        // var roster = io.sockets.clients(room);
+        // console.log("The clients in the room are", roster);
         if (room.length === 2) {
             io.to(input['room']).emit("sendToChat");
         }
+        console.log();
+        console.log();
+        console.log();
         // if (queue.length >= 2) {
         //     [user1ID, user1Socket, user1name] = queue.shift();
         //     [user2ID, user2Socket, user2name] = queue.shift();

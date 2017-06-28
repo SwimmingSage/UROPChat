@@ -24,7 +24,6 @@ $(document).ready(function() {
     $("#joinroomsection button").click(function(){
         $(".error").css({"display":"none"});
         var roomnumber = $("#inputroom").val();
-        console.log(roomnumber);
         var name = $("#inputname").val();
         $.ajax({
             url: '/checkChat',

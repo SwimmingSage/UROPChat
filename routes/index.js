@@ -211,34 +211,6 @@ router.get('/getChat', function(req, res) {
 //     })
 // });
 
-// router.get('/checkInChat', function(req, res) {
-//     User.findOne({"id": req.user.id}, function(err, users) {
-//         if (err) {
-//             console.log("And error occured while finding the user");
-//         }
-//         ChatRoom.findOne({'id': req.user.chat_room}, function(err, userchatroom){
-//             if (err) {
-//               console.log('An error occurred');
-//             } else if(userchatroom === null || !userchatroom.active) {
-//                 res.send("nope");
-//                 return;
-//             }
-//             time = new Date();
-//             currentTime = time.getTime();
-//             // As chat rooms time out at 20 minutes right now
-//             msSince = currentTime -= userchatroom.creationTime;
-//             ageInSec = msSince / 1000;
-//             if (ageInSec >= maxAgeSec){
-//                 userchatroom.active = false;
-//                 userchatroom.save();
-//                 res.send("nope");
-//             } else {
-//                 res.send("inchat");
-//             }
-//         })
-//     })
-// });
-
 router.post('/checkChat', function(req, res) {
     var roomID = req.body.room;
     ChatRoom.findOne({'id': roomID}, function(err, userchatroom){
