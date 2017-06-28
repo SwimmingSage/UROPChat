@@ -34,9 +34,10 @@ $(document).ready(function() {
             },
             type: 'POST',
             success: function(chatinfosent) {
-                if (chatinfosent = "expired") {
-                    window.location.href = "/loginhome";
-                }
+                // if (chatinfosent = "expired") {
+                //     window.location.href = "/loginhome";
+                // }
+                console.log(chatinfosent);
                 chatroom = chatinfosent['room'];
                 console.log("We got the chatroom on the front end as", chatroom);
                 catchUpChat(chatroom.Conversation);
