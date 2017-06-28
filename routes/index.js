@@ -194,9 +194,9 @@ router.get('/messaging', function(req, res, next) {
 router.post('/getChat', function(req, res) {
     console.log()
     console.log()
-    console.log("The room was caught as", req.body.room);
+    console.log("The room was caught as", req.body.chatroom);
     ChatRoom
-    .find({"id": req.body.room})
+    .find({"id": req.body.chatroom})
     .populate({path: 'Conversation', options:{sort: {'timeCreated': 1}}})
     .exec(function (err, chatrooms) {
         if (err) return handleError(err);

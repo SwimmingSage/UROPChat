@@ -25,10 +25,11 @@ $(document).ready(function() {
     }
 
     getChat = function(chatroom) {
+        console.log("frontend chatroom is registered as", chatroom);
         $.ajax({
             url: '/getChat',
             data: {
-                room: chatroom,
+                chatroom: chatroom,
             },
             type: 'POST',
             success: function(chatroomsent) {
@@ -51,7 +52,7 @@ $(document).ready(function() {
 
         name = Cookies.get('name');
         room = Cookies.get('room');
-        getChat(chatroom);
+        getChat(room);
     } else {
         window.location.href = "/loginhome";
     }
