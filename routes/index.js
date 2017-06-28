@@ -207,12 +207,13 @@ router.post('/getChat', function(req, res) {
         // As chat rooms time out at 20 minutes right now
         msSince = currentTime - chatroom.startTime;
         ageInSec = msSince / 1000;
-        if (ageInSec >= maxAgeSec){
+        timeRemaining = maxAgeSec - ageInSec;
+        if (timeRemaining >= 0) {
             chatroom.completed = true;
             chatroom.save();
             res.redirect("/loginhome");
         } else {
-            res.send(chatroom);
+            res.send({'room': chatroom, 'timeRemaining': timeRemaining});
         }
     })
 });

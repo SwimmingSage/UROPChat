@@ -5,6 +5,7 @@ $(document).ready(function() {
     var name;
     var room;
     var ip;
+    var timeRemainig;
     var startTime;
     var chatroom;
 
@@ -32,14 +33,16 @@ $(document).ready(function() {
                 chatroom: chatroom,
             },
             type: 'POST',
-            success: function(chatroomsent) {
-                if (chatroomsent = "expired") {
+            success: function(chatinfosent) {
+                if (chatinfosent = "expired") {
                     window.location.href = "/loginhome";
                 }
-                chatroom = chatroomsent;
+                chatroom = chatinfosent['room'];
                 console.log("We got the chatroom on the front end as", chatroom);
                 catchUpChat(chatroom.Conversation);
-                startTime = chatroom.startTime;
+                timeRemainig = chatinfosent['timeRemainig'];
+                time = new Date();
+                startTime = time.getTime();
                 // change startTime to remaining time
             },
             error: function(xhr, status, error) {
@@ -192,20 +195,24 @@ $(document).ready(function() {
     /////////////////////////////////////////////////////////////////////////////////////////////////////
     // Keep track of the timer
     // max time in minutes
-    var maxTime = 20*60 + 5;
+    var warningTime = 5 * 60;
     var turnedOff = false;
     var warningGiven = false;
+    // timeRemainig = chatinfosent['timeRemainig'];
+    // time = new Date();
+    // startTime = time.getTime();
     function updateTimer(){
         time = new Date();
         currentTime = time.getTime();
         // get time remaining in seconds
-        remaining = Math.floor(maxTime - ((currentTime - startTime) / 1000));
+        // remaining = Math.floor(maxTime - ((currentTime - startTime) / 1000));
+        timeSince = (currentTime - startTime)
+        remaining = Math.floor((timeRemainig - timeSince)/1000)
         // if no time left make it impossible to send more messages, then ideally redirect once we get instructions
         // for what we want to do with them after
         if (turnedOff) {
             return;
         }
-        warningTime = 5 * 60;
         if (0 < remaining && remaining <= warningTime && !warningGiven){
             warningGiven = true;
             giveWarning();
@@ -219,6 +226,7 @@ $(document).ready(function() {
             $('#timer').html('Chat closed');
             closeChat();
             turnedOff = true;
+            clearInterval(keepTime);
             return;
         }
         // getting proper min/sec in string form;
@@ -231,8 +239,7 @@ $(document).ready(function() {
         timeLeft = minLeft + ":" + secLeft;
         $('#timeLeft').text(timeLeft);
     }
-
-    setInterval(updateTimer, 200);
+    var keepTime = setInterval(updateTimer, 200);
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
     isTyping = false;
