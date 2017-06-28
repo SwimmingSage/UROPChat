@@ -34,6 +34,7 @@ $(document).ready(function() {
             type: 'POST',
             success: function(chatroomsent) {
                 chatroom = chatroomsent;
+                console.log("We got the chatroom on the front end as", chatroom);
                 catchUpChat(chatroom.Conversation);
                 startTime = chatroom.startTime;
             },

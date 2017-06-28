@@ -192,17 +192,12 @@ router.get('/messaging', function(req, res, next) {
 
 // Gets the start time of the users conversation
 router.post('/getChat', function(req, res) {
-    console.log()
-    console.log()
-    console.log("The room was caught as", req.body.chatroom);
     ChatRoom
     .find({"id": req.body.chatroom})
     .populate({path: 'Conversation', options:{sort: {'timeCreated': 1}}})
     .exec(function (err, chatrooms) {
         if (err) return handleError(err);
-        console.log("chatrooms is", chatrooms);
         chatroom = chatrooms[0];
-        console.log("chatrooms[0] is", chatroom);
         if (chatroom.completed) {
             res.redirect("/loginhome");
         }
