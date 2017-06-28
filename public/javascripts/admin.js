@@ -149,7 +149,7 @@ $(document).ready(function() {
         for (i=0; i < chatrooms.length; i++) {
             roomid = chatrooms[i].id 
             if(!closed[roomid]) {
-                updateTimer(chatrooms[i].creationTime, chatrooms[i].id);
+                updateTimer(chatrooms[i].startTime, chatrooms[i].id);
             }
         }
     }
