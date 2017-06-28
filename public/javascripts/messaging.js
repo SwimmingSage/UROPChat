@@ -202,7 +202,7 @@ $(document).ready(function() {
     // timeRemainig = chatinfosent['timeRemainig'];
     // time = new Date();
     // startTime = time.getTime();
-    function updateTimer(){
+    updateTimer = function(){
         time = new Date();
         currentTime = time.getTime();
         // get time remaining in seconds
@@ -237,6 +237,7 @@ $(document).ready(function() {
         }
         // putting the time left together in min:sec form
         timeLeft = minLeft + ":" + secLeft;
+        console.log("timeLeft is", timeLeft)
         $('#timeLeft').text(timeLeft);
     }
     var keepTime = setInterval(updateTimer, 200);
