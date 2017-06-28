@@ -120,20 +120,31 @@ router.get('/getAllChat', function(req, res) {
     ChatRoom
     .find({"active": true})
     .populate({path: 'Conversation', options:{sort: {'timeCreated': 1}}})
-    .lean()
     .exec(function (err, chatrooms) {
         if (err) return handleError(err);
-        res.send(chatrooms)
+        returndata = [];
+        time = new Date();
+        currentTime = time.getTime();
+        for (i=0; i < chatrooms.length; i++) {
+            msSince = currentTime - chatroom.creationTime;
+            ageInSec = msSince / 1000;
+            if (ageInSec >= maxAgeSec){
+                chatroom[i].completed = true;
+                chatroom[i].active = false;
+                chatroom[i].save();
+            } else {
+                returndata.push(chatrooms[i]);
+            }
+        }
+        res.send(returndata);
     })
 });
 
 router.get('/chatarchive', function(req, res, next) {
   //Lean basically makes it so we have raw javascript objects, which increases run time
-  ChatRoom
-  .find({"complete": true})
   if(req.isAuthenticated() && req.user.admin) {
     ChatRoom
-    .find({"active": false})
+    .find({"complete": true})
     .populate({path: 'Conversation', options:{sort: {'timeCreated': 1}}})
     .lean()
     .exec(function (err, chatrooms) {
@@ -181,7 +192,7 @@ router.post('/getChat', function(req, res) {
         time = new Date();
         currentTime = time.getTime();
         // As chat rooms time out at 20 minutes right now
-        msSince = currentTime -= chatroom.creationTime;
+        msSince = currentTime - chatroom.creationTime;
         ageInSec = msSince / 1000;
         if (ageInSec >= maxAgeSec){
             chatroom.completed = true;
