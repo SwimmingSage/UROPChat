@@ -211,7 +211,7 @@ router.post('/getChat', function(req, res) {
             chatroom.save();
             res.redirect("/loginhome");
         } else {
-            res.send(chatrooms);
+            res.send(chatroom);
         }
     })
 });
