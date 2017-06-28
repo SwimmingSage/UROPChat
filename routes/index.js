@@ -58,7 +58,7 @@ router.get('/admin', function(req, res, next) {
         time = new Date();
         currentTime = time.getTime();
         for (i=0; i < chatrooms.length; i++) {
-            msSince = currentTime - chatrooms[i].creationTime;
+            msSince = currentTime - Number(chatrooms[i].creationTime);
             ageInSec = msSince / 1000;
             if (ageInSec >= maxAgeSec){
                 console.log("The chat is too old");
@@ -140,7 +140,7 @@ router.get('/getAllChat', function(req, res) {
         time = new Date();
         currentTime = time.getTime();
         for (i=0; i < chatrooms.length; i++) {
-            msSince = currentTime - chatrooms[i].creationTime;
+            msSince = currentTime - Number(chatrooms[i].creationTime);
             ageInSec = msSince / 1000;
             if (ageInSec >= maxAgeSec){
                 chatroom[i].completed = true;
