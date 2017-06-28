@@ -14,6 +14,7 @@ var Message = mongoose.model('Message');
 var ChatRoom = mongoose.model('ChatRoom');
 
 var maxAgeSec = 60*20 + 5;
+var maxAgems = maxAgeSec * 1000;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // Initial pages
@@ -205,19 +206,20 @@ router.post('/getChat', function(req, res) {
         time = new Date();
         currentTime = time.getTime();
         // As chat rooms time out at 20 minutes right now
-        msSince = currentTime - chatroom.startTime;
-        ageInSec = msSince / 1000;
-        timeRemaining = maxAgeSec - ageInSec;
-        console.log("maxAgeSec is", maxAgeSec);
-        console.log("ageInSec is", ageInSec);
+        msAge = currentTime - chatroom.startTime;
+        // ageInSec = msSince / 1000;
+        timeRemaining = maxAgems - msAge;
+        console.log("msAge is", msAge);
         console.log();
-        console.log("timeRemaining is registered as", timeRemaining);
+        console.log("timeRemaining in ms is registered as", timeRemaining);
         console.log();
         if (timeRemaining <= 0) {
+            console.log("timeRemaining is registered as <= 0");
             chatroom.completed = true;
             chatroom.save();
             res.redirect("/loginhome");
         } else {
+            console.log("We went down the else route and everything was sent correctly");
             res.send({'room': chatroom, 'timeRemaining': timeRemaining});
         }
     })
