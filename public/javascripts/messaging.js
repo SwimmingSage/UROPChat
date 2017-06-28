@@ -40,6 +40,7 @@ $(document).ready(function() {
                 console.log("We got the chatroom on the front end as", chatroom);
                 catchUpChat(chatroom.Conversation);
                 startTime = chatroom.startTime;
+                // change startTime to remaining time
             },
             error: function(xhr, status, error) {
                 console.log("Uh oh there was an error: " + error);
@@ -57,6 +58,7 @@ $(document).ready(function() {
         name = Cookies.get('name');
         room = Cookies.get('room');
         getChat(room);
+        getToRoom(room);
     } else {
         window.location.href = "/loginhome";
     }
