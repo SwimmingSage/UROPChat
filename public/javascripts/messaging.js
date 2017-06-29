@@ -5,7 +5,7 @@ $(document).ready(function() {
     var name;
     var room;
     var ip;
-    var timeRemainig;
+    var timeRemaining;
     var startTime;
     var chatroom;
 
@@ -41,7 +41,8 @@ $(document).ready(function() {
                 chatroom = chatinfosent['room'];
                 console.log("We got the chatroom on the front end as", chatroom);
                 catchUpChat(chatroom.Conversation);
-                timeRemainig = chatinfosent['timeRemainig'];
+                timeRemaining = chatinfosent['timeRemaining'];
+                console.log("timeRemaining is", timeRemaining);
                 time = new Date();
                 startTime = time.getTime();
                 // change startTime to remaining time
@@ -199,7 +200,7 @@ $(document).ready(function() {
     var warningTime = 5 * 60;
     var turnedOff = false;
     var warningGiven = false;
-    // timeRemainig = chatinfosent['timeRemainig'];
+    // timeRemaining = chatinfosent['timeRemaining'];
     // time = new Date();
     // startTime = time.getTime();
     updateTimer = function(){
@@ -208,9 +209,11 @@ $(document).ready(function() {
         // get time remaining in seconds
         // remaining = Math.floor(maxTime - ((currentTime - startTime) / 1000));
         timeSince = (Number(currentTime) - Number(startTime))
-        remaining = Math.floor((Number(timeRemainig) - timeSince)/1000)
+        remaining = Math.floor((Number(timeRemaining) - timeSince)/1000)
         console.log();
         console.log();
+        console.log("currentTime is", currentTime);
+        console.log("startTime is", startTime);
         console.log("We start here");
         console.log("remaining is", remaining);
         console.log("timeSince is", timeSince);
