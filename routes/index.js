@@ -277,10 +277,14 @@ router.get('/submitplan', function(req, res, next) {
 
 router.post('/addPlan', function(req, res) {
     var plan = JSON.parse(req.body.plan);
+    var name = req.body.name;
+    var room = req.body.room;
+    var ip = req.body.ip;
     var plannumber;
     createstep = function(step, act, loc, chat) {
         var plan_step = new Plan({
-            user:            req.user.id,
+            user:            ip,
+            name:            name,
             stepnumber:      step,
             action:          act,
             location:        loc,
@@ -294,7 +298,7 @@ router.post('/addPlan', function(req, res) {
         return plan_step;
     }
     ChatRoom
-    .findOne({"id": req.user.chat_room})
+    .findOne({"id": room})
     .populate({path: 'user1plan', options:{sort: {'stepnumber': 1}}})
     .populate({path: 'user2plan', options:{sort: {'stepnumber': 1}}})
     .exec(function (err, userchatroom) {
@@ -307,7 +311,7 @@ router.post('/addPlan', function(req, res) {
     })
     .then(chat => {
         if (chat.user1plan.length != 0) {
-            if(chat.user1plan[0].user != req.user.id) {
+            if(chat.user1plan[0].user != ip) {
                 plannumber = 2;
             } else{
                 chat.user1plan = [];

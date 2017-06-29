@@ -23,6 +23,7 @@ var messageschema = new Schema({
 
 var planschema = new Schema({
     user:                   {type: String},
+    name:                   {type: String},
     stepnumber:             {type: Number},
     action:                 {type: String},
     location:               {type: String},

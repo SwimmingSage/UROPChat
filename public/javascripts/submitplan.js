@@ -1,21 +1,21 @@
 $(document).ready(function() {
 
     // This grabs the user data from backend so we can get their info
-    var user;
-    var chatroom;
-    $.ajax({
-        url: '/getUserSubmit',
-        data: {
-        },
-        type: 'GET',
-        success: function(data) {
-            user = data;
-            chatroom = user.chat_room;
-        },
-        error: function(xhr, status, error) {
-            console.log("Uh oh there was an error: " + error);
-        }
-    });
+    var name;
+    var room;
+    var ip;
+
+    if (document.cookie != "") {
+        // get the user's ip as identification
+        $.get("http://ipinfo.io", function(response) {
+            ip = response.ip;// This gives the user's IP address in string format
+        }, "jsonp");
+
+        name = Cookies.get('name');
+        room = Cookies.get('room');
+    } else {
+        window.location.href = "/loginhome";
+    }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
     // Coding for Submissions
@@ -94,6 +94,9 @@ $(document).ready(function() {
             url: '/addPlan',
             data: {
                 plan: JSON.stringify(plans),
+                name: name,
+                room: room,
+                ip: ip,
             },
             type: 'POST',
             success: function(data) {
