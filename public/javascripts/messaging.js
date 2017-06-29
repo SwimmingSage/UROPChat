@@ -260,16 +260,10 @@ $(document).ready(function() {
     var wasTyping = false;
     socket.on('typing alert', function(output) {
         // form of output is output = {'id':input['id'], name: input['name'], message: input['message'], 'room':input['room']};
-        // want to add name to this at some point
-        // console.log("Output is", output);
-        // console.log("the length of message is", output['message'].length);
-        // ignore signs that I am typing
-        // console.log("We got the typing alert with this output", output);
         if (output['id'] != ip) {
             if (output['message'].length === 0 && wasTyping) {
                 wasTyping = false;
                 shouldScroll = (messages.scrollTop + messages.clientHeight === messages.scrollHeight);
-                // $('ul.messages').css({'height':'18em'});
                 $('ul.messages').css({'height':'calc(100% - 47px)'});
                 $('.typing').css({'display':'none'});
                 if (shouldScroll) {
@@ -281,7 +275,6 @@ $(document).ready(function() {
                     othertyping = output['name'] + " is typing. . ."
                     $('.typing').text(othertyping);
                 }
-                // console.log("We recognize the other user is typing");
                 wasTyping = true;
                 shouldScroll = (messages.scrollTop + messages.clientHeight === messages.scrollHeight);
                 $('ul.messages').css({'height':'calc(100% - 70px)'});
