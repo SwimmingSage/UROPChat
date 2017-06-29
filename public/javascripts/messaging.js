@@ -34,15 +34,13 @@ $(document).ready(function() {
             },
             type: 'POST',
             success: function(chatinfosent) {
+                // chatinfo sent is {'room': chatroom, 'timeRemaining': timeRemaining} or "expired if time has run out"}
                 if (chatinfosent === "expired") {
-                    window.location.href = "/loginhome";
+                    window.location.href = "/submitplan";
                 }
-                console.log(chatinfosent);
                 chatroom = chatinfosent['room'];
-                console.log("We got the chatroom on the front end as", chatroom);
                 catchUpChat(chatroom.Conversation);
                 timeRemaining = chatinfosent['timeRemaining'];
-                console.log("timeRemaining is", timeRemaining);
                 time = new Date();
                 startTime = time.getTime();
                 // change startTime to remaining time
