@@ -254,6 +254,8 @@ $(document).ready(function() {
     var wasTyping = false;
     socket.on('typing alert', function(output) {
         // form of output is output = {'id':input['id'], name: input['name'], message: input['message'], 'room':input['room']};
+        console.log("output['id'] is", output['id']);
+        console.log("userid is", userid);
         if (output['id'] != userid) {
             if (output['message'].length === 0 && wasTyping) {
                 wasTyping = false;
