@@ -71,23 +71,17 @@ io.on('connection', function(socket) {
 
     socket.on('joinRoom', function(input) {
         // Input is {'room': roomnumber, 'name': name, 'ip': userIP}
-        console.log();
-        console.log();
-        console.log("The room in question is", input['room']);
         var room = io.sockets.adapter.rooms[input['room']];
         var ipAddress = [];
         socket.ip = input['ip'];
-        console.log("The room in socket before is", room);
         if (room === undefined) {
             socket.join(input['room']);
             room = io.sockets.adapter.rooms[input['room']];
         } else {
             var takenIP = false;
             for (var key in room.sockets) {
-                console.log("This key is", key);
                 othersocket = io.sockets.connected[key];
                 if (othersocket.ip === socket.ip) {
-                    console.log("There was an IP match, takenIP made true");
                     takenIP = true;
                     break;
                 } else {
@@ -99,13 +93,10 @@ io.on('connection', function(socket) {
                 ipAddress.push(input['ip']);
             }
         }
-        console.log("The room in socket after is", room);
         if (room.length === 2) {
             updateChat(input['room'], ipAddress);
             io.to(input['room']).emit("sendToChat");
         }
-        console.log();
-        console.log();
     });
 
   addMessage = function(input){

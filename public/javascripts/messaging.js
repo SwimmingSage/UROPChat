@@ -210,14 +210,6 @@ $(document).ready(function() {
         // remaining = Math.floor(maxTime - ((currentTime - startTime) / 1000));
         timeSince = (Number(currentTime) - Number(startTime))
         remaining = Math.floor((Number(timeRemaining) - timeSince)/1000)
-        console.log();
-        console.log();
-        console.log("currentTime is", currentTime);
-        console.log("startTime is", startTime);
-        console.log("We start here");
-        console.log("remaining is", remaining);
-        console.log("timeSince is", timeSince);
-        console.log("startTime is", startTime);
         // if no time left make it impossible to send more messages, then ideally redirect once we get instructions
         // for what we want to do with them after
         if (0 < remaining && remaining <= warningTime && !warningGiven){
@@ -238,15 +230,12 @@ $(document).ready(function() {
         }
         // getting proper min/sec in string form;
         secLeft = (remaining % 60).toString();
-        console.log("secLeft = (remaining % 60).toString() is", secLeft);
         minLeft = (Math.floor(remaining / 60)).toString();
-        console.log("minLeft = (Math.floor(remaining / 60)).toString() is", minLeft);
         if (secLeft.length === 1){
             secLeft = "0" + secLeft;
         }
         // putting the time left together in min:sec form
         timeLeft = minLeft + ":" + secLeft;
-        console.log("timeLeft is", timeLeft)
         $('#timeLeft').text(timeLeft);
     }
     var keepTime = setInterval(updateTimer, 200);
