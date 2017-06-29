@@ -6,11 +6,13 @@ $(document).ready(function() {
             data: {
             },
             type: 'GET',
-            success: function(data) {
+            success: function(chat) {
                 // in this case data is the chatrooms id
                 newRoom = '<div class="chatrooms">' +
-                            '<div class="chatroomdiv" id=' + data + '>' +
-                              '<h1>Chat: ' + data +'</h1>' +
+                            '<div class="chatroomdiv" id=' + chat.id + '>' +
+                              '<h1>Chat: ' + chat.id +'</h1>' +
+                              '<p>User1 ID: ' + chat.User1 + '</p>' +
+                              '<p>User2 ID: ' + chat.User2 + '</p>' +
                               '<div class="selectroom">' +
                                 '<button>Assign</button>' +
                                 '<p class="assigned">Assigned</p>' +

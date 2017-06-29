@@ -14,35 +14,38 @@ $(document).ready(function() {
         setTimeout(redirect, 5000)
     });
 
-    makeCookies = function(room, name) {
+    makeCookies = function(room, name, userid) {
         // if there is already a preexisting cookie remove it
         if (document.cookie != "") {
             Cookies.expire('room');
+            Cookies.expire('userid');
             Cookies.expire('name');
         }
         Cookies.set('name', name);
         Cookies.set('room', room);
+        Cookies.set('userid', userid);
         console.log("The cookie document is now", document.cookie);
         console.log("The name attribute of the cookie is", Cookies.get('name'))
         console.log("The room attribute of the cookie is", Cookies.get('room'))
+        console.log("The userid attribute of the cookie is", Cookies.get('userid'));
     }
-
-    var userIP;
-    $.get("http://ipinfo.io", function(response) {
-        userIP = response.ip;
-        console.log(userIP);
-        // This gives the user's IP address in string format
-    }, "jsonp");
 
     $("#joinroomsection button").click(function(){
         $(".error").css({"display":"none"});
         var roomnumber = $("#inputroom").val();
         var username = $("#inputname").val();
-        // createCookie(roomnumber, name);
+        var entryid = $("#inputid").val();
+
+        if (roomnumber.length === 0 || entryid.length === 0) {
+            $("#incomplete").css({"display":"block"});
+            return;
+        }
+
         $.ajax({
             url: '/checkChat',
             data: {
                 room: roomnumber,
+                id:   entryid,
             },
             type: 'POST',
             success: function(data) {
@@ -58,7 +61,7 @@ $(document).ready(function() {
                     $('#joinroomsection p').css({"display":"block", "opacity": "0"});
                     $('#joinroomsection p').animate({'opacity':'1'}, 'slow');
                     makeCookies(roomnumber, username);
-                    socket.emit('joinRoom', {'room': roomnumber, 'name': username, 'ip': userIP});
+                    socket.emit('joinRoom', {'room': roomnumber, 'name': username, 'id': entryid});
                     // socket.emit('in ready');
                 }
             },

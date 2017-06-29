@@ -843,6 +843,11 @@ td.planside {
     margin: .2em 0em .2em 1em;
 }
 
+.chatroomdiv p {
+    text-align: left;
+    margin: 0.1em 0em .1em 2em;
+}
+
 .selectroom {
     position: absolute;
     top: .5em;

@@ -3,14 +3,10 @@ $(document).ready(function() {
     // This grabs the user data from backend so we can get their info
     var name;
     var room;
-    var ip;
+    var userid;
 
     if (document.cookie != "") {
-        // get the user's ip as identification
-        $.get("http://ipinfo.io", function(response) {
-            ip = response.ip;// This gives the user's IP address in string format
-        }, "jsonp");
-
+        userid = Cookies.get('userid');
         name = Cookies.get('name');
         room = Cookies.get('room');
     } else {
@@ -83,6 +79,7 @@ $(document).ready(function() {
     removeCookies = function() {
         Cookies.expire('room');
         Cookies.expire('name');
+        Cookies.expire('userid');
         console.log("Cookies have been removed");
     }
 
@@ -101,7 +98,7 @@ $(document).ready(function() {
                 plan: JSON.stringify(plans),
                 name: name,
                 room: room,
-                ip: ip,
+                userid: userid,
             },
             type: 'POST',
             success: function(data) {

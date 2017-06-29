@@ -4,7 +4,7 @@ $(document).ready(function() {
     var socket = io();
     var name;
     var room;
-    var ip;
+    var userid;
     var timeRemaining;
     var startTime;
     var chatroom;
@@ -16,7 +16,7 @@ $(document).ready(function() {
 
     catchUpChat = function(conversation) {
         for (i = 0; i < conversation.length; i++) {
-            if(conversation[i].ipofSender === ip){
+            if(conversation[i].idofSender === userid){
                 $('.messages').append('<li><strong>'+conversation[i].sender+':&nbsp;</strong>'+conversation[i].message+'</li>');
             } else {
                 $('.messages').append('<li class="otheruser"><strong>'+conversation[i].sender+':&nbsp;</strong>'+conversation[i].message+'</li>');
@@ -53,13 +53,9 @@ $(document).ready(function() {
 
     // where we decide if they stay or go
     if (document.cookie != "") {
-        // get the user's ip as identification
-        $.get("http://ipinfo.io", function(response) {
-            ip = response.ip;// This gives the user's IP address in string format
-        }, "jsonp");
-
         name = Cookies.get('name');
         room = Cookies.get('room');
+        userid = Cookies.get('userid');
         getChat(room);
         getToRoom(room);
     } else {
@@ -87,7 +83,7 @@ $(document).ready(function() {
         if (message.length === 0){
             return false;
         }
-        input = {'room': room, 'message':message, 'sender': name, 'name': name, 'id': ip};
+        input = {'room': room, 'message':message, 'sender': name, 'name': name, 'id': userid};
         socket.emit('chat message', input);
         // // Clear the message area's text
         $('#m').val('');
@@ -111,7 +107,7 @@ $(document).ready(function() {
     socket.on('recieve message', function(output) {
         // form of output is output = {'message':input['message'], name: input['name'], id:input['id'], 'room': input['room']};
         shouldScroll = (messages.scrollTop + messages.clientHeight === messages.scrollHeight);
-        if(output['id'] === ip){
+        if(output['id'] === userid){
             $('.messages').append('<li><strong>'+output['name']+':&nbsp;</strong>'+output['message']+'</li>');
         } else {
             $('.messages').append('<li class="otheruser"><strong>'+output['name']+':&nbsp;</strong>'+output['message']+'</li>');
@@ -119,7 +115,7 @@ $(document).ready(function() {
         if (shouldScroll) {
             scrollToBottom();
         }
-        if (wasTyping && output['id'] != ip){
+        if (wasTyping && output['id'] != userid){
             wasTyping = false;
             $('ul.messages').css({'height':'calc(100% - 47px)'});
             $('.typing').css({'display':'none'});
@@ -154,7 +150,7 @@ $(document).ready(function() {
     $("#closeChat").click(function(){
         $('.useractionpopup').css({"display":"none", "opacity":"0"});
         $('#closeChatSection').css({'display':'none'});
-        input = {'room': room, 'user': ip};
+        input = {'room': room, 'user': userid};
         if (otherUserClose) {
             socket.emit('close Chat', input);
         } else {
@@ -166,7 +162,7 @@ $(document).ready(function() {
 
     socket.on('attempt close', function(output) {
         // input = {'room': user.chat_room, 'user': user.id};
-        if (output['user'] != ip) {
+        if (output['user'] != userid) {
             otherUserClose = true;
             $('.messages').append('<li class="otheruser"><strong>Your partner wishes to close the chat, close click the close chat button below to close it if you are both done</strong></li>');
             fastScroll();
@@ -245,12 +241,12 @@ $(document).ready(function() {
         if (message.length > 0) {
             // console.log("We should have emitted a message that the user is typing")
             isTyping = true;
-            input = {'room': room, 'name': name, 'id':ip, 'message': message};
+            input = {'room': room, 'name': name, 'id':userid, 'message': message};
             socket.emit('user typing', input);
         } else if(isTyping && message.length === 0) {
             // console.log("We should have emitted a message saying the user is no longer typing")
             isTyping = false;
-            input = {'room': room, 'name': name, 'id': ip, 'message': message};
+            input = {'room': room, 'name': name, 'id': userid, 'message': message};
             socket.emit('user typing', input);
         }
     }
@@ -258,7 +254,7 @@ $(document).ready(function() {
     var wasTyping = false;
     socket.on('typing alert', function(output) {
         // form of output is output = {'id':input['id'], name: input['name'], message: input['message'], 'room':input['room']};
-        if (output['id'] != ip) {
+        if (output['id'] != userid) {
             if (output['message'].length === 0 && wasTyping) {
                 wasTyping = false;
                 shouldScroll = (messages.scrollTop + messages.clientHeight === messages.scrollHeight);

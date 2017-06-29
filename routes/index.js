@@ -13,6 +13,8 @@ var Plan = mongoose.model('Plan');
 var Message = mongoose.model('Message');
 var ChatRoom = mongoose.model('ChatRoom');
 
+var shortid = require('shortid');
+
 var maxAgeSec = 60*20 + 5;
 var maxAgems = maxAgeSec * 1000;
 
@@ -107,6 +109,8 @@ router.get('/makeChat', function(req, res, next) {
   // Lean basically makes it so we have raw javascript objects, which increases run time
     makechat = function() {
         var new_chat = new ChatRoom({
+            User1:    shortid.generate(),
+            User2:    shortid.generate()
         })
         return new Promise(function(resolve, reject){
             resolve(new_chat);
@@ -120,7 +124,7 @@ router.get('/makeChat', function(req, res, next) {
             return chat;
         })
         .then(chat => {
-            res.send(chat.id);
+            res.send(chat);
         })
         .catch(error => { console.log(error) });
     }
@@ -241,6 +245,9 @@ router.post('/getChat', function(req, res) {
 
 router.post('/checkChat', function(req, res) {
     var roomID = req.body.room;
+    var entryid = req.body.id;
+    console.log("entryid is", entryid);
+    console.log("req.body.id is", req.body.id);
     ChatRoom.findOne({'id': roomID}, function(err, userchatroom){
         if (err) {
           console.log('An error occurred');
@@ -249,22 +256,25 @@ router.post('/checkChat', function(req, res) {
             return;
         } else if(userchatroom.startTime === undefined) {
             res.send();
-        }
-        time = new Date();
-        currentTime = time.getTime();
-        // As chat rooms time out at 20 minutes right now
-        msSince = currentTime - userchatroom.startTime;
-        ageInSec = msSince / 1000;
-        if (ageInSec >= maxAgeSec){
-            userchatroom.completed = true;
-            userchatroom.active = false;
-            userchatroom.save();
-            res.send("expired");
+        } else if(userchatroom.User1 != entryid && userchatroom.User2 != entryid) {
+            res.send("noroom");
         } else {
-            if (userchatroom.active) {
-                res.send("active")
+            time = new Date();
+            currentTime = time.getTime();
+            // As chat rooms time out at 20 minutes right now
+            msSince = currentTime - userchatroom.startTime;
+            ageInSec = msSince / 1000;
+            if (ageInSec >= maxAgeSec){
+                userchatroom.completed = true;
+                userchatroom.active = false;
+                userchatroom.save();
+                res.send("expired");
             } else {
-            res.send();
+                if (userchatroom.active) {
+                    res.send("active")
+                } else {
+                res.send();
+                }
             }
         }
     })
@@ -281,11 +291,11 @@ router.post('/addPlan', function(req, res) {
     var plan = JSON.parse(req.body.plan);
     var name = req.body.name;
     var room = req.body.room;
-    var ip = req.body.ip;
+    var userid = req.body.userid;
     var plannumber;
     createstep = function(step, act, loc, chat) {
         var plan_step = new Plan({
-            user:            ip,
+            user:            userid,
             name:            name,
             stepnumber:      step,
             action:          act,
@@ -312,16 +322,18 @@ router.post('/addPlan', function(req, res) {
         });
     })
     .then(chat => {
-        if (chat.user1plan.length != 0) {
-            if(chat.user1plan[0].user != ip) {
-                plannumber = 2;
-            } else{
+        if (chat.User1 === userid) {
+            if (chat.user1plan.length != 0) {
                 chat.user1plan = [];
                 chat.save();
-                plannumber = 1;
             }
-        } else {
             plannumber = 1;
+        } else {
+            if (chat.user2plan.length != 0) {
+                chat.user2plan = [];
+                chat.save();
+            }
+            plannumber = 2;
         }
         return chat;
     })

@@ -18,7 +18,7 @@ var messageschema = new Schema({
     message:                {type: String, required: true},
     timeCreated:            {type: Number, required: true},
     sender:                 {type: String, required: true},
-    ipofSender:             {type: String, required: true},
+    idofSender:             {type: String, required: true},
 });
 
 var planschema = new Schema({
@@ -31,7 +31,8 @@ var planschema = new Schema({
 
 var chatroomschema = new Schema({
     Conversation:           [{type: Schema.Types.ObjectId, ref: 'Message'}],
-    Users:                  [{type: String}],
+    User1:                  {type: String},
+    User2:                  {type: String},
     id:                     {type: String},
     startTime:              {type: String},
     active:                 {type: Boolean, default: false},

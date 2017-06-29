@@ -22,9 +22,11 @@
         <div class="enterform">
             <ul>
                 <li><input type="text" placeholder="Name (optional)" name="name" class="inputinfo" id="inputname" maxlength="35"></li>
+                <li><input type="text" placeholder="User ID" name="firstname" class="inputinfo" id="inputid" maxlength="100"></li>
                 <li><input type="text" placeholder="Room ID" name="firstname" class="inputinfo" id="inputroom" maxlength="100"></li>
 
-                <li class="error" id="noroom">- This room ID does not correspond to a room</li>
+                <li class="error" id="incomplete">- Please fill out User ID and Room ID with your credentials given</li>
+                <li class="error" id="noroom">- This userID or room ID does not correspond to a room</li>
                 <li class="error" id="chatused">- This chat room has already been used</li>
                 <li class="error" id="iferror">If you believe this is an error email Mattwoicik@gmail.com</li>
             </ul>
