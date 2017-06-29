@@ -209,6 +209,9 @@ $(document).ready(function() {
         // remaining = Math.floor(maxTime - ((currentTime - startTime) / 1000));
         timeSince = (Number(currentTime) - Number(startTime))
         remaining = Math.floor((Number(timeRemainig) - timeSince)/1000)
+        console.log();
+        console.log();
+        console.log("We start here");
         console.log("remaining is", remaining);
         console.log("timeSince is", timeSince);
         console.log("startTime is", startTime);
@@ -231,11 +234,10 @@ $(document).ready(function() {
             return;
         }
         // getting proper min/sec in string form;
-        console.log("We got to the timer html part of updateTimer");
         secLeft = (remaining % 60).toString();
-        console.log("secLeft is", secLeft);
+        console.log("secLeft = (remaining % 60).toString() is", secLeft);
         minLeft = (Math.floor(remaining / 60)).toString();
-        console.log("minLeft is", minLeft);
+        console.log("minLeft = (Math.floor(remaining / 60)).toString() is", minLeft);
         if (secLeft.length === 1){
             secLeft = "0" + secLeft;
         }

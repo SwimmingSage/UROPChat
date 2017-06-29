@@ -252,7 +252,7 @@ router.post('/checkChat', function(req, res) {
         time = new Date();
         currentTime = time.getTime();
         // As chat rooms time out at 20 minutes right now
-        msSince = currentTime -= userchatroom.startTime;
+        msSince = currentTime - userchatroom.startTime;
         ageInSec = msSince / 1000;
         if (ageInSec >= maxAgeSec){
             userchatroom.completed = true;
