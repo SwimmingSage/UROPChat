@@ -216,6 +216,7 @@ router.post('/getChat', function(req, res) {
         if (timeRemaining <= 0) {
             console.log("timeRemaining is registered as <= 0");
             chatroom.completed = true;
+            chatroom.active = false;
             chatroom.save();
             res.redirect("/loginhome");
         } else {
@@ -256,6 +257,7 @@ router.post('/checkChat', function(req, res) {
         ageInSec = msSince / 1000;
         if (ageInSec >= maxAgeSec){
             userchatroom.completed = true;
+            userchatroom.active = false;
             userchatroom.save();
             res.send("expired");
         } else {
