@@ -80,6 +80,11 @@ $(document).ready(function() {
         element.text(newtext);
     });
 
+    removeCookies = function() {
+        Cookies.expire('room');
+        Cookies.expire('name');
+        console.log("Cookies have been removed");
+    }
 
     $("#submitplan").click(function() {
         plans = []
@@ -105,6 +110,7 @@ $(document).ready(function() {
                     $("#submitplan").text("Resubmit Plan");
                     $("#beginSurvey").css({"display":"block"});
                     $("#beginSurvey").animate({"opacity":"1"}, "slow");
+                    removeCookies();
                 }
             },
             error: function(xhr, status, error) {
