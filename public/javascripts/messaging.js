@@ -245,12 +245,12 @@ $(document).ready(function() {
     function checkTyping(){
         message = $('#m').val();
         if (message.length > 0) {
-            console.log("We should have emitted a message that the user is typing")
+            // console.log("We should have emitted a message that the user is typing")
             isTyping = true;
             input = {'room': room, 'name': name, 'id':ip, 'message': message};
             socket.emit('user typing', input);
         } else if(isTyping && message.length === 0) {
-            console.log("We should have emitted a message saying the user is no longer typing")
+            // console.log("We should have emitted a message saying the user is no longer typing")
             isTyping = false;
             input = {'room': room, 'name': name, 'id': ip, 'message': message};
             socket.emit('user typing', input);
@@ -264,7 +264,7 @@ $(document).ready(function() {
         // console.log("Output is", output);
         // console.log("the length of message is", output['message'].length);
         // ignore signs that I am typing
-        console.log("We got the typing alert with this output", output);
+        // console.log("We got the typing alert with this output", output);
         if (output['id'] != ip) {
             if (output['message'].length === 0 && wasTyping) {
                 wasTyping = false;
@@ -281,7 +281,7 @@ $(document).ready(function() {
                     othertyping = output['name'] + " is typing. . ."
                     $('.typing').text(othertyping);
                 }
-                console.log("We recognize the other user is typing");
+                // console.log("We recognize the other user is typing");
                 wasTyping = true;
                 shouldScroll = (messages.scrollTop + messages.clientHeight === messages.scrollHeight);
                 $('ul.messages').css({'height':'calc(100% - 70px)'});
