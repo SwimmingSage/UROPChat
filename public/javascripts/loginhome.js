@@ -60,7 +60,7 @@ $(document).ready(function() {
                     $('#joinroomsection button').css({"display":"none", "opacity": "0"});
                     $('#joinroomsection p').css({"display":"block", "opacity": "0"});
                     $('#joinroomsection p').animate({'opacity':'1'}, 'slow');
-                    makeCookies(roomnumber, username);
+                    makeCookies(roomnumber, username, entryid);
                     socket.emit('joinRoom', {'room': roomnumber, 'name': username, 'id': entryid});
                     // socket.emit('in ready');
                 }
