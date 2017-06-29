@@ -21,7 +21,7 @@
                     <% if (chats[i].Conversation[x] != undefined) { %>
                     <td><%= chats[i].Conversation[x].sender %></td>
                     <td><%= chats[i].Conversation[x].message %></td>
-                    <td><%= Math.round(100 * ((chats[i].Conversation[x].timeCreated - chats[i].creationTime)/1000))/100 %></td>
+                    <td><%= Math.round(100 * ((chats[i].Conversation[x].timeCreated - chats[i].creationTime)/1000))/100 - 5 %></td>
                     <% } else { %>
                     <td><%= "" %></td>
                     <td><%= "" %></td>

@@ -8,6 +8,8 @@ $(document).ready(function() {
     }
 
     var chatrooms;
+    var chattimes;
+    var startTime;
     var closed = {};
     var wasTyping = {};
     $.ajax({
@@ -15,11 +17,15 @@ $(document).ready(function() {
         data: {
         },
         type: 'GET',
-        success: function(sentchatrooms) {
-            chatrooms = sentchatrooms;
-            for (i=0; i < sentchatrooms.length; i++) {
-                id = sentchatrooms[i].id
-                getToRoom(sentchatrooms[i].id);
+        success: function(sentchatinfo) {
+            // sentchatinfo = {"rooms":returndata, "times": startTimes}
+            chatrooms = sentchatinfo['rooms'];
+            chattimes = sentchatinfo['times'];
+            time = new Date();
+            startTime = time.getTime();
+            for (i=0; i < chatrooms.length; i++) {
+                id = chatrooms[i].id
+                getToRoom(chatrooms[i].id);
                 wasTyping[id] = false;
                 closed[id] = false;
             }
@@ -118,11 +124,12 @@ $(document).ready(function() {
     // max time in minutes
     var maxTime = 20*60 + 5;
     var turnedOff = false;
-    function updateTimer(startTime, id){
+    function updateTimer(timeRemaining, id){
         time = new Date();
         currentTime = time.getTime();
         // get time remaining in seconds
-        remaining = Math.floor(maxTime - ((currentTime - startTime) / 1000));
+        timeSince = (Number(currentTime) - Number(startTime))
+        remaining = Math.floor((Number(timeRemaining) - timeSince)/1000)
         // if no time left make it impossible to send more messages, then ideally redirect once we get instructions
         // for what we want to do with them after
         // if (turnedOff) {
@@ -146,10 +153,9 @@ $(document).ready(function() {
     }
 
     function updateTimes() {
-        for (i=0; i < chatrooms.length; i++) {
-            roomid = chatrooms[i].id 
+        for (var roomid in chattimes) {
             if(!closed[roomid]) {
-                updateTimer(chatrooms[i].startTime, chatrooms[i].id);
+                updateTimer(chattimes[roomid], roomid);
             }
         }
     }

@@ -140,6 +140,7 @@ router.get('/getAllChat', function(req, res) {
     .exec(function (err, chatrooms) {
         if (err) return handleError(err);
         returndata = [];
+        startTimes = {};
         time = new Date();
         currentTime = time.getTime();
         for (i=0; i < chatrooms.length; i++) {
@@ -151,9 +152,14 @@ router.get('/getAllChat', function(req, res) {
                 chatroom[i].save();
             } else {
                 returndata.push(chatrooms[i]);
+                // As chat rooms time out at 20 minutes right now
+                var msAge = currentTime - chatrooms[i].startTime;
+                // ageInSec = msSince / 1000;
+                var timeRemaining = maxAgems - msAge;
+                startTimes[chatrooms[i].id] = timeRemaining;
             }
         }
-        res.send(returndata);
+        res.send({"rooms":returndata, "times": startTimes});
     })
 });
 
@@ -213,10 +219,6 @@ router.post('/getChat', function(req, res) {
         msAge = currentTime - chatroom.startTime;
         // ageInSec = msSince / 1000;
         timeRemaining = maxAgems - msAge;
-        console.log("msAge is", msAge);
-        console.log();
-        console.log("timeRemaining in ms is registered as", timeRemaining);
-        console.log();
         if (timeRemaining <= 0) {
             console.log("timeRemaining is registered as <= 0");
             chatroom.completed = true;
