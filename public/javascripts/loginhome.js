@@ -57,6 +57,7 @@ $(document).ready(function() {
                     makeCookies(roomnumber, username);
                     window.location.href = "/messaging";
                 } else {
+                    $(".enterform").css({"display":"none"});
                     $('#joinroomsection button').css({"display":"none", "opacity": "0"});
                     $('#joinroomsection p').css({"display":"block", "opacity": "0"});
                     $('#joinroomsection p').animate({'opacity':'1'}, 'slow');

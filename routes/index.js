@@ -324,12 +324,18 @@ router.post('/addPlan', function(req, res) {
     .then(chat => {
         if (chat.User1 === userid) {
             if (chat.user1plan.length != 0) {
+                for (i = 0; i < chat.user1plan.length; i++) {
+                    chat.user1plan[i].remove();
+                }
                 chat.user1plan = [];
                 chat.save();
             }
             plannumber = 1;
         } else {
             if (chat.user2plan.length != 0) {
+                for (i = 0; i < chat.user2plan.length; i++) {
+                    chat.user2plan[i].remove();
+                }
                 chat.user2plan = [];
                 chat.save();
             }
