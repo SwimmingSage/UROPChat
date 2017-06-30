@@ -26,7 +26,6 @@ $(document).ready(function() {
     }
 
     getChat = function(chatroom) {
-        console.log("frontend chatroom is registered as", chatroom);
         $.ajax({
             url: '/getChat',
             data: {
@@ -93,7 +92,6 @@ $(document).ready(function() {
     /////////////////////////////////////////////////////////////////////////////////////////////////////
     // Process receiving messages
     var messages = document.getElementById('messages');
-    console.log(messages);
     function scrollToBottom() {
         // messages.scrollTop = messages.scrollHeight; this is to scroll fast
         $('.messages').animate({
@@ -108,7 +106,7 @@ $(document).ready(function() {
         // form of output is output = {'message':input['message'], name: input['name'], id:input['id'], 'room': input['room']};
         shouldScroll = (messages.scrollTop + messages.clientHeight === messages.scrollHeight);
         if(output['id'] === userid){
-            $('.messages').append('<li><strong>'+output['name']+':&nbsp;</strong>'+output['message']+'</li>');
+            $('.messages').append('<li><strong>You:&nbsp;</strong>'+output['message']+'</li>');
         } else {
             $('.messages').append('<li class="otheruser"><strong>'+output['name']+':&nbsp;</strong>'+output['message']+'</li>');
         }
@@ -169,11 +167,6 @@ $(document).ready(function() {
         }
     });
 
-    // $("#returnHome").click(function() {
-    //     console.log("We should be redirected");
-    //     window.location.href = "/loginhome";
-    // });
-
     // chat is closed
     socket.on('chat closed', function(output) {
         // output = {'room': user.chat_room}; This is for the admin
@@ -194,14 +187,11 @@ $(document).ready(function() {
     var warningTime = 5 * 60;
     var turnedOff = false;
     var warningGiven = false;
-    // timeRemaining = chatinfosent['timeRemaining'];
-    // time = new Date();
-    // startTime = time.getTime();
+
     updateTimer = function(){
         time = new Date();
         currentTime = time.getTime();
         // get time remaining in seconds
-        // remaining = Math.floor(maxTime - ((currentTime - startTime) / 1000));
         timeSince = (Number(currentTime) - Number(startTime))
         remaining = Math.floor((Number(timeRemaining) - timeSince)/1000)
         // if no time left make it impossible to send more messages, then ideally redirect once we get instructions
@@ -238,13 +228,11 @@ $(document).ready(function() {
     isTyping = false;
     function checkTyping(){
         message = $('#m').val();
-        if (message.length > 0) {
-            // console.log("We should have emitted a message that the user is typing")
+        if (message.length > 0) { // user typing
             isTyping = true;
             input = {'room': room, 'name': name, 'id':userid, 'message': message};
             socket.emit('user typing', input);
-        } else if(isTyping && message.length === 0) {
-            // console.log("We should have emitted a message saying the user is no longer typing")
+        } else if(isTyping && message.length === 0) { // user no longer typing
             isTyping = false;
             input = {'room': room, 'name': name, 'id': userid, 'message': message};
             socket.emit('user typing', input);

@@ -50,7 +50,6 @@ router.get('/loginhome', function(req, res, next) {
 
 router.get('/admin', function(req, res, next) {
   // Lean basically makes it so we have raw javascript objects, which increases run time
-  // .find({"active": true})
   if(req.isAuthenticated() && req.user.admin) {
     ChatRoom
     .find({"active": true})
@@ -180,8 +179,6 @@ router.get('/chatarchive', function(req, res, next) {
 });
 
 router.get('/chatarchiveq', function(req, res, next) {
-    // .populate({path: 'user1plan', options:{sort: {'stepnumber': 1}}})
-    // .populate({path: 'user2plan', options:{sort: {'stepnumber': 1}}})
     ChatRoom
     .find({"active": false})
     .populate({path: 'Conversation', options:{sort: {'timeCreated': 1}}})
@@ -231,19 +228,6 @@ router.post('/getChat', function(req, res) {
         }
     })
 });
-
-// router.post('/closeChat', function(req, res) {
-//     ChatRoom.findOne({'id': req.user.chat_room}, function(err, userchatroom){
-//         if (err) {
-//           console.log('An error occurred');
-//         }
-//         if (userchatroom.active) {
-//             userchatroom.active = false;
-//             userchatroom.save();
-//             res.send('Success');
-//         }
-//     })
-// });
 
 router.post('/checkChat', function(req, res) {
     var roomID = req.body.room;

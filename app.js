@@ -14,14 +14,6 @@ var LocalStrategy = require('passport-local').Strategy;
 var User = require('./schemas/user.js');
 
 passport.use(User.createStrategy());
-// passport.use(new LocalStrategy({
-//     usernameField: 'email',
-//     passwordField: 'password'
-//   },
-//   function(username, password, done) {
-//     // ...
-//   }
-// ));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 // end of passport code
@@ -30,12 +22,6 @@ var index = require('./routes/index');
 var users = require('./routes/users');
 
 var app = express();
-
-
-// // This code in these 3 lines is all for the socket.io
-// var http = require('http').Server(app);
-// // Initialize a socket object from socket.io
-// var io = require('socket.io')(http);
 
 //more passport code
 app.use(session({ secret: 'my super secret secret', resave: 'false', saveUninitialized: 'true' }));
@@ -85,27 +71,6 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
-
-
-
-// io.on('connection', function(socket) {
-//   console.log('a user connected');
-
-//   // When a user disconnects from out app...
-//   socket.on('disconnect', function() {
-//     console.log('a user disconnected');
-//   });
-
-//   // When the server receives a 'chat message' message from
-//   // a single user
-//   socket.on('chat message', function(msg) {
-//     console.log('message:', msg);
-
-//     // Emit that message to all users currently connected
-//     // to our app
-//     io.emit('chat message', msg);
-//   });
-// });
 
 //require('./scheduled_job.js');
 

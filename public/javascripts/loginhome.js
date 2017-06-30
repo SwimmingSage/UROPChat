@@ -8,9 +8,8 @@ $(document).ready(function() {
 
     socket.on("sendToChat", function() {
         $('#joinqueue').css({"display":"none", "opacity": "0"});
-        $('#joinroomsection').append('<p id="joinshortly">Another user has arrived, you will begin shortly!</p>');
+        $('#joinroomsection').append('<p id="joinshortly">Your partner has arrived, you will begin shortly!</p>');
         $('#joinshortly').animate({'opacity':'1'}, 'slow');
-        console.log("We would have been sent to the chat");
         setTimeout(redirect, 5000)
     });
 
@@ -24,10 +23,6 @@ $(document).ready(function() {
         Cookies.set('name', name);
         Cookies.set('room', room);
         Cookies.set('userid', userid);
-        console.log("The cookie document is now", document.cookie);
-        console.log("The name attribute of the cookie is", Cookies.get('name'))
-        console.log("The room attribute of the cookie is", Cookies.get('room'))
-        console.log("The userid attribute of the cookie is", Cookies.get('userid'));
     }
 
     $("#joinroomsection button").click(function(){
@@ -35,6 +30,11 @@ $(document).ready(function() {
         var roomnumber = $("#inputroom").val();
         var username = $("#inputname").val();
         var entryid = $("#inputid").val();
+        if (username.length === 0) {
+            names = ['Jackson', 'Liam', 'Sam', 'Fred', 'Amy', 'Sophia', 'Olivia', 'Emma'];
+            number = Math.floor(Math.random() * 8);
+            username = names[number];
+        }
 
         if (roomnumber.length === 0 || entryid.length === 0) {
             $("#incomplete").css({"display":"block"});
@@ -71,15 +71,6 @@ $(document).ready(function() {
             }
         });
     })
-
-    // Handle the count tracker
-    // socket.emit('in prep');
-
-    // socket.on('userchange', function(output) {
-    //     // output = {'prepCount': prepCount, 'readyCount': readyCount};
-    //     $('#prepspan').text(output.prepCount);
-    //     $('#readyspan').text(output.readyCount);
-    // });
 
 });
 
