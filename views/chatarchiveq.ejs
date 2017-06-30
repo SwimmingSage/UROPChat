@@ -15,7 +15,6 @@
                     <th>User 1 Action</th>
                     <th>User 2 Action</th>
                 </tr>
-                <% //for(x=0; x < chats[i].Conversation.length; x++) { %>
                 <% for(x=0; x < Math.max(chats[i].Conversation.length, chats[i].user1plan.length, chats[i].user2plan.length); x++) { %>
                 <tr>
                     <% if (chats[i].Conversation[x] != undefined) { %>
