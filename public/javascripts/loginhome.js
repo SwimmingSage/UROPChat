@@ -30,10 +30,14 @@ $(document).ready(function() {
         var roomnumber = $("#inputroom").val();
         var username = $("#inputname").val();
         var entryid = $("#inputid").val();
+        console.log("username is", username);
+        console.log("username.length  is", username.length);
         if (username.length === 0) {
             names = ['Jackson', 'Liam', 'Sam', 'Fred', 'Amy', 'Sophia', 'Olivia', 'Emma'];
             number = Math.floor(Math.random() * 8);
+            console.log("number is", number);
             username = names[number];
+            console.log("username is", username);
         }
 
         if (roomnumber.length === 0 || entryid.length === 0) {
