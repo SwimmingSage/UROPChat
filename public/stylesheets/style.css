@@ -462,6 +462,7 @@ ul span#bottomanchor {
 #planSubmit {
     display: none;
     opacity: 0;
+    margin-bottom: 3em;
 }
 
 .useractionpopup {

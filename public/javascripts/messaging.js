@@ -229,12 +229,10 @@ $(document).ready(function() {
     function checkTyping(){
         message = $('#m').val();
         if (message.length > 0) { // user typing
-            console.log("There should be an alert that I am typing");
             isTyping = true;
             input = {'room': room, 'name': name, 'id':userid, 'message': message};
             socket.emit('user typing', input);
         } else if(isTyping && message.length === 0) { // user no longer typing
-            console.log("There should be an alert that I no longer typing");
             isTyping = false;
             input = {'room': room, 'name': name, 'id': userid, 'message': message};
             socket.emit('user typing', input);
@@ -244,9 +242,6 @@ $(document).ready(function() {
     var wasTyping = false;
     socket.on('typing alert', function(output) {
         // form of output is output = {'id':input['id'], name: input['name'], message: input['message'], 'room':input['room']};
-        console.log("output is", output);
-        console.log("output['id] is", output['id']);
-        console.log("userid is", userid);
         if (output['id'] != userid) {
             if (output['message'].length === 0 && wasTyping) {
                 wasTyping = false;
