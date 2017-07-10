@@ -3,7 +3,7 @@ $(document).ready(function() {
     var socket = io();
 
     function redirect() {
-        window.location.href = "/messaging";
+        window.location.href = "/scenario1";
     }
 
     socket.on("sendToChat", function() {
@@ -59,7 +59,7 @@ $(document).ready(function() {
                     $("#chatused").css({"display":"block"});
                 } else if (data === "active") {
                     makeCookies(roomnumber, username);
-                    window.location.href = "/messaging";
+                    window.location.href = "/scenario1";
                 } else {
                     $(".enterform").css({"display":"none"});
                     $('#joinroomsection button').css({"display":"none", "opacity": "0"});
