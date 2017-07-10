@@ -36,8 +36,8 @@ router.get('/consentform', function(req, res, next) {
 });
 
 //get consent form page
-router.get('/scenario', function(req, res, next) {
-  res.render('scenario', {user: req.user, title: 'Emergency Response Planning'});
+router.get('/scenario1', function(req, res, next) {
+  res.render('scenario1', {user: req.user, title: 'Emergency Response Planning'});
 });
 
 // This is really the queue page, was login home back in the day
