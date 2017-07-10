@@ -6,68 +6,71 @@ $(document).ready(function() {
         window.location.href = "/scenario1";
     }
 
-    socket.on("sendToChat", function() {
+    socket.on("sendToScenario1", function() {
         $('#joinqueue').css({"display":"none", "opacity": "0"});
         $('#joinroomsection').append('<p id="joinshortly">Your partner has arrived, you will begin shortly!</p>');
         $('#joinshortly').animate({'opacity':'1'}, 'slow');
         setTimeout(redirect, 5000)
     });
 
-    makeCookies = function(room, name, userid) {
+    // make to manage users actions moving forward
+    makeCookies = function(system, name, userid) {
         // if there is already a preexisting cookie remove it
         if (document.cookie != "") {
-            Cookies.expire('room');
+            Cookies.expire('system');
             Cookies.expire('userid');
             Cookies.expire('name');
+            Cookies.expire('chat1');
+            Cookies.expire('chat2');
+            Cookies.expire('transition');
+            Cookies.expire('survey');
+            Cookies.expire('timer');
         }
-        Cookies.set('name', name);
-        Cookies.set('room', room);
+        Cookies.set('system', system);
         Cookies.set('userid', userid);
+        Cookies.set('name', name);
+        Cookies.expire('location', 'waiting'); // cookies must be kept as strings I believe
+        Cookies.expire('survey', 'false');
+        Cookies.expire('timer', 'null');
     }
 
     $("#joinroomsection button").click(function(){
         $(".error").css({"display":"none"});
-        var roomnumber = $("#inputroom").val();
+        var chatsystem = $("#inputsystem").val();
         var username = $("#inputname").val();
         var entryid = $("#inputid").val();
-        console.log("username is", username);
-        console.log("username.length  is", username.length);
-        if (username.length === 0) {
+        if (username.length === 0) { // check if we should assign this user a username, if yes assign one randomly from the list below
             names = ['Jackson', 'Liam', 'Sam', 'Fred', 'Amy', 'Sophia', 'Olivia', 'Emma'];
             number = Math.floor(Math.random() * 8);
-            console.log("number is", number);
             username = names[number];
-            console.log("username is", username);
         }
-
-        if (roomnumber.length === 0 || entryid.length === 0) {
+        if (inputsystem.length === 0 || entryid.length === 0) { // check if chat system and entryid are both entered
             $("#incomplete").css({"display":"block"});
             return;
         }
-
+        // backend call to check whether these inputsystem and entry id credentials are valid
         $.ajax({
             url: '/checkChat',
             data: {
-                room: roomnumber,
+                system: inputsystem,
                 id:   entryid,
             },
             type: 'POST',
             success: function(data) {
-                if(data === "noroom") {
-                    $("#noroom").css({"display":"block"});
-                } else if (data === "expired") {
+                if(data === "nosystem") {
+                    $("#nosystem").css({"display":"block"});
+                } else if (data === "complete") {
                     $("#chatused").css({"display":"block"});
                 } else if (data === "active") {
-                    makeCookies(roomnumber, username);
+                    makeCookies(inputsystem, username);
                     window.location.href = "/scenario1";
                 } else {
                     $(".enterform").css({"display":"none"});
                     $('#joinroomsection button').css({"display":"none", "opacity": "0"});
                     $('#joinroomsection p').css({"display":"block", "opacity": "0"});
                     $('#joinroomsection p').animate({'opacity':'1'}, 'slow');
-                    makeCookies(roomnumber, username, entryid);
-                    socket.emit('joinRoom', {'room': roomnumber, 'name': username, 'id': entryid});
-                    // socket.emit('in ready');
+                    makeCookies(inputsystem, username, entryid);
+                    socket.emit('joinRoom', {'room': inputsystem, 'name': username, 'id': entryid});
                 }
             },
             error: function(xhr, status, error) {

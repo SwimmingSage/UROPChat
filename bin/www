@@ -90,7 +90,7 @@ io.on('connection', function(socket) {
         }
         if (room.length === 2) {
             updateChat(input['room']);
-            io.to(input['room']).emit("sendToChat");
+            io.to(input['room']).emit("sendToScenario1");
         }
     });
 

@@ -12,6 +12,7 @@ var User = mongoose.model('User');
 var Plan = mongoose.model('Plan');
 var Message = mongoose.model('Message');
 var ChatRoom = mongoose.model('ChatRoom');
+var ChatSystem = mongoose.model('ChatSystem');
 
 var shortid = require('shortid');
 
@@ -60,9 +61,12 @@ router.get('/admin', function(req, res, next) {
         time = new Date();
         currentTime = time.getTime();
         for (i=0; i < chatrooms.length; i++) {
+            if (chatrooms[i].startTime === undefined) { // for the case that the chat room has not yet begun
+                continue;
+            }
             msSince = currentTime - chatrooms[i].startTime;
             ageInSec = msSince / 1000;
-            if (ageInSec >= maxAgeSec){
+            if (ageInSec >= maxAgeSec){ // this updates the chat room in case chat is not properly closed
                 chatrooms[i].completed = true;
                 chatrooms[i].active = false;
                 chatrooms[i].save();
@@ -78,15 +82,15 @@ router.get('/admin', function(req, res, next) {
 });
 
 router.get('/makeroom', function(req, res, next) {
-  //Lean basically makes it so we have raw javascript objects, which increases run time
+  //Lean basically makes it so we have raw javascript objects, which decreases run time
   if(req.isAuthenticated() && req.user.admin) {
-    ChatRoom
+    ChatSystem
     .find({"available": true})
     .lean()
-    .exec(function (err, chatrooms) {
+    .exec(function (err, chatsystems) {
         if (err) return handleError(err);
 
-        res.render('makeroom', {chats: chatrooms, title: 'Emergency Response Planning'});
+        res.render('makeroom', {chats: chatsystems, title: 'Emergency Response Planning'});
     })
   } else {
     res.redirect('/');
@@ -94,7 +98,7 @@ router.get('/makeroom', function(req, res, next) {
 });
 
 router.post('/makeUnavailable', function(req, res, next) {
-    ChatRoom.findOne({'id': req.body.chat}, function(err, userchatroom){
+    ChatSystem.findOne({'id': req.body.chatsystem}, function(err, userchatroom){
         if (err) {
           console.log('An error occurred');
         } 
@@ -105,25 +109,36 @@ router.post('/makeUnavailable', function(req, res, next) {
 });
 
 router.get('/makeChat', function(req, res, next) {
-  // Lean basically makes it so we have raw javascript objects, which increases run time
     makechat = function() {
-        var new_chat = new ChatRoom({
+        var new_chat = new ChatRoom({});
+        new_chat.id = new_chat._id.toString();
+        new_chat.save();
+        return new_chat;
+    }
+
+    makechatsystem = function() {
+        var newchatsystem = new ChatSystem({
             User1:    shortid.generate(),
             User2:    shortid.generate()
         })
         return new Promise(function(resolve, reject){
-            resolve(new_chat);
+            resolve(newchatsystem);
         })
-        .then(chat => {
-            chat.id = chat._id.toString();
-            return chat;
+        .then(chatsystem => {
+            chatsystem.id = chatsystem._id.toString();
+            return chatsystem;
         })
-        .then(chat => {
-            chat.save();
-            return chat;
+        .then(chatsystem => {
+            chatsystem.scenario1 = makechat();
+            chatsystem.scenario2 = makechat();
+            return chatsystem;
         })
-        .then(chat => {
-            res.send(chat);
+        .then(chatsystem => {
+            chatsystem.save();
+            return chatsystem;
+        })
+        .then(chatsystem => {
+            res.send(chatsystem);
         })
         .catch(error => { console.log(error) });
     }
@@ -194,8 +209,8 @@ router.get('/chatarchiveq', function(req, res, next) {
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // Associated things for the messaging page
 
-router.get('/messaging', function(req, res, next) {
-    res.render('messaging', {title: 'Emergency Response Planning'});
+router.get('/messaging1', function(req, res, next) {
+    res.render('messaging1', {title: 'Emergency Response Planning'});
 });
 
 // Gets the start time of the users conversation
@@ -229,21 +244,16 @@ router.post('/getChat', function(req, res) {
     })
 });
 
-router.post('/checkChat', function(req, res) {
-    var roomID = req.body.room;
+router.post('/checkSystem', function(req, res) {
+    var systemID = req.body.system;
     var entryid = req.body.id;
-    console.log("entryid is", entryid);
-    console.log("req.body.id is", req.body.id);
-    ChatRoom.findOne({'id': roomID}, function(err, userchatroom){
+    ChatSystem.findOne({'id': systemID}, function(err, userchatsystem){
         if (err) {
           console.log('An error occurred');
-        } else if(userchatroom === null || userchatroom.available) {
-            res.send("noroom");
-            return;
-        } else if(userchatroom.startTime === undefined) {
-            res.send();
-        } else if(userchatroom.User1 != entryid && userchatroom.User2 != entryid) {
-            res.send("noroom");
+        } else if(userchatsystem === null || userchatsystem.available) {
+            res.send("nosystem");
+        } else if(userchatsystem.User1 != entryid && userchatsystem.User2 != entryid) {
+            res.send("nosystem");
         } else {
             time = new Date();
             currentTime = time.getTime();
@@ -265,6 +275,44 @@ router.post('/checkChat', function(req, res) {
         }
     })
 });
+
+// gonna want this to check chat later
+// router.post('/checkChat', function(req, res) {
+//     var systemID = req.body.system;
+//     var entryid = req.body.id;
+//     console.log("entryid is", entryid);
+//     console.log("req.body.id is", req.body.id);
+//     ChatSystem.findOne({'id': systemID}, function(err, userchatroom){
+//         if (err) {
+//           console.log('An error occurred');
+//         } else if(userchatroom === null || userchatroom.available) {
+//             res.send("nosystem");
+//             return;
+//         } else if(userchatroom.startTime === undefined) {
+//             res.send();
+//         } else if(userchatroom.User1 != entryid && userchatroom.User2 != entryid) {
+//             res.send("noroom");
+//         } else {
+//             time = new Date();
+//             currentTime = time.getTime();
+//             // As chat rooms time out at 20 minutes right now
+//             msSince = currentTime - userchatroom.startTime;
+//             ageInSec = msSince / 1000;
+//             if (ageInSec >= maxAgeSec){
+//                 userchatroom.completed = true;
+//                 userchatroom.active = false;
+//                 userchatroom.save();
+//                 res.send("expired");
+//             } else {
+//                 if (userchatroom.active) {
+//                     res.send("active")
+//                 } else {
+//                 res.send();
+//                 }
+//             }
+//         }
+//     })
+// });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // Submit plan page
