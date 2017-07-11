@@ -35,7 +35,7 @@ $(document).ready(function() {
             success: function(chatinfosent) {
                 // chatinfo sent is {'room': chatroom, 'timeRemaining': timeRemaining} or "expired if time has run out"}
                 if (chatinfosent === "expired") {
-                    window.location.href = "/submitplan";
+                    window.location.href = "/submitplan1";
                 }
                 chatroom = chatinfosent['room'];
                 catchUpChat(chatroom.Conversation);

@@ -51,33 +51,32 @@ io.on('connection', function(socket) {
     });
 
     socket.on('multiroom', function(room) {
-        // socket.room = room;
         socket.join(room);
     });
 
-    updateChat = function(room){
-        ChatRoom.findOne({'id': room}, function(err, userchatroom){
+    updateScenarioTimer = function(system){
+        var time, currentTime;
+        ChatSystem.findOne({'id': system}, function(err, userSystem){
             if (err) {
               console.log('An error occurred');
             } 
             time = new Date();
-            currentTime = time.getTime();
-            userchatroom.startTime = currentTime;
-            userchatroom.active = true;
-            userchatroom.save();
+            userSystem.sectionTime = time.getTime() + 5000; // the current time in ms, 5 delay redirect
+            userSystem.location = "scenario1info";
+            userSystem.save();
         })
     }
 
-    socket.on('joinRoom', function(input) {
-        // Input is {'room': roomnumber, 'name': username, 'id': entryid}
-        var room = io.sockets.adapter.rooms[input['room']];
+    socket.on('joinSystem', function(input) {
+        // Input is {'system': inputsystem, 'name': username, 'id': entryid}
+        var system = io.sockets.adapter.rooms[input['system']];
         socket.entryid = input['id'];
-        if (room === undefined) {
-            socket.join(input['room']);
-            room = io.sockets.adapter.rooms[input['room']];
+        if (system === undefined) {
+            socket.join(input['system']);
+            system = io.sockets.adapter.rooms[input['system']];
         } else {
             var takenID = false;
-            for (var key in room.sockets) {
+            for (var key in system.sockets) {
                 othersocket = io.sockets.connected[key];
                 if (othersocket.entryid === socket.entryid) {
                     takenID = true;
@@ -85,12 +84,12 @@ io.on('connection', function(socket) {
                 }
             }
             if (!takenID) {
-                socket.join(input['room']);
+                socket.join(input['system']);
             }
         }
-        if (room.length === 2) {
-            updateChat(input['room']);
-            io.to(input['room']).emit("sendToScenario1");
+        if (system.length === 2) {
+            updateScenarioTimer(input['system']);
+            io.to(input['system']).emit("sendToScenario1");
         }
     });
 

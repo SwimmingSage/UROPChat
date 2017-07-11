@@ -40,11 +40,13 @@ var chatsystemschema = new Schema({
     User1:                  {type: String},
     User2:                  {type: String},
     id:                     {type: String},
+    sectionTime:            {type: String, default: undefined},
+    location:               {type: String, default: undefined},
     complete:               {type: Boolean, default: false},
     available:              {type: Boolean, default: true},
     scenario1:              {type: Schema.Types.ObjectId, ref: 'ChatRoom'},
     scenario2:              {type: Schema.Types.ObjectId, ref: 'ChatRoom'}
-})
+});
 
 User.plugin(passportLocalMongoose);
 

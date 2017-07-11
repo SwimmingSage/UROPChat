@@ -1,8 +1,7 @@
 $(document).ready(function() {
-    // Not being used
-    // var socket = io();
+    var socket = io();
 
-    // socket.emit('in prep');
+    socket.emit('in prep');
 
     // socket.on('userchange', function(output) {
     //     // output = {'prepCount': prepCount, 'readyCount': readyCount};

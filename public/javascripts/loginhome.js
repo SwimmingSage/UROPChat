@@ -14,24 +14,16 @@ $(document).ready(function() {
     });
 
     // make to manage users actions moving forward
-    makeCookies = function(system, name, userid) {
+    function makeCookies(system, name, userid) {
         // if there is already a preexisting cookie remove it
         if (document.cookie != "") {
             Cookies.expire('system');
             Cookies.expire('userid');
             Cookies.expire('name');
-            Cookies.expire('chat1');
-            Cookies.expire('chat2');
-            Cookies.expire('transition');
-            Cookies.expire('survey');
-            Cookies.expire('timer');
         }
         Cookies.set('system', system);
         Cookies.set('userid', userid);
         Cookies.set('name', name);
-        Cookies.expire('location', 'waiting'); // cookies must be kept as strings I believe
-        Cookies.expire('survey', 'false');
-        Cookies.expire('timer', 'null');
     }
 
     $("#joinroomsection button").click(function(){
@@ -50,7 +42,7 @@ $(document).ready(function() {
         }
         // backend call to check whether these inputsystem and entry id credentials are valid
         $.ajax({
-            url: '/checkChat',
+            url: '/checkSystem',
             data: {
                 system: inputsystem,
                 id:   entryid,
@@ -59,18 +51,15 @@ $(document).ready(function() {
             success: function(data) {
                 if(data === "nosystem") {
                     $("#nosystem").css({"display":"block"});
-                } else if (data === "complete") {
-                    $("#chatused").css({"display":"block"});
-                } else if (data === "active") {
-                    makeCookies(inputsystem, username);
-                    window.location.href = "/scenario1";
+                } else if (data != "") {
+                    window.location.href = data;
                 } else {
                     $(".enterform").css({"display":"none"});
                     $('#joinroomsection button').css({"display":"none", "opacity": "0"});
                     $('#joinroomsection p').css({"display":"block", "opacity": "0"});
                     $('#joinroomsection p').animate({'opacity':'1'}, 'slow');
                     makeCookies(inputsystem, username, entryid);
-                    socket.emit('joinRoom', {'room': inputsystem, 'name': username, 'id': entryid});
+                    socket.emit('joinSystem', {'system': inputsystem, 'name': username, 'id': entryid});
                 }
             },
             error: function(xhr, status, error) {
