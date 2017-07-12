@@ -209,6 +209,12 @@ button.submithome:hover {
     opacity: 0.95;
 }
 
+.scenariowait {
+    display: none;
+    opacity: 0;
+    width: 40em;
+    text-align: center;
+}
 
 /* Style for the login home page buttons, and all buttons in general */
 
@@ -817,11 +823,6 @@ td.planside {
 
 .planSubmission ul.lowerul li:active {
     background-color: #939393;
-}
-
-#beginSurvey {
-    display: none;
-    opacity: 0;
 }
 
 .buffer {

@@ -52,7 +52,7 @@ $(document).ready(function() {
                 if(data === "nosystem") {
                     $("#nosystem").css({"display":"block"});
                 } else if (data != "") {
-                    window.location.href = data;
+                    window.location.href = data['redirect'];
                 } else {
                     $(".enterform").css({"display":"none"});
                     $('#joinroomsection button').css({"display":"none", "opacity": "0"});

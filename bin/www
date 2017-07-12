@@ -23,6 +23,7 @@ var User = mongoose.model('User');
 var Plan = mongoose.model('Plan');
 var Message = mongoose.model('Message');
 var ChatRoom = mongoose.model('ChatRoom');
+var ChatSystem = mongoose.model('ChatSystem');
 
 /**
  * Create HTTP server.
@@ -52,7 +53,7 @@ io.on('connection', function(socket) {
         socket.join(room);
     });
 
-    updateScenarioTimer = function(system){
+    beginScenarioTimer = function(system){
         var time, currentTime;
         ChatSystem.findOne({'id': system}, function(err, userSystem){
             if (err) {
@@ -86,7 +87,7 @@ io.on('connection', function(socket) {
             }
         }
         if (system.length === 2) {
-            updateScenarioTimer(input['system']);
+            beginScenarioTimer(input['system']);
             io.to(input['system']).emit("sendToScenario1");
         }
     });
@@ -150,6 +151,25 @@ io.on('connection', function(socket) {
         }
     })
   });
+
+  socket.on('halfproceed', function(input) {
+    // input = {'system': system, 'user': userid};
+    io.to(input['room']).emit("initiateproceed", input['user']);
+  });
+
+  socket.on('proceed', function(systemid) {
+    var location;
+    ChatSystem.findOne({'id': systemID}, function(err, userchatsystem){
+        if (err) {
+          console.log('An error occurred');
+        } 
+        location = userchatsystem.location;
+        if (location === "scenario1info" || location = "scenario1info") {
+
+        }
+    })
+  });
+
 });
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////

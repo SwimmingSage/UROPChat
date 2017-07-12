@@ -1,8 +1,18 @@
 $(document).ready(function() {
     var socket = io();
     var name, system, userid;
+    var timeRemaining, startTime;
 
-    checkScenarioTimer = function(system, id) {
+    function getCurrentTime(){
+        var time = new Date();
+        return time.getTime();
+    }
+    // Send the user to the proper system room 
+    function getToRoom(system) {
+        socket.emit('room', system);
+    }
+
+    function checkScenarioTimer(system, id) {
         $.ajax({
             url: '/checkSystem',
             data: {
@@ -13,17 +23,12 @@ $(document).ready(function() {
             },
             type: 'POST',
             success: function(data) {
-                if(data === "nosystem") {
-                    $("#nosystem").css({"display":"block"});
-                } else if (data != "") {
-                    window.location.href = data;
+                if(data['correct'] === "false") {
+                    window.location.href = data['redirect'];
                 } else {
-                    $(".enterform").css({"display":"none"});
-                    $('#joinroomsection button').css({"display":"none", "opacity": "0"});
-                    $('#joinroomsection p').css({"display":"block", "opacity": "0"});
-                    $('#joinroomsection p').animate({'opacity':'1'}, 'slow');
-                    makeCookies(inputsystem, username, entryid);
-                    socket.emit('joinSystem', {'system': inputsystem, 'name': username, 'id': entryid});
+                    timeRemaining = data['timeleft'];
+                    startTime = getCurrentTime();
+                    getToRoom(system);
                 }
             },
             error: function(xhr, status, error) {
@@ -31,6 +36,8 @@ $(document).ready(function() {
             }
         });
     }
+
+
 
     // where we decide if they stay or go
     if (document.cookie != "") {
@@ -42,21 +49,48 @@ $(document).ready(function() {
         window.location.href = "/loginhome";
     }
 
-    // socket.on('userchange', function(output) {
-    //     // output = {'prepCount': prepCount, 'readyCount': readyCount};
-    //     $('#prepspan').text(output.prepCount);
-    //     $('#readyspan').text(output.readyCount);
-    // });
+    var keepTime = setInterval(updateTime, 200);
+    function updateTime(){
+        time = new Date();
+        currentTime = time.getTime();
+        // get time remaining in seconds
+        timeSince = (Number(currentTime) - Number(startTime))
+        remaining = Math.floor((Number(timeRemaining) - timeSince)/1000)
+        if (remaining <= 0){
+            
+        }
+        editTimer(remaining);
+    }
 
-    // calling cookie in another page
-    // console.log("Do we have a cookie?")
-    // if (document.cookie != "") {
-    //     console.log("We have a cookie");
-    //     console.log("The name attribute of the cookie is", Cookies.get('name'))
-    //     console.log("The room attribute of the cookie is", Cookies.get('room'))
-    // } else {
-    //     console.log("Guess not");
-    // }
+    function editTimer(timeRemaining) {
+        // getting proper min/sec in string form;
+        secLeft = (timeRemaining % 60).toString();
+        minLeft = (Math.floor(timeRemaining / 60)).toString();
+        if (secLeft.length === 1){
+            secLeft = "0" + secLeft;
+        }
+        // putting the time left together in min:sec form
+        timeLeft = minLeft + ":" + secLeft;
+        $('#timeLeft').text(timeLeft);
+    }
+
+    var proceedReady = false; // keeps track of whether this user attempted to move on
+
+    $("#proceed").click(function(){
+        $("#scenariobutton").css({"display":"none", "opacity":"0"});
+        $(".scenariowait").css({"display":"block", "opacity":"1"});
+        proceedReady = true;
+        input = {'system': system, 'user': userid};
+        socket.emit('halfproceed', input);
+    });
+
+    socket.on('initiateproceed', function(initiatorID) {
+        if ( (initiatorID !== userid) && (proceedReady) ) {
+            socket.emit('proceed', system);
+        }
+    });
+
+
 });
 
 

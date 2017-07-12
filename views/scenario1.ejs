@@ -6,7 +6,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        var currentpage = "scenario1";
+        var currentpage = "scenario1info";
     </script>
     <script src="/javascripts/scenario.js"></script>
   </head>
@@ -93,7 +93,10 @@
         </div>
     </div>
     <div class="styledbutton" id="scenariobutton">
-        <a href="/messaging"><button>Proceed</button></a>
+        <button id="proceed">Proceed</button>
+    </div>
+    <div class="scenariowait">
+        <p>Once the other user decides to proceed or the timer runs out you will move on</p>
     </div>
   </body>
 </html>

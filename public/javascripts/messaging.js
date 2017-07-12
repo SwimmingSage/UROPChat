@@ -14,6 +14,11 @@ $(document).ready(function() {
         socket.emit('room', room);
     }
 
+    function getCurrentTime(){
+        var time = new Date();
+        return time.getTime();
+    }
+
     function catchUpChat(conversation) {
         var l = conversation.length; // doing this increases speed by not having to call length property over and over
         for (i = 0; i < l; i++) {
@@ -41,8 +46,7 @@ $(document).ready(function() {
                 chatroom = chatinfosent['room'];
                 catchUpChat(chatroom.Conversation);
                 timeRemaining = chatinfosent['timeRemaining'];
-                time = new Date();
-                startTime = time.getTime();
+                startTime = getCurrentTime();
                 // change startTime to remaining time
             },
             error: function(xhr, status, error) {

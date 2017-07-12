@@ -17,8 +17,9 @@ var ChatSystem = mongoose.model('ChatSystem');
 var shortid = require('shortid');
 
 var maxAgeChat = (60*20) * 1000;
+var maxScenarioTime = (60 * 5) * 1000;
+var maxSubmitTime = (60 * 5) * 1000;
 
-var maxScenarioTime = (60 * 5 + 5) * 1000;
 
 // Used to get the current time in ms for later functions
 function getCurrentTime(){
@@ -43,14 +44,38 @@ router.get('/consentform', function(req, res, next) {
   res.render('consentform', {user: req.user, title: 'Emergency Response Planning'});
 });
 
-//get consent form page
+// This is where a user enters credentials and waits for partner to meet up
+router.get('/loginhome', function(req, res, next) {
+  res.render('loginhome', {title: 'Emergency Response Planning'});
+});
+
+// scenario pages
 router.get('/scenario1', function(req, res, next) {
   res.render('scenario1', {user: req.user, title: 'Emergency Response Planning'});
 });
+router.get('/scenario2', function(req, res, next) {
+  res.render('scenario2', {user: req.user, title: 'Emergency Response Planning'});
+});
 
-// This is really the queue page, was login home back in the day
-router.get('/loginhome', function(req, res, next) {
-  res.render('loginhome', {title: 'Emergency Response Planning'});
+// chat pages
+router.get('/messaging1', function(req, res, next) {
+    res.render('messaging1', {title: 'Emergency Response Planning'});
+});
+router.get('/messaging2', function(req, res, next) {
+    res.render('messaging2', {title: 'Emergency Response Planning'});
+});
+
+// submitplan pages
+router.get('/submitplan1', function(req, res, next) {
+    res.render('submitplan1', {title: 'Emergency Response Planning'});
+});
+router.get('/submitplan2', function(req, res, next) {
+    res.render('submitplan2', {title: 'Emergency Response Planning'});
+});
+
+// endpage, final page of user chat
+router.get('/endpage', function(req, res, next) {
+    res.render('endpage', {title: 'Emergency Response Planning'});
 });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -216,11 +241,8 @@ router.get('/chatarchiveq', function(req, res, next) {
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // Associated things for the messaging page
 
-router.get('/messaging1', function(req, res, next) {
-    res.render('messaging1', {title: 'Emergency Response Planning'});
-});
-
 // Gets the start time of the users conversation
+// this will be rendered useless
 router.post('/getChat', function(req, res) {
     ChatRoom
     .find({"id": req.body.chatroom})
@@ -232,16 +254,13 @@ router.post('/getChat', function(req, res) {
             res.send("expired");
             return;
         }
-        var time = new Date();
-        var currentTime = time.getTime(); // the current time in ms
+        var currentTime = getCurrentTime();
         var msAge = currentTime - chatroom.startTime;
-        var timeRemaining = maxAgems - msAge;
+        var timeRemaining = maxAgeChat - msAge;
         if (timeRemaining <= 0) {
-            console.log("timeRemaining is registered as <= 0");
             chatroom.completed = true;
             chatroom.active = false;
             chatroom.save();
-            //res.redirect("/loginhome"); // I can't do this I think
         } else {
             res.send({'room': chatroom, 'timeRemaining': timeRemaining});
         }
@@ -251,31 +270,57 @@ router.post('/getChat', function(req, res) {
 router.post('/checkSystem', function(req, res) {
     var systemID = req.body.system;
     var entryid = req.body.id;
+    var confirm = req.body.confirm;
+    var currentpage = req.body.page;
+    var returnobject;
+    if (confirm === "yes") {
+        confirm = true;
+    } else {
+        confirm = false;
+    }
     ChatSystem.findOne({'id': systemID}, function(err, userchatsystem){
         if (err) {
           console.log('An error occurred');
-        } else if(userchatsystem === null || userchatsystem.available || userchatsystem.complete || 
+        } 
+
+        if(userchatsystem === null || userchatsystem.available || userchatsystem.complete || 
         (userchatsystem.User1 != entryid && userchatsystem.User2 != entryid) ) { // chat system doesn't exist, is not yet available, already used, or invalid user credentials
-            res.send("nosystem");
+            if (confirm) {
+                returnobject = {'correct': 'false', 'redirect': '/loginhome'};
+                res.send(returnobject);
+            } else {
+                res.send("nosystem");
+            }
         } else if(userchatsystem.location === undefined) { // The chat system the user is in has not yet begun
-            res.send();
+            if (confirm) {
+                returnobject = {'correct': 'false', 'redirect': '/loginhome'};
+                res.send(returnobject);
+            } else {
+                res.send();
+            }
         } else { // Chat system has begun, we must determine current page that the users are on
-            determineLocation(userchatsystem, confirm);
+            determineLocation(userchatsystem, confirm, currentpage);
         }
     })
 });
 
-function determineLocation(chatsystem, confirm) { // if confirm === false then we are determining where we should redirect user,
+function determineLocation(chatsystem, confirm, currentpage) { // if confirm === false then we are determining where we should redirect user,
     switch (chatsystem.location) {                // otherwise we are confirming if this is the correct page location
         case "scenario1info":
+            if (confirm & ("scenario1info" !== currentpage)) {
+                determineLocation(chatsystem, false, currentpage); // we need to redirect the user then
+            }
             checkScenario(chatsystem, confirm);
             break;
         case "messaging1":
+            if (confirm & ("messaging1" !== currentpage)) {
+                determineLocation(chatsystem, false, currentpage); // we need to redirect the user then
+            }
             checkChat(chatsystem, confirm);
             break;
         case "submitplan1":
             if (confirm) {
-                res.send();
+                checkSubmit(chatsystem, confirm);
             } else { // if we are determining where to send user
                 res.send('/submitplan1');
             }
@@ -288,13 +333,14 @@ function determineLocation(chatsystem, confirm) { // if confirm === false then w
             break;
         case "submitplan2":
             if (confirm) {
-                res.send();
+                checkSubmit(chatsystem, confirm);
             } else { // if we are determining where to send user
-                res.send('/submitplan2');
+                var returnobject = {'correct': 'false', 'redirect': '/submitplan2'};
+                res.send(returnobject);
             }
             break;
-        case "endPage":
-            res.send(); // this is where I should send the user to the final page
+        case "endpage":
+            res.send('/endpage'); // this is where I should send the user to the final page
             break;
         default: // we should in theory never get here
             res.send();
@@ -303,27 +349,32 @@ function determineLocation(chatsystem, confirm) { // if confirm === false then w
 
 function checkScenario(chatsystem, confirm) {
     var currentTime, msAge, redirect;
+    var returnobject;
     currentTime = getCurrentTime();
     msAge = currentTime - chatsystem.sectionTime;
     if (msAge > maxScenarioTime) {
         if (chatsystem.location === "scenario1info") {
             chatsystem.location = "messaging1";
-            redirect = "/messaging1";
+            returnobject = {'correct': 'false', 'redirect': "/messaging1"};
         } else {
             chatsystem.location = "messaging2";
-            redirect = "/messaging2";
+            returnobject = {'correct': 'false', 'redirect': "/messaging2"};
         }
         chatsystem.sectionTime = undefined; // the chat room object keeps track of time
         chatsystem.save();
-        res.send(redirect);
+        res.send(returnobject);
     } else {
-        if (confirm) { // If here this is the correct page
+        if (confirm) { // If here this is the correct page, must send the remaining time left
+            timeleft = maxScenarioTime - msAge;
+            returnobject = {'correct': 'true', 'timeleft': timeleft};
             res.send();
         } else { // if we are determining where to send user
             if (chatsystem.location === "scenario1") {
-                res.send('/scenario1');
+                returnobject = {'correct': 'false', 'redirect': "/scenario1"};
+                res.send(returnobject);
             } else {
-                res.send('/scenario2');
+                returnobject = {'correct': 'false', 'redirect': "/scenario2"};
+                res.send(returnobject);
             }
         }
     }
@@ -353,9 +404,11 @@ function checkChat(chatsystem, confirm) {
             if (chatsystem.location === "scenario1") {
                 popchatsystem.location = "submitplan1";
                 redirect = "/submitplan1"
+                popchatsystem.sectionTime = getCurrentTime();
             } else {
                 popchatsystem.location = "submitplan2";
                 redirect = "/submitplan2"
+                popchatsystem.sectionTime = getCurrentTime();
             }
             popchatsystem.save();
             res.send(redirect);
@@ -373,50 +426,38 @@ function checkChat(chatsystem, confirm) {
     })
 }
 
-// gonna want this to check chat later
-// router.post('/checkChat', function(req, res) {
-//     var systemID = req.body.system;
-//     var entryid = req.body.id;
-//     console.log("entryid is", entryid);
-//     console.log("req.body.id is", req.body.id);
-//     ChatSystem.findOne({'id': systemID}, function(err, userchatroom){
-//         if (err) {
-//           console.log('An error occurred');
-//         } else if(userchatroom === null || userchatroom.available) {
-//             res.send("nosystem");
-//             return;
-//         } else if(userchatroom.startTime === undefined) {
-//             res.send();
-//         } else if(userchatroom.User1 != entryid && userchatroom.User2 != entryid) {
-//             res.send("noroom");
-//         } else {
-//             time = new Date();
-//             currentTime = time.getTime();
-//             // As chat rooms time out at 20 minutes right now
-//             msSince = currentTime - userchatroom.startTime;
-//             ageInSec = msSince / 1000;
-//             if (ageInSec >= maxAgeSec){
-//                 userchatroom.completed = true;
-//                 userchatroom.active = false;
-//                 userchatroom.save();
-//                 res.send("expired");
-//             } else {
-//                 if (userchatroom.active) {
-//                     res.send("active")
-//                 } else {
-//                 res.send();
-//                 }
-//             }
-//         }
-//     })
-// });
+function checkSubmit(chatsystem, confirm) {
+    var currentTime, msAge, redirect;
+    currentTime = getCurrentTime();
+    msAge = currentTime - chatsystem.sectionTime;
+    if (msAge > maxSubmitTime) {
+        if (chatsystem.location === "submitplan1") {
+            chatsystem.location = "scenario2info";
+            redirect = "/scenario2";
+            chatsystem.sectionTime = getCurrentTime();
+        } else {
+            chatsystem.location = "endpage";
+            redirect = "/endpage";
+            chatsystem.sectionTime = undefined;
+        }
+        chatsystem.save();
+        res.send(redirect);
+    } else {
+        if (confirm) { // If here this is the correct page
+            res.send();
+        } else { // if we are determining where to send user
+            if (chatsystem.location === "submitplan1") {
+                res.send('/submitplan1');
+            } else {
+                res.send('/submitplan2');
+            }
+        }
+    }
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
-// Submit plan page
-
-router.get('/submitplan1', function(req, res, next) {
-    res.render('submitplan1', {title: 'Emergency Response Planning'});
-});
+// Submit plan backend
 
 router.post('/addPlan', function(req, res) {
     var plan = JSON.parse(req.body.plan);
@@ -536,6 +577,6 @@ router.post('/login', passport.authenticate('local'), function(req, res) {
     return;
   });
 
-
+////////////////////////////////////////////////////////////////////////////////////////////////
 
 module.exports = router;
