@@ -199,10 +199,14 @@ button.submithome:hover {
 }
 
 .timing {
-    position: absolute;
+    position: fixed;
     right: 3em;
     top: 2em;
     font-size: 1.2em;
+    background-color: #D8D8D8;
+    padding: .3em;
+    border-radius: .4em;
+    opacity: 0.95;
 }
 
 

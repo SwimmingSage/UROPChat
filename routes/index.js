@@ -260,7 +260,7 @@ router.post('/checkSystem', function(req, res) {
         } else if(userchatsystem.location === undefined) { // The chat system the user is in has not yet begun
             res.send();
         } else { // Chat system has begun, we must determine current page that the users are on
-            determineLocation(userchatsystem, false);
+            determineLocation(userchatsystem, confirm);
         }
     })
 });

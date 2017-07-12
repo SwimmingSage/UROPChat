@@ -10,12 +10,13 @@ $(document).ready(function() {
     var chatroom;
 
     // Send the user to the proper room
-    getToRoom = function(room) {
+    function getToRoom(room) {
         socket.emit('room', room);
     }
 
-    catchUpChat = function(conversation) {
-        for (i = 0; i < conversation.length; i++) {
+    function catchUpChat(conversation) {
+        var l = conversation.length; // doing this increases speed by not having to call length property over and over
+        for (i = 0; i < l; i++) {
             if(conversation[i].idofSender === userid){
                 $('.messages').append('<li><strong>You:&nbsp;</strong>'+conversation[i].message+'</li>');
             } else {
@@ -25,7 +26,7 @@ $(document).ready(function() {
         fastScroll();
     }
 
-    getChat = function(chatroom) {
+    function getChat(chatroom) {
         $.ajax({
             url: '/getChat',
             data: {
@@ -188,7 +189,7 @@ $(document).ready(function() {
     var turnedOff = false;
     var warningGiven = false;
 
-    updateTimer = function(){
+    function updateTimer(){
         time = new Date();
         currentTime = time.getTime();
         // get time remaining in seconds
