@@ -8,12 +8,16 @@
     <script>
         var currentpage = "submitplan1";
     </script>
+    <script src="/socket.io/socket.io.js"></script>
     <script src="/javascripts/submitplan.js"></script>
   </head>
   <body>
 
     <div class="loginhome">
         <h1><%= title %></h1>
+    </div>
+    <div class="timing">
+        <p>Time Remaining: <span id="timeleft"></span></p>
     </div>
     <div>
         <table class="plansubmitupper">

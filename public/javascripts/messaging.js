@@ -2,12 +2,7 @@ $(document).ready(function() {
 
     // Initialize a socket object from socket.io
     var socket = io();
-    var name;
-    var room;
-    var userid;
-    var timeRemaining;
-    var startTime;
-    var chatroom;
+    var name, room, userid, timeRemaining, startTime, chatroom, system;
 
     // Send the user to the proper room
     function getToRoom(room) {
@@ -31,23 +26,26 @@ $(document).ready(function() {
         fastScroll();
     }
 
-    function getChat(chatroom) {
+    function getChat(system, id) {
         $.ajax({
-            url: '/getChat',
+            url: '/checkSystem',
             data: {
-                chatroom: chatroom,
+                system: inputsystem,
+                id:   entryid,
+                confirm: "yes",
+                page: currentpage,
             },
             type: 'POST',
-            success: function(chatinfosent) {
-                // chatinfo sent is {'room': chatroom, 'timeRemaining': timeRemaining} or "expired if time has run out"}
-                if (chatinfosent === "expired") {
-                    window.location.href = "/submitplan1";
+            success: function(data) {
+                if(data['correct'] === "false") {
+                    window.location.href = data['redirect'];
+                } else {
+                    chatroom = data['room'];
+                    room = chatroom.id;
+                    timeRemaining = data['timeleft'];
+                    startTime = getCurrentTime();
+                    getToRoom(room);
                 }
-                chatroom = chatinfosent['room'];
-                catchUpChat(chatroom.Conversation);
-                timeRemaining = chatinfosent['timeRemaining'];
-                startTime = getCurrentTime();
-                // change startTime to remaining time
             },
             error: function(xhr, status, error) {
                 console.log("Uh oh there was an error: " + error);
@@ -58,10 +56,9 @@ $(document).ready(function() {
     // where we decide if they stay or go
     if (document.cookie != "") {
         name = Cookies.get('name');
-        room = Cookies.get('room');
+        system = Cookies.get('system');
         userid = Cookies.get('userid');
-        getChat(room);
-        getToRoom(room);
+        getChat(system, userid);
     } else {
         window.location.href = "/loginhome";
     }
@@ -109,53 +106,34 @@ $(document).ready(function() {
     // When we receive a 'chat message' message...
     socket.on('recieve message', function(output) {
         // form of output is output = {'message':input['message'], name: input['name'], id:input['id'], 'room': input['room']};
-        shouldScroll = (messages.scrollTop + messages.clientHeight === messages.scrollHeight);
         if(output['id'] === userid){
             $('.messages').append('<li><strong>You:&nbsp;</strong>'+output['message']+'</li>');
         } else {
             $('.messages').append('<li class="otheruser"><strong>'+output['name']+':&nbsp;</strong>'+output['message']+'</li>');
         }
-        if (shouldScroll) {
-            scrollToBottom();
-        }
         if (wasTyping && output['id'] != userid){
             wasTyping = false;
             $('ul.messages').css({'height':'calc(100% - 47px)'});
             $('.typing').css({'display':'none'});
-            if (shouldScroll){
-                fastScroll();
-            }
         }
+        fastScroll();
     });
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////
     // Handeling Closing chat
 
-    otherUserClose = false;
+    var closeChat = false;
     function closeChat() {
-        $.ajax({
-            url: '/closeChat',
-            data: {
-            },
-            type: 'POST',
-            success: function(data) {
-                if(data = 'success') {
-                    console.log("The chat was successfully closed");
-                    turnedOff = true;
-                }
-            },
-            error: function(xhr, status, error) {
-                console.log("Uh oh there was an error: " + error);
-            }
-        });
+        input = {'system': system, 'room': room};
+        socket.emit('close Chat', input);
     }
 
     $("#closeChat").click(function(){
         $('.useractionpopup').css({"display":"none", "opacity":"0"});
         $('#closeChatSection').css({'display':'none'});
-        input = {'room': room, 'user': userid};
-        if (otherUserClose) {
-            socket.emit('close Chat', input);
+        closeChat = true;
+        if (closeChat) {
+            closeChat();
         } else {
             $('.messages').append('<li><strong>Your partner has been alerted of your desire to close the chat</strong></li>');
             socket.emit('close attempt', input);
@@ -165,32 +143,29 @@ $(document).ready(function() {
 
     socket.on('attempt close', function(output) {
         // input = {'room': user.chat_room, 'user': user.id};
-        if (output['user'] != userid) {
-            otherUserClose = true;
-            $('.messages').append('<li class="otheruser"><strong>Your partner wishes to close the chat, close click the close chat button below to close it if you are both done</strong></li>');
+        if ( (output['user'] != userid) && closeChat) {
+            input = {'system': system, 'user': userid};
+            socket.emit('close Chat', input);
+        } else if (output['user'] != userid) {
+            $('.messages').append('<li class="otheruser"><strong>Your partner wishes to close the chat, close click the close chat button at the bottom center of the page to close it if you are both done</strong></li>');
             fastScroll();
         }
     });
 
     // chat is closed
     socket.on('chat closed', function(output) {
-        // output = {'room': user.chat_room}; This is for the admin
-        turnedOff = true;
+        // output = {"redirect": redirect, "room": input['room']}; This is for the admin
         $('#closeChatSection').css({'display':'none'});
-        $('#planSubmit').css({'display':'block'});
-        $('#planSubmit').animate({'opacity':'1'}, 'slow');
         $('#m').prop("readonly", true);
         $('#m').val('');
         $('#timer').html('Chat closed');
-        $('.messages').append('<li><strong>The Chat has been closed, please proceed below.</strong></li>');
-        fastScroll();
+        window.location.href = output['redirect'];
     });
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
     // Keep track of the timer
     // max time in minutes
     var warningTime = 5 * 60;
-    var turnedOff = false;
     var warningGiven = false;
 
     function updateTimer(){
@@ -205,7 +180,7 @@ $(document).ready(function() {
             warningGiven = true;
             giveWarning();
         }
-        if (remaining <= 0 || turnedOff){
+        if (remaining <= 0){
             $('#closeChatSection').css({'display':'none'});
             $('#planSubmit').css({'display':'block'});
             $('#planSubmit').animate({'opacity':'1'}, 'slow');
@@ -213,7 +188,6 @@ $(document).ready(function() {
             $('#m').val('');
             $('#timer').html('Chat closed');
             closeChat();
-            turnedOff = true;
             clearInterval(keepTime);
             return;
         }

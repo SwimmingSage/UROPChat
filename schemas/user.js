@@ -56,5 +56,3 @@ mongoose.model('Plan', planschema);
 mongoose.model('ChatRoom', chatroomschema);
 mongoose.model('ChatSystem', chatsystemschema);
 
-// var Message = mongoose.model('Message', messageschema);
-// var ChatRoom = mongoose.model('ChatRoom', chatroomschema);

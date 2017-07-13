@@ -90,6 +90,10 @@ $(document).ready(function() {
         }
     });
 
+    socket.on('proceedRedirect', function(redirect) {
+        window.location.href = redirect;
+    });
+
 
 });
 

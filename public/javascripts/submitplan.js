@@ -1,14 +1,50 @@
 $(document).ready(function() {
 
     // This grabs the user data from backend so we can get their info
-    var name;
-    var room;
-    var userid;
+    var socket = io();
+    var name, system, userid;
+    var timeRemaining, startTime;
 
+    function getCurrentTime(){
+        var time = new Date();
+        return time.getTime();
+    }
+    // Send the user to the proper system room 
+    function getToRoom(system) {
+        socket.emit('room', system);
+    }
+
+    function checkScenarioTimer(system, id) {
+        $.ajax({
+            url: '/checkSystem',
+            data: {
+                system: inputsystem,
+                id:   entryid,
+                confirm: "yes",
+                page: currentpage,
+            },
+            type: 'POST',
+            success: function(data) {
+                if(data['correct'] === "false") {
+                    window.location.href = data['redirect'];
+                } else {
+                    timeRemaining = data['timeleft'];
+                    startTime = getCurrentTime();
+                    getToRoom(system);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.log("Uh oh there was an error: " + error);
+            }
+        });
+    }
+
+    // where we decide if they stay or go
     if (document.cookie != "") {
-        userid = Cookies.get('userid');
         name = Cookies.get('name');
-        room = Cookies.get('room');
+        system = Cookies.get('system');
+        userid = Cookies.get('userid');
+        checkScenarioTimer(system, userid);
     } else {
         window.location.href = "/loginhome";
     }

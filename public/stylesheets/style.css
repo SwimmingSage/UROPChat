@@ -469,12 +469,6 @@ ul span#bottomanchor {
     background-color: #bdbdbd;
 }
 
-#planSubmit {
-    display: none;
-    opacity: 0;
-    margin-bottom: 3em;
-}
-
 .useractionpopup {
     display: none;
     opacity: 0;

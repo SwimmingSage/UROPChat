@@ -35,6 +35,11 @@ var server = http.createServer(app);
 // start socket.io
 var io = require('socket.io').listen(server);
 
+function getCurrentTime(){
+    var time = new Date();
+    return time.getTime();
+}
+
 io.on('connection', function(socket) {
     console.log('a user connected');
     // When a user disconnects from out app...
@@ -59,8 +64,7 @@ io.on('connection', function(socket) {
             if (err) {
               console.log('An error occurred');
             } 
-            time = new Date();
-            userSystem.sectionTime = time.getTime() + 5000; // the current time in ms, 5 delay redirect
+            userSystem.sectionTime = Number(getCurrentTime) + 5000; // the current time in ms, 5 delay redirect
             userSystem.location = "scenario1info";
             userSystem.save();
         })
@@ -97,8 +101,7 @@ io.on('connection', function(socket) {
         if (err) {
           console.log('An error occurred');
         }
-        time = new Date();
-        currentTime = time.getTime();
+        currentTime = getCurrentTime();
         var new_message = new Message({
             message :     input['message'],
             timeCreated : currentTime,
@@ -137,36 +140,78 @@ io.on('connection', function(socket) {
 
   socket.on('close Chat', function(input) {
     // This closes the chat prematurely
-    // input = {'room': user.chat_room, 'user': user.id};
-    ChatRoom.findOne({'id': input['room']}, function(err, userchatroom){
-        if (err) {
-          console.log('An error occurred');
-        } else if (!userchatroom.active) {
-            return
-        } else {
-            userchatroom.active = false;
-            userchatroom.completed = true;
-            userchatroom.save();
-            io.to(input['room']).emit("chat closed", input);
-        }
-    })
-  });
-
-  socket.on('halfproceed', function(input) {
-    // input = {'system': system, 'user': userid};
-    io.to(input['room']).emit("initiateproceed", input['user']);
-  });
-
-  socket.on('proceed', function(systemid) {
-    var location;
-    ChatSystem.findOne({'id': systemID}, function(err, userchatsystem){
+    // input = {'system': system, 'room': room};
+    var redirect, returnobject;
+    ChatSystem
+    .findOne({"id": system})
+    .populate({'scenario1 scenario2'})
+    .exec(function (err, chatsystem) {
         if (err) {
           console.log('An error occurred');
         } 
-        location = userchatsystem.location;
-        if (location === "scenario1info" || location = "scenario1info") {
-
+        if (chatsystem.location === "scenario1") {
+            chatroom = chatsystem.scenario1;
+        } else {
+            chatroom = chatsystem.scenario2;
         }
+
+        chatroom.completed = true;
+        chatroom.active = false;
+        chatroom.save();
+        if (chatsystem.location === "scenario1") {
+            chatsystem.location = "submitplan1";
+            redirect = "/submitplan1";
+        } else {
+            chatsystem.location = "submitplan2";
+            redirect = "/submitplan2";
+        }
+        chatsystem.sectionTime = getCurrentTime();
+        chatsystem.save();
+        returnobject = {"redirect": redirect, "room": input['room']};
+        io.to(input['room']).emit("chat closed", returnobject);
+    })
+  });
+
+  // This is for proceeding on non messaging pages, it is a different process
+  // due to not having to alter the chat object
+  socket.on('halfproceed', function(input) {
+    // input = {'system': system, 'user': userid};
+    io.to(input['system']).emit("initiateproceed", input['user']);
+  });
+
+  socket.on('proceed', function(systemid) {
+    var location, chatroom, redirect;
+    ChatSystem
+    .findOne({"id": systemid})
+    .populate({'scenario1 scenario2'})
+    .exec(function (err, popchatsystem) { //populated chat system
+        if (err) {
+          console.log('An error occurred');
+        } 
+        location = popchatsystem.location;
+        if (location === "scenario1info" || location = "scenario2info") {
+            popchatsystem.sectionTime = undefined;
+            if (location === "scenario1info") {
+                chatroom = popchatsystem.scenario1
+                popchatsystem.location = "scenario1";
+                redirect = '/messaging1'
+            } else { // location === "scenario2info"
+                chatroom = popchatsystem.scenario2;
+                popchatsystem.location = "scenario2";
+                redirect = '/messaging2'
+            }
+            chatroom.startTime = getCurrentTime();
+            chatroom.active = true;
+        } else if (location === "submitplan1") {
+            popchatsystem.location = "scenario2info";
+            redirect = "/scenario2"
+            popchatsystem.sectionTime = getCurrentTime();
+        } else { // location === "submitplan2"
+            popchatsystem.location = "endpage";
+            redirect = '/endpage'
+            popchatsystem.sectionTime = undefined;
+        }
+        io.to(input['system']).emit("proceedRedirect", redirect);
     })
   });
 

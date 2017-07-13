@@ -192,13 +192,13 @@ $(document).ready(function() {
     /////////////////////////////////////////////////////////////////////////////////////////////////////
     // Where I will put the stuff for closing a chat
     socket.on('chat closed', function(output) {
-        // output  = {'room': user.chat_room};
-        roomid = output.room
+        // output  = {"redirect": redirect, "room": input['room']};
+        roomid = output['room'];
         closed[roomid] = true;
         $('#m'+ roomid).prop("readonly", true);
         $('#m'+ roomid).val('');
         $('#timer'+output['room']).html('0:00');
-        $('#messages' + output['room']).append('<li><strong>Chat has been closed early</strong></li');
+        $('#messages' + output['room']).append('<li><strong>Chat has been closed.</strong></li');
     });
 });
 
