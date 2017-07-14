@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+<!--     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/javascripts/cookies.js"></script>
+    <script>
+        var currentpage = "scenario2";
+    </script>
+    <script src="/javascripts/messaging.js"></script> -->
+  </head>
+  <body>
+
+    <div class="loginhome">
+        <h1 class="chattitle"><%= title %></h1>
+
+    </div>
+    <table class="messagingtable">
+        <tr>
+            <td class="chatcol">
+                <div class="chatsection">
+                    <h3 id="timer">Chat expires in <span id="timeLeft"></span></h3>
+                    <div class="chat">
+                        <ul class="messages" id='messages'>
+                        </ul>
+                        <div class="typing">Other user is typing. . .</div>
+                        <div id="entermessage">
+                            <form action="">
+                                <input id="m" placeholder="Enter Message" autocomplete="off" /><button id="send">Send</button>
+                            </form>
+                        </div>
+                    </div>
+                    <h4>Goal:</h4>
+                    <p>Assign countermeasures to best neutralize current incoming missiles. Consider conserving your resources to address the future threat of another 2~3 incoming missiles.</p>
+                    <div class="scenarioinfo" id="messaginginfo">
+                        <h3>Table 1: Countermeasure Availability</h3>
+                        <table>
+                            <tr>
+                                <th></th>
+                                <th>Destroyer</th>
+                                <th>Cargo Ship</th>
+                                <th>Patrol Boat</th>
+                            </tr>
+                            <tr>
+                                <td class="left">1. Floating decoy</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>4</td>
+                            </tr>
+                            <tr>
+                                <td class="left">2. Flares (infrared)</td>
+                                <td>3</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td class="left">3. Chaff (radar)</td>
+                                <td>3</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td class="left">4. Laser shots</td>
+                                <td>6</td>
+                                <td>0</td>
+                                <td>0</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </td>
+            <td class="infocol">
+                <img src="images/Scenario2Map.jpg">
+                <div class='infosection'>
+                    <div class="scenarioinfo" id="messaginginfo">
+                        <h3>Table 2: Countermeasure Effectiveness</h3>
+                        <table>
+                            <tr>
+                                <th></th>
+                                <th colspan="4"><h3>Missile Type</h4></th>
+                            </tr>
+                            <tr>
+                                <th></th>
+                                <th>Hungry</th>
+                                <th>Moth (infrared)</th>
+                                <th>Green (radar)</th>
+                                <th>Eagle</th>
+                            </tr>
+                            <tr>
+                                <td class="left">1. Floating decoy</td>
+                                <td>60</td>
+                                <td>40</td>
+                                <td>30</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td class="left">2. Flares (infrared)</td>
+                                <td>70</td>
+                                <td>80</td>
+                                <td>0</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td class="left">3. Chaff (radar)</td>
+                                <td>60</td>
+                                <td>0</td>
+                                <td>80</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td  class="left">4. Laser shots</td>
+                                <td>70</td>
+                                <td>70</td>
+                                <td>70</td>
+                                <td>30</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <!-- Bottom buttons -->
+    <div class="messageBottom" id="closeChatSection">
+        <button id="opencloseChat"><strong>CloseChat</strong></button>
+        <p>Please only close the chat if you are completely finished. Both users must close the chat to have it finish prematurely.</p>
+    </div>
+
+    <!-- The popups that the user will get(not really pop ups, modals) -->
+    <div class="useractionpopup" id="timewarning">
+      <div>
+        <span class="closebox">&times;</span>
+        <h1>5 Minute Warning</h1>
+        <p class="levelinfo">Warning, you have 5 minutes or less remaining for this conversation.</p>
+      </div>
+    </div>
+    <div class="useractionpopup" id="closechatpop">
+      <div>
+        <span class="closebox">&times;</span>
+        <h1>Warning</h1>
+        <p class="levelinfo">Warning, are you sure you want to close the chat? Make sure you have concluded the task at hand.</p>
+        <button id="closeChat">Close Chat</button>
+        <button class="closebox">Cancel</button>
+      </div>
+    </div>
+  </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+

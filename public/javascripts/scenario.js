@@ -57,7 +57,7 @@ $(document).ready(function() {
         timeSince = (Number(currentTime) - Number(startTime))
         remaining = Math.floor((Number(timeRemaining) - timeSince)/1000)
         if (remaining <= 0){
-            
+            socket.emit('proceed', system);
         }
         editTimer(remaining);
     }
@@ -78,7 +78,8 @@ $(document).ready(function() {
 
     $("#proceed").click(function(){
         $("#scenariobutton").css({"display":"none", "opacity":"0"});
-        $(".scenariowait").css({"display":"block", "opacity":"1"});
+        $(".proceedWait").css({"display":"block"});
+        $(".proceedWait").animate({"opacity":"1"}, "slow");
         proceedReady = true;
         input = {'system': system, 'user': userid};
         socket.emit('halfproceed', input);

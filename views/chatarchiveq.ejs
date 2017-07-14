@@ -27,12 +27,20 @@
                     <td><%= "" %></td>
                     <% } %>
                     <% if (chats[i].user1plan[x] != undefined) { %>
-                    <td><%= chats[i].user1plan[x].action %> <%= chats[i].user1plan[x].location %></td>
+                        <% if (chats[i].type === "uav") { %>
+                        <td><%= chats[i].user1plan[x].action %> <%= chats[i].user1plan[x].location %></td>
+                        <% } else { %>
+                        <td><%= chats[i].user1plan[x].count %> <%= chats[i].user1plan[x].missile %> from <%= chats[i].user1plan[x].ship %> to <%= chats[i].user1plan[x].target %></td>
+                        <% } %>
                     <% } else { %>
                     <td><%= "" %></td>
                     <% } %>
                     <% if (chats[i].user2plan[x] != undefined) { %>
-                    <td><%= chats[i].user2plan[x].action %> <%= chats[i].user2plan[x].location %></td>
+                        <% if (chats[i].type === "uav") { %>
+                        <td><%= chats[i].user2plan[x].action %> <%= chats[i].user2plan[x].location %></td>
+                        <% } else { %>
+                        <td><%= chats[i].user2plan[x].count %> <%= chats[i].user2plan[x].missile %> from <%= chats[i].user2plan[x].ship %> to <%= chats[i].user2plan[x].target %></td>
+                        <% } %>
                     <% } else { %>
                     <td><%= "" %></td>
                     <% } %>

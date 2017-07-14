@@ -144,7 +144,7 @@ io.on('connection', function(socket) {
     var redirect, returnobject;
     ChatSystem
     .findOne({"id": system})
-    .populate({'scenario1 scenario2'})
+    .populate('scenario1 scenario2')
     .exec(function (err, chatsystem) {
         if (err) {
           console.log('An error occurred');
@@ -183,13 +183,13 @@ io.on('connection', function(socket) {
     var location, chatroom, redirect;
     ChatSystem
     .findOne({"id": systemid})
-    .populate({'scenario1 scenario2'})
+    .populate('scenario1 scenario2')
     .exec(function (err, popchatsystem) { //populated chat system
         if (err) {
           console.log('An error occurred');
         } 
         location = popchatsystem.location;
-        if (location === "scenario1info" || location = "scenario2info") {
+        if (location === "scenario1info" || location === "scenario2info") {
             popchatsystem.sectionTime = undefined;
             if (location === "scenario1info") {
                 chatroom = popchatsystem.scenario1

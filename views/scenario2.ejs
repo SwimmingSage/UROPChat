@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+<!--     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var currentpage = "scenario2info";
+    </script>
+    <script src="/javascripts/scenario.js"></script> -->
+  </head>
+  <body>
+
+    <div class="upperheader">
+        <h1><%= title %></h1>
+    </div>
+    <div class="timing">
+        <p>Time Remaining: <span id="timeleft"></span></p>
+    </div>
+    <div class="scenariotext">
+        <h2>Scenario Description</h2>
+        <div class="scenarioinfo">
+            <p>In this scenario, you will be operating as a responder for <strong>anti-missile defense</strong>. You need to assign countermeasures to each of the incoming missiles that are targeting your ships. You have three ships, and the amount of countermeasures available for each ship is shown in Table 1. Incoming missiles are classified by their missile types. Countermeasures have varying effectiveness for each missile type.  The effectiveness ratios are described in Table 2. For example, launching a floating decoy for a “Hungry” missile has 60% chance of neutralizing the missile.  Meanwhile, a floating decoy for a “Moth” and a “Green” missile has only 40% and 30% of success, respectively. Note that the “Eagle” missile can only be targeted by laser shots.</p>
+            <h3>Table 1: Countermeasure Availability</h3>
+            <table>
+                <tr>
+                    <th></th>
+                    <th>Destroyer</th>
+                    <th>Cargo Ship</th>
+                    <th>Patrol Boat</th>
+                </tr>
+                <tr>
+                    <td class="left">1. Floating decoy</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>4</td>
+                </tr>
+                <tr>
+                    <td class="left">2. Flares (infrared)</td>
+                    <td>3</td>
+                    <td>1</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td class="left">3. Chaff (radar)</td>
+                    <td>3</td>
+                    <td>1</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td class="left">4. Laser shots</td>
+                    <td>6</td>
+                    <td>0</td>
+                    <td>0</td>
+                </tr>
+            </table>
+            <br>
+            <h3>Table 2: Countermeasure Effectiveness</h3>
+            <table>
+                <tr>
+                    <th></th>
+                    <th colspan="4"><h3>Missile Type</h4></th>
+                </tr>
+                <tr>
+                    <th></th>
+                    <th>Hungry</th>
+                    <th>Moth (infrared)</th>
+                    <th>Green (radar)</th>
+                    <th>Eagle</th>
+                </tr>
+                <tr>
+                    <td class="left">1. Floating decoy</td>
+                    <td>60</td>
+                    <td>40</td>
+                    <td>30</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td class="left">2. Flares (infrared)</td>
+                    <td>70</td>
+                    <td>80</td>
+                    <td>0</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td class="left">3. Chaff (radar)</td>
+                    <td>60</td>
+                    <td>0</td>
+                    <td>80</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td  class="left">4. Laser shots</td>
+                    <td>70</td>
+                    <td>70</td>
+                    <td>70</td>
+                    <td>30</td>
+                </tr>
+            </table>
+            <br>
+            <p>You are allowed to assign a combination of multiple countermeasures to each of the incoming missiles. For example, by launching a floating decoy <strong>and</strong> a flare to a “Hungry” missile, you can increase the overall effectiveness from 60% to 88%.</p>
+            <br>
+            <p>Your ships are physically close together where you can assign any set of available countermeasures to any of the incoming missiles (e.g., you can launch countermeasures from your Destroyer to address missiles that are targeting your Patrol Boat).</p>
+            <br>
+            <p>Five incoming missiles, their types, and their targets are shown in the scenario map. The target for missile <strong>E</strong> (Eagle) could not be determined. You are also informed by your surveillance crew that there exists a future threat by another set of 2~3 missiles (you do not know their types and targets yet).</p>
+
+            <h3>Goal:</h3>
+            <p>Assign countermeasures to best neutralize current incoming missiles. Consider conserving your resources to address the future threat of another 2~3 incoming missiles.</p>
+
+            <img src="images/Scenario2Map.jpg">
+
+            <h3>An example plan:</h3>
+            <td class="demoplan">
+                <h3>Plan Example:</h3>
+                <table>
+                    <tr>
+                        <th>Ship</th>
+                        <th>Count</th>
+                        <th>Missile</th>
+                        <th>Target</th>
+                    </tr>
+                    <tr>
+                        <td>Destroyer</td>
+                        <td>1</td>
+                        <td>Flare</td>
+                        <td>A (Moth)</td>
+                    </tr>
+                    <tr>
+                        <td>Destroyer</td>
+                        <td>1</td>
+                        <td>Laser Shot</td>
+                        <td>B (Hungry)</td>
+                    </tr>
+                    <tr>
+                        <td>Cargo Ship</td>
+                        <td>1</td>
+                        <td>Flare</td>
+                        <td>B (Hungry)</td>
+                    </tr>
+                    <tr>
+                        <td>Patrol Boat</td>
+                        <td>1</td>
+                        <td>Floating decoy</td>
+                        <td>C (Hungry)</td>
+                    </tr>
+                    <tr>
+                        <td>Destroyer</td>
+                        <td>2</td>
+                        <td>Chaff</td>
+                        <td>D (Green)</td>
+                    </tr>
+                    <tr>
+                        <td>Destroyer</td>
+                        <td>2</td>
+                        <td>Laser Shot</td>
+                        <td>E (Eagle)</td>
+                    </tr>
+                </table>
+            </td>
+            <br>
+        </div>
+    </div>
+    <div class="styledbutton" id="scenariobutton">
+        <button id="proceed">Proceed</button>
+    </div>
+    <div class="proceedWait">
+        <p>Once the other user decides to proceed or the timer runs out you will move on</p>
+    </div>
+  </body>
+</html>

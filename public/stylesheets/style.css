@@ -112,6 +112,10 @@ button.submithome:hover {
     margin:auto;
 }
 
+.introtext p {
+    text-align: left;
+}
+
 .introtext div {
     width: 100%;
     text-align: left;
@@ -172,6 +176,14 @@ button.submithome:hover {
     width: 45em;
 }
 
+#messaginginfo {
+    width: 100%;
+}
+
+.scenarioinfo p {
+    text-align: left;
+}
+
 .scenarioinfo h3, h4 {
     margin: .3em 0em;
 }
@@ -187,6 +199,31 @@ button.submithome:hover {
 
 .scenarioinfo table {
     width: 100%;
+    border-collapse: collapse;
+}
+
+.scenarioinfo table, .scenarioinfo th, .scenarioinfo td {
+    border: 1px solid black;
+}
+
+.scenarioinfo table th{
+    padding: 0.2em 0em;
+    text-align: center;
+    background-color: #E0E0E0;
+}
+
+.scenarioinfo table th h3{
+    margin: 0em;
+}
+
+.scenarioinfo table td{
+    text-align: center;
+    padding: 0.3em 0em;
+}
+
+.scenarioinfo table td.left{
+    text-align: left;
+    padding: 0.3em 0em 0.3em .5em;
 }
 
 #scenariobutton {
@@ -209,7 +246,7 @@ button.submithome:hover {
     opacity: 0.95;
 }
 
-.scenariowait {
+.proceedWait { /* Used for scenario and submitplan */
     display: none;
     opacity: 0;
     width: 40em;
@@ -789,6 +826,10 @@ td.planside {
     column-gap: 0;
 /*    height: 6.5em;*/
 /*    overflow-y: scroll;*/
+}
+
+.planSubmission ul.lowerul.onecolumn {
+    columns: 1;
 }
 
 .planSubmission ul.lowerul li {

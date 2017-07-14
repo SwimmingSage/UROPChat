@@ -4,12 +4,13 @@
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-    <script src="/javascripts/cookies.js"></script>
+<!--     <script src="/javascripts/cookies.js"></script>
     <script>
         var currentpage = "submitplan1";
     </script>
     <script src="/socket.io/socket.io.js"></script>
-    <script src="/javascripts/submitplan.js"></script>
+    <script src="/javascripts/submitplan.js"></script> -->
+    <script src="/javascripts/submitplanform1.js"></script>
   </head>
   <body>
 
@@ -145,28 +146,28 @@
                 <div class="planSubmission">
                     <ul class="upperul" id="step1">
                         <li class="upperli"><strong>1.</strong><!-- </li>  Only way to get around inherint whitespace in inlineblock html-->
-                        <li class="upperli"><button><span id="action1">Action</span> <div class="downarrow">&#10095</div></button>
+                        <li class="upperli"><button><span id="action1">Action</span> <div class="downarrow">&#10095;</div></button>
                             <ul class="lowerul">
-                                <li class="goto leftcol">Go to</li>
-                                <li class="package leftcol">Drop Package</li>
-                                <li class="surveil rightcol">Surveil</li>
-                                <li class="intercept rightcol">Intercept</li>
+                                <li class="leftcol">Go to</li>
+                                <li class="leftcol">Drop Package</li>
+                                <li class="rightcol">Surveil</li>
+                                <li class="rightcol">Intercept</li>
                             </ul>
-                        <!-- </li> -->
-                        <li class="upperli"><button><span id="location1">Location</span><div class="downarrow">&#10095</div></button>
+                        </li>
+                        <li class="upperli"><button><span id="location1">Location</span><div class="downarrow">&#10095;</div></button>
                             <ul class="lowerul">
-                                <li class="mb leftcol">Main Base</li>
-                                <li class="pc leftcol">Package Center</li>
-                                <li class="p1 leftcol">P1</li>
-                                <li class="p2 leftcol">P2</li>
-                                <li class="p3 leftcol">P3</li>
-                                <li class="p4 rightcol">P4</li>
-                                <li class="r1 rightcol">Region1</li>
-                                <li class="r2 rightcol">Region2</li>
-                                <li class="uav1 rightcol">UAV1</li>
-                                <li class="uav2 rightcol">UAV2</li>
+                                <li class="leftcol">Main Base</li>
+                                <li class="leftcol">Package Center</li>
+                                <li class="leftcol">P1</li>
+                                <li class="leftcol">P2</li>
+                                <li class="leftcol">P3</li>
+                                <li class="rightcol">P4</li>
+                                <li class="rightcol">Region1</li>
+                                <li class="rightcol">Region2</li>
+                                <li class="rightcol">UAV1</li>
+                                <li class="rightcol">UAV2</li>
                             </ul>
-                        <!-- </li> -->
+                        </li>
                     </ul>
                 </div>
                 <div class="messageBottom" id="submitsection">
@@ -178,14 +179,8 @@
         </tr>
     </table>
 
-    <div class="messageBottom" id="beginSurvey">
-        <p>Please fill out the post-study survey below.</p>
-        <a href="https://goo.gl/forms/UMMX8mKzoNw3wtBc2" target="_blank"><button id="returnHome">Fill out Survey</button></a>
-        <p>After completing the survey, please click the pop-out button in the top right corner below to open the payment form in a new tab to print or save. Then please fill it out and click on the button below to email the completed form to <strong>mattwoicik@gmail.com</strong>.</p>
-        <a href="mailto:mattwoicik@gmail.com?subject=Payment for Human Subject Testing Form AIMHTPC&body=Here is my Payment for Human Subject Testing Form to receive payment for participation in the AIMHTPC Study" target="_blank"><button>Email Signed Form</button></a>
-        <iframe src="https://drive.google.com/file/d/0B8HIgas6Gkh-V1I0cWVTSVpMRzg/preview" width="640" height="480"></iframe>
-        <p>Thank you for participating in this study!</p>
-
+    <div class="proceedWait">
+        <p>Once the other user submits their plan or the timer runs out you will move on</p>
     </div>
 
     <div class="buffer"></div>

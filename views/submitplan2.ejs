@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<!--     <script src="/javascripts/cookies.js"></script>
+    <script>
+        var currentpage = "submitplan2";
+    </script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/javascripts/submitplan.js"></script> -->
+    <script src="/javascripts/submitplanform2.js"></script>
+  </head>
+  <body>
+
+    <div class="loginhome">
+        <h1><%= title %></h1>
+    </div>
+    <div class="timing">
+        <p>Time Remaining: <span id="timeleft"></span></p>
+    </div>
+    <div>
+        <table class="plansubmitupper">
+            <tr>
+                <td class="plansubmitleft">
+                    <img src="images/Scenario2Map.jpg">
+                </td>
+                <td class="plansubmitright infosection">
+                    <div class="scenarioinfo" id="messaginginfo">
+                        <h3>Table 1: Countermeasure Availability</h3>
+                        <table>
+                            <tr>
+                                <th></th>
+                                <th>Destroyer</th>
+                                <th>Cargo Ship</th>
+                                <th>Patrol Boat</th>
+                            </tr>
+                            <tr>
+                                <td class="left">1. Floating decoy</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>4</td>
+                            </tr>
+                            <tr>
+                                <td class="left">2. Flares (infrared)</td>
+                                <td>3</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td class="left">3. Chaff (radar)</td>
+                                <td>3</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td class="left">4. Laser shots</td>
+                                <td>6</td>
+                                <td>0</td>
+                                <td>0</td>
+                            </tr>
+                        </table>
+                        <br>
+                        <h3>Table 2: Countermeasure Effectiveness</h3>
+                        <table>
+                            <tr>
+                                <th></th>
+                                <th colspan="4"><h3>Missile Type</h4></th>
+                            </tr>
+                            <tr>
+                                <th></th>
+                                <th>Hungry</th>
+                                <th>Moth (infrared)</th>
+                                <th>Green (radar)</th>
+                                <th>Eagle</th>
+                            </tr>
+                            <tr>
+                                <td class="left">1. Floating decoy</td>
+                                <td>60</td>
+                                <td>40</td>
+                                <td>30</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td class="left">2. Flares (infrared)</td>
+                                <td>70</td>
+                                <td>80</td>
+                                <td>0</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td class="left">3. Chaff (radar)</td>
+                                <td>60</td>
+                                <td>0</td>
+                                <td>80</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td  class="left">4. Laser shots</td>
+                                <td>70</td>
+                                <td>70</td>
+                                <td>70</td>
+                                <td>30</td>
+                            </tr>
+                        </table>
+                    </div>
+                </td>
+            </tr>
+        </tabe>
+    </table>
+    <div class="submitinstructions">
+        <h3>Instructions:</h3>
+        <p>Now you have to report the discussed plan for execution, please use the action template below and create a detailed sequence of your plan. Remember to use the "Go to" command to move between locations.</p>
+    </div>
+    <table class="plansubmitlower">
+        <tr>
+            <td class="demoplan">
+                <h3>Plan Example:</h3>
+                <table class="demotable">
+                    <tr>
+                        <th>Ship</th>
+                        <th>Count</th>
+                        <th>Missile</th>
+                        <th>Target</th>
+                    </tr>
+                    <tr>
+                        <td>Destroyer</td>
+                        <td>1</td>
+                        <td>Flare</td>
+                        <td>A (Moth)</td>
+                    </tr>
+                    <tr>
+                        <td>Destroyer</td>
+                        <td>1</td>
+                        <td>Laser Shot</td>
+                        <td>B (Hungry)</td>
+                    </tr>
+                    <tr>
+                        <td>Cargo Ship</td>
+                        <td>1</td>
+                        <td>Flare</td>
+                        <td>B (Hungry)</td>
+                    </tr>
+                    <tr>
+                        <td>Patrol Boat</td>
+                        <td>1</td>
+                        <td>Floating decoy</td>
+                        <td>C (Hungry)</td>
+                    </tr>
+                    <tr>
+                        <td>Destroyer</td>
+                        <td>2</td>
+                        <td>Chaff</td>
+                        <td>D (Green)</td>
+                    </tr>
+                    <tr>
+                        <td>Destroyer</td>
+                        <td>2</td>
+                        <td>Laser Shot</td>
+                        <td>E (Eagle)</td>
+                    </tr>
+                </table>
+            </td>
+            <td class="planside">
+                <div class="planSubmission">
+                    <ul class="upperul" id="step1">
+                        <li class="upperli"><strong>1.</strong><!-- </li>  Only way to get around inherint whitespace in inlineblock html-->
+                        <li class="upperli"><button><span id="ship1">Ship</span> <div class="downarrow">&#10095;</div></button>
+                            <ul class="lowerul onecolumn">
+                                <li>Destroyer</li>
+                                <li>Cargo Ship</li>
+                                <li>Patrol Boat</li>
+                            </ul>
+                        <!-- </li> -->
+                        <li class="upperli"><button><span id="location1">Location</span><div class="downarrow">&#10095;</div></button>
+                            <ul class="lowerul">
+                                <li class="leftcol">Destroyer</li>
+                                <li class="leftcol">Package Center</li>
+                                <li class="leftcol">P1</li>
+                                <li class="leftcol">P2</li>
+                                <li class="leftcol">P3</li>
+                                <li class="rightcol">P4</li>
+                                <li class="rightcol">Region1</li>
+                                <li class="rightcol">Region2</li>
+                                <li class="rightcol">UAV1</li>
+                                <li class="rightcol">UAV2</li>
+                            </ul>
+                        <!-- </li> -->
+                    </ul>
+                </div>
+                <div class="messageBottom" id="submitsection">
+                    <button id="addAction">Add Action</button>
+                    <button id="removeAction">Remove Action</button>
+                    <button id="submitplan">Submit Plan</button>
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <div class="proceedWait">
+        <p>Once the other user submits their plan or the timer runs out you will move on</p>
+    </div>
+
+    <div class="buffer"></div>
+    
+  </body>
+</html>

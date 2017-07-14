@@ -140,8 +140,10 @@ router.post('/makeUnavailable', function(req, res, next) {
 });
 
 router.get('/makeChat', function(req, res, next) {
-    function makechat() {
-        var new_chat = new ChatRoom({});
+    function makechat(scenario) {
+        var new_chat = new ChatRoom({
+            type: scenario,
+        });
         new_chat.id = new_chat._id.toString();
         new_chat.save();
         return new_chat;
@@ -160,8 +162,8 @@ router.get('/makeChat', function(req, res, next) {
             return chatsystem;
         })
         .then(chatsystem => {
-            chatsystem.scenario1 = makechat();
-            chatsystem.scenario2 = makechat();
+            chatsystem.scenario1 = makechat("uav");
+            chatsystem.scenario2 = makechat("missile");
             return chatsystem;
         })
         .then(chatsystem => {
@@ -251,7 +253,7 @@ router.post('/checkSystem', function(req, res) {
     }
     ChatSystem
     .findOne({"id": systemid})
-    .populate({'scenario1 scenario2'})
+    .populate('scenario1 scenario2')
     .exec(function (err, userchatsystem) {
         if (err) {
           console.log('An error occurred');
@@ -279,8 +281,8 @@ router.post('/checkSystem', function(req, res) {
 });
 
 function determineLocation(chatsystem, confirm, currentpage) { // if confirm === false then we are determining where we should redirect user,
-    switch (chatsystem.location) {                // otherwise we are confirming if this is the correct page location
-        var returnobject;
+    var returnobject;                                          // otherwise we are confirming if this is the correct page location
+    switch (chatsystem.location) {
         case "scenario1info":
             if (confirm & ("scenario1info" !== currentpage)) {
                 determineLocation(chatsystem, false, currentpage); // we need to redirect the user then
@@ -458,16 +460,17 @@ function checkSubmit(chatsystem, confirm) {
 router.post('/addPlan', function(req, res) {
     var plan = JSON.parse(req.body.plan);
     var name = req.body.name;
-    var room = req.body.room;
+    var system = req.body.system;
     var userid = req.body.userid;
     var plannumber;
-    function createstep(step, act, loc, chat) {
+    var system;
+    function createStepUAV(step, act, loc, chat) {
         var plan_step = new Plan({
             user:            userid,
             name:            name,
             stepnumber:      step,
             action:          act,
-            location:        loc,
+            location:        loc
         })
         plan_step.save();
         if(plannumber === 1) {
@@ -476,52 +479,90 @@ router.post('/addPlan', function(req, res) {
             chat.user2plan.push(plan_step);
         }
     }
-    ChatRoom
-    .findOne({"id": room})
-    .populate({path: 'user1plan', options:{sort: {'stepnumber': 1}}})
-    .populate({path: 'user2plan', options:{sort: {'stepnumber': 1}}})
-    .exec(function (err, userchatroom) {
-        if (err) {
-          console.log('An error occurred while finding the user chatroom by ID');
-        }
-        return new Promise(function(resolve, reject){
-            resolve(userchatroom);
-        });
-    })
-    .then(chat => {
-        if (chat.User1 === userid) {
-            if (chat.user1plan.length != 0) {
-                for (i = 0; i < chat.user1plan.length; i++) {
-                    chat.user1plan[i].remove(); // remove former plans from database
-                }
-                chat.user1plan = []; // redefine plan as empty array
-                chat.save();
-            }
-            plannumber = 1;
+    function createStepMissile(step, count, ship, missile, target, chat) {
+        var plan_step = new Plan({
+            user:            userid,
+            name:            name,
+            stepnumber:      step,
+            count:           count,
+            ship:            ship,
+            missle:          missile,
+            target:          target
+        })
+        plan_step.save();
+        if(plannumber === 1) {
+            chat.user1plan.push(plan_step);
         } else {
-            if (chat.user2plan.length != 0) {
-                for (i = 0; i < chat.user2plan.length; i++) {
-                    chat.user2plan[i].remove(); // remove former plans from database
-                }
-                chat.user2plan = []; // redefine empty plan as empty array
-                chat.save();
+            chat.user2plan.push(plan_step);
+        }
+    }
+
+    function enterPlan(roomid) {
+        ChatRoom
+        .findOne({"id": roomid})
+        .populate({path: 'user1plan', options:{sort: {'stepnumber': 1}}})
+        .populate({path: 'user2plan', options:{sort: {'stepnumber': 1}}})
+        .exec(function (err, userchatroom) {
+            if (err) {
+              console.log('An error occurred while finding the user chatroom by ID');
             }
-            plannumber = 2;
+            return new Promise(function(resolve, reject){
+                resolve(userchatroom);
+            });
+        })
+        .then(chat => {
+            if (system.User1 === userid) {
+                if (chat.user1plan.length != 0) {
+                    for (i = 0; i < chat.user1plan.length; i++) {
+                        chat.user1plan[i].remove(); // remove former plans from database
+                    }
+                    chat.user1plan = []; // redefine plan as empty array
+                    chat.save();
+                }
+                plannumber = 1;
+            } else {
+                if (chat.user2plan.length != 0) {
+                    for (i = 0; i < chat.user2plan.length; i++) {
+                        chat.user2plan[i].remove(); // remove former plans from database
+                    }
+                    chat.user2plan = []; // redefine empty plan as empty array
+                    chat.save();
+                }
+                plannumber = 2;
+            }
+            return chat;
+        })
+        .then(chat => {
+            for (i=0; i < plan.length; i++) {
+                thisStep = plan[i];
+                if (chat.type === "uav") {
+                    createStepUAV(thisStep.stepnumber, thisStep.action, thisStep.location, chat);
+                } else {
+                    createStepMissile(thisStep.stepnumber, thisStep.action, thisStep.location, chat)
+                }
+            }
+            return chat;
+        })
+        .then(chat => {
+            chat.save();
+        })
+        .then(() => {res.send('success')})
+        .catch(error => { console.log(error) });
+    }
+    ChatSystem
+    .findOne({"id": systemid})
+    .populate('scenario1 scenario2')
+    .exec(function (err, userchatsystem) {
+        if (err) {
+          console.log('An error occurred');
+        } 
+        system = userchatsystem;
+        if (system.location === "submitplan1") {
+            enterPlan(system.scenario1.id)
+        } else {
+            enterPlan(system.scenario2.id)
         }
-        return chat;
     })
-    .then(chat => {
-        for (i=0; i < plan.length; i++) {
-            thisStep = plan[i];
-            createstep(thisStep.stepnumber, thisStep.action, thisStep.location, chat);
-        }
-        return chat;
-    })
-    .then(chat => {
-        chat.save();
-    })
-    .then(() => {res.send('success')})
-    .catch(error => { console.log(error) });
 });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////

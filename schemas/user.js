@@ -22,11 +22,18 @@ var planschema = new Schema({
     user:                   {type: String},
     name:                   {type: String},
     stepnumber:             {type: Number},
+    // for UAV Problem
     action:                 {type: String},
     location:               {type: String},
+    // for Missile Problem
+    count:                  {type: Number},
+    ship:                   {type: String},
+    missile:                {type: String},
+    target:                 {type: String}
 });
 
 var chatroomschema = new Schema({
+    type:                   {type: String, enum: ["uav", "missile"]},
     Conversation:           [{type: Schema.Types.ObjectId, ref: 'Message'}],
     id:                     {type: String},
     startTime:              {type: String},
