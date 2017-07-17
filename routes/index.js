@@ -267,7 +267,6 @@ router.post('/checkSystem', function(req, res) {
             if (err) {
               console.log('An error occurred');
             } 
-            console.log("userchatsystem is", userchatsystem);
             if(userchatsystem === null || userchatsystem.available || userchatsystem.complete || 
             (userchatsystem.User1 != entryid && userchatsystem.User2 != entryid) ) { // chat system doesn't exist, is not yet available, already used, or invalid user credentials
                 if (confirm) {
@@ -292,11 +291,6 @@ router.post('/checkSystem', function(req, res) {
 
 function determineLocation(chatsystem, confirm, currentpage, res) { // if confirm === false then we are determining where we should redirect user,
     var returnobject;                                          // otherwise we are confirming if this is the correct page location
-    console.log();
-    console.log();
-    console.log("We are in determineLocation, trying to debug");
-    console.log();
-    console.log();
     switch (chatsystem.location) {
         case "scenario1info":
             if (confirm & ("scenario1info" !== currentpage)) {

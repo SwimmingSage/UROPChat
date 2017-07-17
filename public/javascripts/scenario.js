@@ -1,7 +1,7 @@
 $(document).ready(function() {
     var socket = io();
     var name, system, userid;
-    var timeRemaining, startTime;
+    var timeRemaining, startTime, keepTime;
 
     function getCurrentTime(){
         var time = new Date();
@@ -29,6 +29,7 @@ $(document).ready(function() {
                     timeRemaining = data['timeleft'];
                     startTime = getCurrentTime();
                     getToRoom(system);
+                    keepTime = setInterval(updateTime, 200);
                 }
             },
             error: function(xhr, status, error) {
@@ -49,8 +50,8 @@ $(document).ready(function() {
         window.location.href = "/loginhome";
     }
 
-    var keepTime = setInterval(updateTime, 200);
     function updateTime(){
+        console.log("updateTime is being run");
         time = new Date();
         currentTime = time.getTime();
         // get time remaining in seconds
