@@ -253,36 +253,42 @@ router.post('/checkSystem', function(req, res) {
     console.log();
     if (confirm === "yes") {
         confirm = true;
+        initialCheck();
     } else {
         confirm = false;
+        initialCheck();
     }
-    ChatSystem
-    .findOne({"id": systemid})
-    .populate('scenario1 scenario2')
-    .exec(function (err, userchatsystem) {
-        if (err) {
-          console.log('An error occurred');
-        } 
-        console.log("ChatSystem.location is " + userchatsystem.location);
-        if(userchatsystem === null || userchatsystem.available || userchatsystem.complete || 
-        (userchatsystem.User1 != entryid && userchatsystem.User2 != entryid) ) { // chat system doesn't exist, is not yet available, already used, or invalid user credentials
-            if (confirm) {
-                returnobject = {'correct': 'false', 'redirect': '/loginhome'};
-                res.send(returnobject);
-            } else {
-                res.send("nosystem");
+    function initialCheck() {
+        console.log("We are in initialCheck");
+        ChatSystem
+        .findOne({"id": systemid})
+        .populate('scenario1 scenario2')
+        .exec(function (err, userchatsystem) {
+            if (err) {
+              console.log('An error occurred');
+            } 
+            console.log("userchatsystem is" userchatsystem);
+            console.log("ChatSystem.location is " + userchatsystem.location);
+            if(userchatsystem === null || userchatsystem.available || userchatsystem.complete || 
+            (userchatsystem.User1 != entryid && userchatsystem.User2 != entryid) ) { // chat system doesn't exist, is not yet available, already used, or invalid user credentials
+                if (confirm) {
+                    returnobject = {'correct': 'false', 'redirect': '/loginhome'};
+                    res.send(returnobject);
+                } else {
+                    res.send("nosystem");
+                }
+            } else if(userchatsystem.location === "none") { // The chat system the user is in has not yet begun
+                if (confirm) {
+                    returnobject = {'correct': 'false', 'redirect': '/loginhome'};
+                    res.send(returnobject);
+                } else {
+                    res.send();
+                }
+            } else { // Chat system has begun, we must determine current page that the users are on
+                determineLocation(userchatsystem, confirm, currentpage);
             }
-        } else if(userchatsystem.location === "none") { // The chat system the user is in has not yet begun
-            if (confirm) {
-                returnobject = {'correct': 'false', 'redirect': '/loginhome'};
-                res.send(returnobject);
-            } else {
-                res.send();
-            }
-        } else { // Chat system has begun, we must determine current page that the users are on
-            determineLocation(userchatsystem, confirm, currentpage);
-        }
-    })
+        })
+    }
 });
 
 function determineLocation(chatsystem, confirm, currentpage) { // if confirm === false then we are determining where we should redirect user,
