@@ -28,7 +28,7 @@ $(document).ready(function() {
 
     $("#joinroomsection button").click(function(){
         $(".error").css({"display":"none"});
-        var chatsystem = $("#inputsystem").val();
+        var inputsystem = $("#inputsystem").val();
         var username = $("#inputname").val();
         var entryid = $("#inputid").val();
         if (username.length === 0) { // check if we should assign this user a username, if yes assign one randomly from the list below
