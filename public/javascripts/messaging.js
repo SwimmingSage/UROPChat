@@ -26,7 +26,7 @@ $(document).ready(function() {
         fastScroll();
     }
 
-    function getChat(system, id) {
+    function getChat(inputsystem, entryid) {
         $.ajax({
             url: '/checkSystem',
             data: {
