@@ -284,13 +284,13 @@ router.post('/checkSystem', function(req, res) {
                     res.send();
                 }
             } else { // Chat system has begun, we must determine current page that the users are on
-                determineLocation(userchatsystem, confirm, currentpage);
+                res.send(determineLocation(userchatsystem, confirm, currentpage));
             }
         })
     }
 });
 
-function determineLocation(chatsystem, confirm, currentpage) { // if confirm === false then we are determining where we should redirect user,
+function determineLocation(chatsystem, confirm, currentpage, res) { // if confirm === false then we are determining where we should redirect user,
     var returnobject;                                          // otherwise we are confirming if this is the correct page location
     console.log();
     console.log();
@@ -300,51 +300,51 @@ function determineLocation(chatsystem, confirm, currentpage) { // if confirm ===
     switch (chatsystem.location) {
         case "scenario1info":
             if (confirm & ("scenario1info" !== currentpage)) {
-                determineLocation(chatsystem, false, currentpage); // we need to redirect the user then
+                return determineLocation(chatsystem, false, currentpage); // we need to redirect the user then
             }
-            checkScenarioInfo(chatsystem, confirm);
+            return checkScenarioInfo(chatsystem, confirm);
             break;
         case "scenario1":
             if (confirm & ("scenario1" !== currentpage)) {
-                determineLocation(chatsystem, false, currentpage); // we need to redirect the user then
+                return determineLocation(chatsystem, false, currentpage); // we need to redirect the user then
             }
-            checkChat(chatsystem, confirm);
+            return checkChat(chatsystem, confirm);
             break;
         case "submitplan1":
             if (confirm) {
-                checkSubmit(chatsystem, confirm);
+                return checkSubmit(chatsystem, confirm);
             } else { // if we are determining where to send user
-                var returnobject = {'correct': 'false', 'redirect': '/submitplan1'};
-                res.send(returnobject);
+                returnobject = {'correct': 'false', 'redirect': '/submitplan1'};
+                return returnobject;
             }
             break;
         case "scenario2info":
             if (confirm & ("scenario2info" !== currentpage)) {
-                determineLocation(chatsystem, false, currentpage); // we need to redirect the user then
+                return determineLocation(chatsystem, false, currentpage); // we need to redirect the user then
             }
-            checkScenarioInfo(chatsystem, confirm);
+            return checkScenarioInfo(chatsystem, confirm);
             break;
         case "scenario2":
             if (confirm & ("scenario2" !== currentpage)) {
-                determineLocation(chatsystem, false, currentpage); // we need to redirect the user then
+                return determineLocation(chatsystem, false, currentpage); // we need to redirect the user then
             }
-            checkChat(chatsystem, confirm);
+            return checkChat(chatsystem, confirm);
             break;
         case "submitplan2":
             if (confirm) {
-                checkSubmit(chatsystem, confirm);
+                return checkSubmit(chatsystem, confirm);
             } else { // if we are determining where to send user
-                var returnobject = {'correct': 'false', 'redirect': '/submitplan2'};
-                res.send(returnobject);
+                returnobject = {'correct': 'false', 'redirect': '/submitplan2'};
+                return returnobject;
             }
             break;
         case "endpage":
-            var returnobject = {'correct': 'false', 'redirect': '/endpage'};
-            res.send(returnobject); // this is where I should send the user to the final page
+            returnobject = {'correct': 'false', 'redirect': '/endpage'};
+            return returnobject; // this is where I should send the user to the final page
             break;
         default: // we should in theory never get here
-            var returnobject = {'correct': 'false', 'redirect': '/loginhome'};
-            res.send(returnobject);
+            returnobject = {'correct': 'false', 'redirect': '/loginhome'};
+            return returnobject;
     }
 }
 
@@ -364,19 +364,19 @@ function checkScenarioInfo(chatsystem, confirm) {
         }
         chatsystem.sectionTime = "none"; // the chat room object keeps track of time
         chatsystem.save();
-        res.send(returnobject);
+        return returnobject;
     } else {
         if (confirm) { // If here this is the correct page, must send the remaining time left
             timeleft = maxScenarioTime - msAge;
             returnobject = {'correct': 'true', 'timeleft': timeleft};
-            res.send(returnobject);
+            return returnobject;
         } else { // if we are determining where to send user
             if (chatsystem.location === "scenario1") {
                 returnobject = {'correct': 'false', 'redirect': "/scenario1"};
             } else {
                 returnobject = {'correct': 'false', 'redirect': "/scenario2"};
             }
-            res.send(returnobject);
+            return returnobject;
         }
     }
 }
@@ -403,7 +403,7 @@ function checkChat(chatsystem, confirm) {
         }
         chatsystem.sectionTime = getCurrentTime();
         chatsystem.save();
-        res.send(returnobject);
+        return returnobject;
     } else {
         if (confirm) { // if here this is the correct page
             if (chatsystem.location === "scenario1") {
@@ -417,7 +417,7 @@ function checkChat(chatsystem, confirm) {
             } else {
                 returnobject = {'correct': 'false', 'redirect':'/messaging2'};
             }
-            res.send(returnobject);
+            return returnobject;
         }
     }
 }
@@ -432,7 +432,7 @@ function getChat(roomid) {
         currentTime = getCurrentTime();
         msAge = currentTime - chatsystem.sectionTime;
         timeleft = maxAgeChat - msAge;
-        res.send({'correct': 'true', 'room': chatroom, 'timeleft': timeleft});
+        return {'correct': 'true', 'room': chatroom, 'timeleft': timeleft};
     })
 };
 
@@ -451,19 +451,19 @@ function checkSubmit(chatsystem, confirm) {
             chatsystem.sectionTime = "none";
         }
         chatsystem.save();
-        res.send(returnobject);
+        return returnobject;
     } else {
         if (confirm) { // If here this is the correct page, am going to want time left
             timeleft = maxSubmitTime - msAge;
             returnobject = {'correct': 'true', 'timeleft': timeleft};
-            res.send(returnobject);
+            return returnobject;
         } else { // if we are determining where to send user
             if (chatsystem.location === "submitplan1") {
                 returnobject = {'correct': 'false', 'redirect':'/submitplan1'};
             } else {
                 returnobject = {'correct': 'false', 'redirect':'/submitplan2'};
             }
-            res.send(returnobject);
+            return returnobject;
         }
     }
 }
