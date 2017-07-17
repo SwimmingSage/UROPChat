@@ -211,7 +211,7 @@ io.on('connection', function(socket) {
             redirect = '/endpage'
             popchatsystem.sectionTime = undefined;
         }
-        io.to(input['system']).emit("proceedRedirect", redirect);
+        io.to(systemid).emit("proceedRedirect", redirect);
     })
   });
 
