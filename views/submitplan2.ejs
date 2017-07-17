@@ -31,34 +31,24 @@
                         <h3>Table 1: Countermeasure Availability</h3>
                         <table>
                             <tr>
-                                <th></th>
-                                <th>Destroyer</th>
-                                <th>Cargo Ship</th>
-                                <th>Patrol Boat</th>
+                                <th>Missile Type</th>
+                                <th>Total Available</th>
                             </tr>
                             <tr>
                                 <td class="left">1. Floating decoy</td>
-                                <td>0</td>
-                                <td>0</td>
                                 <td>4</td>
                             </tr>
                             <tr>
                                 <td class="left">2. Flares (infrared)</td>
-                                <td>3</td>
-                                <td>1</td>
-                                <td>0</td>
+                                <td>4</td>
                             </tr>
                             <tr>
                                 <td class="left">3. Chaff (radar)</td>
-                                <td>3</td>
-                                <td>1</td>
-                                <td>0</td>
+                                <td>4</td>
                             </tr>
                             <tr>
                                 <td class="left">4. Laser shots</td>
                                 <td>6</td>
-                                <td>0</td>
-                                <td>0</td>
                             </tr>
                         </table>
                         <br>
@@ -66,7 +56,7 @@
                         <table>
                             <tr>
                                 <th></th>
-                                <th colspan="4"><h3>Missile Type</h4></th>
+                                <th colspan="4"><h3>Incoming Missile Type</h4></th>
                             </tr>
                             <tr>
                                 <th></th>
@@ -77,31 +67,31 @@
                             </tr>
                             <tr>
                                 <td class="left">1. Floating decoy</td>
-                                <td>60</td>
-                                <td>40</td>
-                                <td>30</td>
-                                <td>0</td>
+                                <td>60%</td>
+                                <td>40%</td>
+                                <td>30%</td>
+                                <td>0%</td>
                             </tr>
                             <tr>
                                 <td class="left">2. Flares (infrared)</td>
-                                <td>70</td>
-                                <td>80</td>
-                                <td>0</td>
-                                <td>0</td>
+                                <td>70%</td>
+                                <td>80%</td>
+                                <td>0%</td>
+                                <td>0%</td>
                             </tr>
                             <tr>
                                 <td class="left">3. Chaff (radar)</td>
-                                <td>60</td>
-                                <td>0</td>
-                                <td>80</td>
-                                <td>0</td>
+                                <td>60%</td>
+                                <td>0%</td>
+                                <td>80%</td>
+                                <td>0%</td>
                             </tr>
                             <tr>
                                 <td  class="left">4. Laser shots</td>
-                                <td>70</td>
-                                <td>70</td>
-                                <td>70</td>
-                                <td>30</td>
+                                <td>70%</td>
+                                <td>70%</td>
+                                <td>70%</td>
+                                <td>30%</td>
                             </tr>
                         </table>
                     </div>
@@ -119,80 +109,72 @@
                 <h3>Plan Example:</h3>
                 <table class="demotable">
                     <tr>
-                        <th>Ship</th>
-                        <th>Count</th>
-                        <th>Missile</th>
                         <th>Target</th>
+                        <th>Missile</th>
+                        <th>Count</th>
                     </tr>
                     <tr>
-                        <td>Destroyer</td>
-                        <td>1</td>
-                        <td>Flare</td>
                         <td>A (Moth)</td>
-                    </tr>
-                    <tr>
-                        <td>Destroyer</td>
-                        <td>1</td>
-                        <td>Laser Shot</td>
-                        <td>B (Hungry)</td>
-                    </tr>
-                    <tr>
-                        <td>Cargo Ship</td>
-                        <td>1</td>
                         <td>Flare</td>
-                        <td>B (Hungry)</td>
-                    </tr>
-                    <tr>
-                        <td>Patrol Boat</td>
                         <td>1</td>
-                        <td>Floating decoy</td>
-                        <td>C (Hungry)</td>
                     </tr>
                     <tr>
-                        <td>Destroyer</td>
-                        <td>2</td>
-                        <td>Chaff</td>
-                        <td>D (Green)</td>
-                    </tr>
-                    <tr>
-                        <td>Destroyer</td>
-                        <td>2</td>
+                        <td>B (Hungry)</td>
                         <td>Laser Shot</td>
+                        <td>1</td>
+                    </tr>
+                    <tr>
+                        <td>B (Hungry)</td>
+                        <td>Flare</td>
+                        <td>1</td>
+                    </tr>
+                    <tr>
+                        <td>C (Hungry)</td>
+                        <td>Floating decoy</td>
+                        <td>1</td>
+                    </tr>
+                    <tr>
+                        <td>D (Green)</td>
+                        <td>Chaff</td>
+                        <td>2</td>
+                    </tr>
+                    <tr>
                         <td>E (Eagle)</td>
+                        <td>Laser Shot</td>
+                        <td>2</td>
                     </tr>
                 </table>
             </td>
             <td class="planside">
-                <div class="planSubmission">
-                    <ul class="upperul" id="step1">
-                        <li class="upperli"><strong>1.</strong><!-- </li>  Only way to get around inherint whitespace in inlineblock html-->
-                        <li class="upperli"><button><span id="ship1">Ship</span> <div class="downarrow">&#10095;</div></button>
-                            <ul class="lowerul onecolumn">
-                                <li>Destroyer</li>
-                                <li>Cargo Ship</li>
-                                <li>Patrol Boat</li>
-                            </ul>
-                        <!-- </li> -->
-                        <li class="upperli"><button><span id="location1">Location</span><div class="downarrow">&#10095;</div></button>
-                            <ul class="lowerul">
-                                <li class="leftcol">Destroyer</li>
-                                <li class="leftcol">Package Center</li>
-                                <li class="leftcol">P1</li>
-                                <li class="leftcol">P2</li>
-                                <li class="leftcol">P3</li>
-                                <li class="rightcol">P4</li>
-                                <li class="rightcol">Region1</li>
-                                <li class="rightcol">Region2</li>
-                                <li class="rightcol">UAV1</li>
-                                <li class="rightcol">UAV2</li>
-                            </ul>
-                        <!-- </li> -->
-                    </ul>
-                </div>
-                <div class="messageBottom" id="submitsection">
-                    <button id="addAction">Add Action</button>
-                    <button id="removeAction">Remove Action</button>
-                    <button id="submitplan">Submit Plan</button>
+                <div class="planblock" id="block1">
+                    <h3>A (Moth) Plan: </h3>
+                    <div class="planSubmission">
+                        <ul class="upperul" id="step1">
+                            <li class="upperli"><button><span id="missile1">Missile Type</span> <div class="downarrow">&#10095;</div></button>
+                                <ul class="lowerul onecolumn">
+                                    <li>Floating Decoy</li>
+                                    <li>Flare (infrared)</li>
+                                    <li>Chaff (radar)</li>
+                                    <li>Laser Shot</li>
+                                </ul>
+                            </li>
+                            <li class="upperli"><button><span id="location1">Number</span><div class="downarrow">&#10095;</div></button>
+                                <ul class="lowerul">
+                                    <li class="leftcol">1</li>
+                                    <li class="leftcol">2</li>
+                                    <li class="leftcol">3</li>
+                                    <li class="rightcol">4</li>
+                                    <li class="rightcol">5</li>
+                                    <li class="rightcol">6</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="messageBottom planBlockStep" id="submitsection">
+                        <button id="addAction">Add Action</button>
+                        <button id="removeAction">Remove Action</button>
+                        <button id="submitplan">Submit Plan</button>
+                    </div>
                 </div>
             </td>
         </tr>

@@ -479,13 +479,11 @@ router.post('/addPlan', function(req, res) {
             chat.user2plan.push(plan_step);
         }
     }
-    function createStepMissile(step, count, ship, missile, target, chat) {
+    function createStepMissile(count, missile, target, chat) {
         var plan_step = new Plan({
             user:            userid,
             name:            name,
-            stepnumber:      step,
             count:           count,
-            ship:            ship,
             missle:          missile,
             target:          target
         })
@@ -538,7 +536,7 @@ router.post('/addPlan', function(req, res) {
                 if (chat.type === "uav") {
                     createStepUAV(thisStep.stepnumber, thisStep.action, thisStep.location, chat);
                 } else {
-                    createStepMissile(thisStep.stepnumber, thisStep.action, thisStep.location, chat)
+                    createStepMissile(thisStep.action, thisStep.missile, thisStep.location, chat)
                 }
             }
             return chat;

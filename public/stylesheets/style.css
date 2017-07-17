@@ -480,7 +480,6 @@ ul span#bottomanchor {
     width:40em;
     margin:auto;
     text-align: center;
-/*    margin-bottom: 3em;*/
 }
 
 .messageBottom button {
@@ -490,6 +489,10 @@ ul span#bottomanchor {
     height: 2em;
     font-size: 1em;
     background-color: #E8E8EE;
+}
+
+.planBlockStep button {
+    margin-top: .3em;
 }
 
 #opencloseChat {
@@ -811,7 +814,7 @@ td.planside {
 .planSubmission ul li div.downarrow {;
     display: inline-block;
     transform: rotate(90deg);
-/*    padding-left: 10px;*/
+    float: right;
 }
 
 .planSubmission ul.lowerul {
@@ -840,6 +843,12 @@ td.planside {
     box-sizing: border-box;
     cursor: pointer;
 }
+
+.planSubmission ul.lowerul.onecolumn li {
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+}
+
 .planSubmission ul.lowerul li.leftcol {
     border-left: 1px solid black;
 }

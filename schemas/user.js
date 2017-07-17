@@ -21,13 +21,12 @@ var messageschema = new Schema({
 var planschema = new Schema({
     user:                   {type: String},
     name:                   {type: String},
-    stepnumber:             {type: Number},
     // for UAV Problem
-    action:                 {type: String},
+    stepnumber:             {type: Number, default: 0}, // when populating these I sort by step number,
+    action:                 {type: String},             // so it's needed for both, but only relevant to UAV
     location:               {type: String},
     // for Missile Problem
     count:                  {type: Number},
-    ship:                   {type: String},
     missile:                {type: String},
     target:                 {type: String}
 });
