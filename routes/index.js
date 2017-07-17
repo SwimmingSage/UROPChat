@@ -246,6 +246,11 @@ router.post('/checkSystem', function(req, res) {
     var confirm = req.body.confirm;
     var currentpage = req.body.page;
     var returnobject;
+    console.log();
+    console.log();
+    console.log("We are in /checkSystem, trying to debug");
+    console.log();
+    console.log();
     if (confirm === "yes") {
         confirm = true;
     } else {
