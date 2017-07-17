@@ -1,5 +1,9 @@
 $(document).ready(function() {
 
+    $("#submitplan").click(function() {
+        sendPlan();
+    });
+
     function sendPlan() { // submits the user's plan to the backend
         plans = []
         for (i=1; i <= stepnumber; i++) {

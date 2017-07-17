@@ -4,12 +4,12 @@
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-<!--     <script src="/javascripts/cookies.js"></script>
+    <script src="/javascripts/cookies.js"></script>
     <script>
         var currentpage = "submitplan1";
     </script>
     <script src="/socket.io/socket.io.js"></script>
-    <script src="/javascripts/submitplan.js"></script> -->
+    <script src="/javascripts/submitplan.js"></script>
     <script src="/javascripts/submitplanform1.js"></script>
   </head>
   <body>
@@ -153,7 +153,6 @@
                                 <li class="rightcol">Surveil</li>
                                 <li class="rightcol">Intercept</li>
                             </ul>
-                        </li>
                         <li class="upperli"><button><span id="location1">Location</span><div class="downarrow">&#10095;</div></button>
                             <ul class="lowerul">
                                 <li class="leftcol">Main Base</li>
@@ -167,10 +166,9 @@
                                 <li class="rightcol">UAV1</li>
                                 <li class="rightcol">UAV2</li>
                             </ul>
-                        </li>
                     </ul>
                 </div>
-                <div class="messageBottom" id="submitsection">
+                <div class="messageBottom">
                     <button id="addAction">Add Action</button>
                     <button id="removeAction">Remove Action</button>
                     <button id="submitplan">Submit Plan</button>

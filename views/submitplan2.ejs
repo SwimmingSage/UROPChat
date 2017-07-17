@@ -4,12 +4,12 @@
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-<!--     <script src="/javascripts/cookies.js"></script>
+    <script src="/javascripts/cookies.js"></script>
     <script>
         var currentpage = "submitplan2";
     </script>
     <script src="/socket.io/socket.io.js"></script>
-    <script src="/javascripts/submitplan.js"></script> -->
+    <script src="/javascripts/submitplan.js"></script>
     <script src="/javascripts/submitplanform2.js"></script>
   </head>
   <body>
@@ -101,7 +101,7 @@
     </table>
     <div class="submitinstructions">
         <h3>Instructions:</h3>
-        <p>Now you have to report the discussed plan for execution, please use the action template below and create a detailed sequence of your plan. Remember to use the "Go to" command to move between locations.</p>
+        <p>Now you have to report the discussed plan for execution, please use the action template below and create a detailed sequence of your plan. Remember to fill out your plan for each one of the incoming missiles.</p>
     </div>
     <table class="plansubmitlower">
         <tr>
@@ -146,19 +146,29 @@
                 </table>
             </td>
             <td class="planside">
-                <div class="planblock" id="block1">
+                <% for (i = 1; i <= 5; i++) { %>
+                <div class="planblock" id="block<%= i %>">
+                    <% if (i === 1) { %>
                     <h3>A (Moth) Plan: </h3>
+                    <% } else if (i === 2) { %>
+                    <h3>B (Hungry) Plan: </h3>
+                    <% } else if (i === 3) { %>
+                    <h3>C (Hungry) Plan: </h3>
+                    <% } else if (i === 4) { %>
+                    <h3>D (Green) Plan: </h3>
+                    <% } else if (i === 5) { %>
+                    <h3>E (Eagle) Plan: </h3>
+                    <% } %>
                     <div class="planSubmission">
-                        <ul class="upperul" id="step1">
-                            <li class="upperli"><button><span id="missile1">Missile Type</span> <div class="downarrow">&#10095;</div></button>
+                        <ul class="upperul" id="block<%= i %>act1">
+                            <li class="upperli missile"><button><span>Missile Type</span> <div class="downarrow">&#10095;</div></button>
                                 <ul class="lowerul onecolumn">
                                     <li>Floating Decoy</li>
                                     <li>Flare (infrared)</li>
                                     <li>Chaff (radar)</li>
                                     <li>Laser Shot</li>
                                 </ul>
-                            </li>
-                            <li class="upperli"><button><span id="location1">Number</span><div class="downarrow">&#10095;</div></button>
+                            <li class="upperli count"><button><span>Number</span><div class="downarrow">&#10095;</div></button>
                                 <ul class="lowerul">
                                     <li class="leftcol">1</li>
                                     <li class="leftcol">2</li>
@@ -167,14 +177,16 @@
                                     <li class="rightcol">5</li>
                                     <li class="rightcol">6</li>
                                 </ul>
-                            </li>
                         </ul>
                     </div>
-                    <div class="messageBottom planBlockStep" id="submitsection">
-                        <button id="addAction">Add Action</button>
-                        <button id="removeAction">Remove Action</button>
-                        <button id="submitplan">Submit Plan</button>
+                    <div class="messageBottom planBlockStep">
+                        <button class="addActionSub">Add Action</button>
+                        <button class="removeActionSub">Remove Action</button>
                     </div>
+                </div>
+                <% } %>
+                <div class="messageBottom">
+                    <button id="submitplan">Submit Plan</button>
                 </div>
             </td>
         </tr>

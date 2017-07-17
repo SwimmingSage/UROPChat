@@ -76,11 +76,10 @@ $(document).ready(function() {
 
     var proceedReady = false; // keeps track of whether this user attempted to move on
 
-    $("#submitplan").click(function() {
-        sendPlan();
-    });
-
     socket.on('initiateproceed', function(initiatorID) {
+        if (initiatorID === userid && !proceedReady) {
+            proceedReady = true;
+        }
         if ( (initiatorID !== userid) && (proceedReady) ) {
             socket.emit('proceed', system);
         }

@@ -176,7 +176,7 @@ router.get('/makeChat', function(req, res, next) {
         .catch(error => { console.log(error) });
     }
 
-    makechat();
+    makechatsystem();
   
 });
 
@@ -536,7 +536,7 @@ router.post('/addPlan', function(req, res) {
                 if (chat.type === "uav") {
                     createStepUAV(thisStep.stepnumber, thisStep.action, thisStep.location, chat);
                 } else {
-                    createStepMissile(thisStep.action, thisStep.missile, thisStep.location, chat)
+                    createStepMissile(thisStep.count, thisStep.missile, thisStep.target, chat)
                 }
             }
             return chat;

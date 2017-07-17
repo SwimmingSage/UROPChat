@@ -754,6 +754,10 @@ td.planside {
     vertical-align: top;
 }
 
+.planblock h3 {
+    margin: 0;
+}
+
 .submitinstructions {
     width: 45em;
     text-align: left;
