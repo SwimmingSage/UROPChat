@@ -267,7 +267,7 @@ router.post('/checkSystem', function(req, res) {
             if (err) {
               console.log('An error occurred');
             } 
-            console.log("userchatsystem is" userchatsystem);
+            console.log("userchatsystem is", userchatsystem);
             console.log("ChatSystem.location is " + userchatsystem.location);
             if(userchatsystem === null || userchatsystem.available || userchatsystem.complete || 
             (userchatsystem.User1 != entryid && userchatsystem.User2 != entryid) ) { // chat system doesn't exist, is not yet available, already used, or invalid user credentials
