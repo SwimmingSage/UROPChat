@@ -261,7 +261,7 @@ router.post('/checkSystem', function(req, res) {
     function initialCheck() {
         console.log("We are in initialCheck");
         ChatSystem
-        .findOne({"id": systemid})
+        .findOne({"id": systemID})
         .populate('scenario1 scenario2')
         .exec(function (err, userchatsystem) {
             if (err) {
