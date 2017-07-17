@@ -12,7 +12,7 @@ $(document).ready(function() {
         socket.emit('room', system);
     }
 
-    function checkScenarioTimer(system, id) {
+    function checkScenarioTimer(inputsystem, id) {
         $.ajax({
             url: '/checkSystem',
             data: {
