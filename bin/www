@@ -64,7 +64,7 @@ io.on('connection', function(socket) {
             if (err) {
               console.log('An error occurred');
             } 
-            userSystem.sectionTime = Number(getCurrentTime) + 5000; // the current time in ms, 5 delay redirect
+            userSystem.sectionTime = Number(getCurrentTime()) + 5000; // the current time in ms, 5 delay redirect
             userSystem.location = "scenario1info";
             userSystem.save();
         })
