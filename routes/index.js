@@ -396,9 +396,9 @@ function checkChat(chatsystem, confirm) {
     } else {
         if (confirm) { // if here this is the correct page
             if (chatsystem.location === "scenario1") {
-                getChat(chatsystem.scenario1.id);
+                return getChat(chatsystem.scenario1.id);
             } else {
-                getChat(chatsystem.scenario2.id);
+                return getChat(chatsystem.scenario2.id);
             }
         } else { // if we are determining where to send user
             if (chatsystem.location === "scenario1") {
@@ -412,7 +412,7 @@ function checkChat(chatsystem, confirm) {
 }
 // Get conversation start time and previous messages if there are any
 function getChat(roomid) {
-    var currentTime, msAge, timeleft;
+    var currentTime, msAge, timeleft, returnobject;
     ChatRoom
     .findOne({"id": roomid})
     .populate({path: 'Conversation', options:{sort: {'timeCreated': 1}}})
@@ -426,7 +426,8 @@ function getChat(roomid) {
         console.log("We are got chatroom as: " + chatroom);
         console.log();
         console.log();
-        return {'correct': 'true', 'room': chatroom, 'timeleft': timeleft};
+        returnobject = {'correct': 'true', 'room': chatroom, 'timeleft': timeleft};
+        return returnobject;
     })
 };
 
