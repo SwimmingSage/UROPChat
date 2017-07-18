@@ -297,7 +297,9 @@ function determineLocation(chatsystem, confirm, currentpage, res) { // if confir
             if (confirm & ("scenario1" !== currentpage)) {
                 return determineLocation(chatsystem, false, currentpage); // we need to redirect the user then
             }
-            return checkChat(chatsystem, confirm);
+            var result = checkChat(chatsystem, confirm);
+            console.log("In determineLocation result is: " + result);
+            return result;
             break;
         case "submitplan1":
             if (confirm) {
@@ -396,7 +398,9 @@ function checkChat(chatsystem, confirm) {
     } else {
         if (confirm) { // if here this is the correct page
             if (chatsystem.location === "scenario1") {
-                return getChat(chatsystem.scenario1.id);
+                var result = getChat(chatsystem.scenario1.id);
+                console.log("The result in checkChat came as: " + result);
+                return result;
             } else {
                 return getChat(chatsystem.scenario2.id);
             }
