@@ -251,6 +251,9 @@ button.submithome:hover {
     opacity: 0;
     width: 40em;
     text-align: center;
+    margin: auto;
+    margin-top: 2em;
+    margin-bottom: 2em;
 }
 
 /* Style for the login home page buttons, and all buttons in general */

@@ -424,7 +424,7 @@ function getChat(roomid) {
     .exec(function (err, chatroom) {
         if (err) return handleError(err);
         currentTime = getCurrentTime();
-        msAge = currentTime - chatsystem.sectionTime;
+        msAge = currentTime - chatroom.startTime;
         timeleft = maxAgeChat - msAge;
         return {'correct': 'true', 'room': chatroom, 'timeleft': timeleft};
     })
