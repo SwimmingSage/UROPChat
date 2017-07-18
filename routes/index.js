@@ -427,10 +427,11 @@ function getChat(roomid) {
         timeleft = maxAgeChat - msAge;
         console.log();
         console.log();
-        console.log("We are got chatroom as: " + chatroom);
+        console.log("We got chatroom in getChat as: " + chatroom);
         console.log();
         console.log();
         returnobject = {'correct': 'true', 'room': chatroom, 'timeleft': timeleft};
+        console.log("The returnobject is: " + returnobject);
         return returnobject;
     })
 };
