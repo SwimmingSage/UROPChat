@@ -278,28 +278,46 @@ router.post('/checkSystem', function(req, res) {
                     res.send();
                 }
             } else { // Chat system has begun, we must determine current page that the users are on
-                res.send(determineLocation(userchatsystem, confirm, currentpage));
+                // res.send(determineLocation(userchatsystem, confirm, currentpage));
+                determineLocation(userchatsystem, confirm, currentpage)
+                .then(returnobject => {
+                    res.send(returnobject);
+                })
+                .catch(error => { console.log(error) });
             }
         })
     }
 });
 
-function determineLocation(chatsystem, confirm, currentpage, res) { // if confirm === false then we are determining where we should redirect user,
+function determineLocation(chatsystem, confirm, currentpage) { // if confirm === false then we are determining where we should redirect user,
     var returnobject;                                          // otherwise we are confirming if this is the correct page location
     switch (chatsystem.location) {
         case "scenario1info":
             if (confirm & ("scenario1info" !== currentpage)) {
                 return determineLocation(chatsystem, false, currentpage); // we need to redirect the user then
             }
-            return checkScenarioInfo(chatsystem, confirm);
+            // return checkScenarioInfo(chatsystem, confirm);
+            checkScenarioInfo(chatsystem, confirm)
+            .then(returnobject => {
+                return new Promise(function(resolve, reject){
+                        resolve(returnobject);
+                });
+            })
+            .catch(error => { console.log(error) });
             break;
         case "scenario1":
             if (confirm & ("scenario1" !== currentpage)) {
                 return determineLocation(chatsystem, false, currentpage); // we need to redirect the user then
+            } else {
+                checkChat(chatsystem, confirm)
+                .then(returnobject => {
+                    return new Promise(function(resolve, reject){
+                            resolve(returnobject);
+                    });
+                })
+                .catch(error => { console.log(error) });
             }
-            var result = checkChat(chatsystem, confirm);
-            console.log("In determineLocation result is: " + result);
-            return result;
+            // return result;
             break;
         case "submitplan1":
             if (confirm) {
@@ -360,7 +378,10 @@ function checkScenarioInfo(chatsystem, confirm) {
         if (confirm) { // If here this is the correct page, must send the remaining time left
             timeleft = maxScenarioTime - msAge;
             returnobject = {'correct': 'true', 'timeleft': timeleft};
-            return returnobject;
+            return new Promise(function(resolve, reject){
+                resolve(returnobject);
+            });
+            // return returnobject;
         } else { // if we are determining where to send user
             if (chatsystem.location === "scenario1") {
                 returnobject = {'correct': 'false', 'redirect': "/scenario1"};
@@ -398,9 +419,13 @@ function checkChat(chatsystem, confirm) {
     } else {
         if (confirm) { // if here this is the correct page
             if (chatsystem.location === "scenario1") {
-                var result = getChat(chatsystem.scenario1.id);
-                console.log("The result in checkChat came as: " + result);
-                return result;
+                getChat(chatsystem.scenario1.id)
+                .then(returnobject => {
+                    return new Promise(function(resolve, reject){
+                        resolve(returnobject);
+                    });
+                })
+                .catch(error => { console.log(error) });
             } else {
                 return getChat(chatsystem.scenario2.id);
             }
@@ -432,7 +457,10 @@ function getChat(roomid) {
         console.log();
         returnobject = {'correct': 'true', 'room': chatroom, 'timeleft': timeleft};
         console.log("The returnobject is: " + returnobject);
-        return returnobject;
+        return new Promise(function(resolve, reject){
+            resolve(returnobject);
+        });
+        // return returnobject;
     })
 };
 
