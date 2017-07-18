@@ -379,6 +379,7 @@ function checkScenarioInfo(chatsystem, confirm) {
         if (confirm) { // If here this is the correct page, must send the remaining time left
             timeleft = maxScenarioTime - msAge;
             returnobject = {'correct': 'true', 'timeleft': timeleft};
+            console.log("We went down the correct confirm route for checkScenarioInfo");
             return new Promise(function(resolve, reject){
                 resolve(returnobject);
             });
