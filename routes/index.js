@@ -300,7 +300,8 @@ function determineLocation(chatsystem, confirm, currentpage) { // if confirm ===
             checkScenarioInfo(chatsystem, confirm)
             .then(returnobject => {
                 return new Promise(function(resolve, reject){
-                        resolve(returnobject);
+                    console.log("A promise was returned");
+                    resolve(returnobject);
                 });
             })
             .catch(error => { console.log(error) });
@@ -312,7 +313,7 @@ function determineLocation(chatsystem, confirm, currentpage) { // if confirm ===
                 checkChat(chatsystem, confirm)
                 .then(returnobject => {
                     return new Promise(function(resolve, reject){
-                            resolve(returnobject);
+                        resolve(returnobject);
                     });
                 })
                 .catch(error => { console.log(error) });
