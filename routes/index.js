@@ -301,6 +301,7 @@ function determineLocation(chatsystem, confirm, currentpage) { // if confirm ===
             .then(returnobject => {
                 return new Promise(function(resolve, reject){
                     console.log("A promise was returned");
+                    console.log("returnobject in determineLocation is", returnobject);
                     resolve(returnobject);
                 });
             })
