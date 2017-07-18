@@ -40,6 +40,7 @@ $(document).ready(function() {
                 if(data['correct'] === "false") {
                     window.location.href = data['redirect'];
                 } else {
+                    console.log("We got data as: " + data);
                     chatroom = data['room'];
                     room = chatroom.id;
                     timeRemaining = data['timeleft'];

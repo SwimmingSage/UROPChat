@@ -246,11 +246,6 @@ router.post('/checkSystem', function(req, res) {
     var confirm = req.body.confirm;
     var currentpage = req.body.page;
     var returnobject;
-    console.log();
-    console.log();
-    console.log("We are in /checkSystem, trying to debug");
-    console.log();
-    console.log();
     if (confirm === "yes") {
         confirm = true;
         initialCheck();
@@ -426,6 +421,11 @@ function getChat(roomid) {
         currentTime = getCurrentTime();
         msAge = currentTime - chatroom.startTime;
         timeleft = maxAgeChat - msAge;
+        console.log();
+        console.log();
+        console.log("We are got chatroom as: " + chatroom);
+        console.log();
+        console.log();
         return {'correct': 'true', 'room': chatroom, 'timeleft': timeleft};
     })
 };
