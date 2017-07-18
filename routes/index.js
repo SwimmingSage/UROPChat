@@ -279,11 +279,11 @@ router.post('/checkSystem', function(req, res) {
                 }
             } else { // Chat system has begun, we must determine current page that the users are on
                 // res.send(determineLocation(userchatsystem, confirm, currentpage));
-                determineLocation(userchatsystem, confirm, currentpage)
-                .then(returnobject => {
+                var promise = determineLocation(userchatsystem, confirm, currentpage);
+                promise.then(returnobject => {
                     res.send(returnobject);
                 })
-                .catch(error => { console.log(error) });
+                promise.catch(error => { console.log(error) });
             }
         })
     }
@@ -295,19 +295,19 @@ function determineLocation(chatsystem, confirm, currentpage) { // if confirm ===
         case "scenario1info":
             if (confirm & ("scenario1info" !== currentpage)) {
                 return determineLocation(chatsystem, false, currentpage); // we need to redirect the user then
+                break;
             }
             // return checkScenarioInfo(chatsystem, confirm);
-            checkScenarioInfo(chatsystem, confirm)
-            .then(returnobject => {
+            var promise = checkScenarioInfo(chatsystem, confirm);
+            promise.then(returnobject => {
                 return(returnobject);
-                // return new Promise(function(resolve, reject){
-                //     console.log("A promise was returned");
-                //     console.log("returnobject in determineLocation is", returnobject);
-                //     resolve(returnobject);
-                // });
+                return new Promise(function(resolve, reject){
+                    console.log("A promise was returned");
+                    console.log("returnobject in determineLocation is", returnobject);
+                    resolve(returnobject);
+                });
             })
-            .catch(error => { console.log(error) });
-            break;
+            promise.catch(error => { console.log(error) });
         case "scenario1":
             if (confirm & ("scenario1" !== currentpage)) {
                 return determineLocation(chatsystem, false, currentpage); // we need to redirect the user then
@@ -383,6 +383,7 @@ function checkScenarioInfo(chatsystem, confirm) {
             returnobject = {'correct': 'true', 'timeleft': timeleft};
             console.log("We went down the correct confirm route for checkScenarioInfo");
             return new Promise(function(resolve, reject){
+                console.log("The promise we returned has returnobject as " + returnobject);
                 resolve(returnobject);
             });
             // return returnobject;
