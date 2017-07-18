@@ -36,12 +36,12 @@ router.get('/', function(req, res, next) {
 
 // Get intro page
 router.get('/intro', function(req, res, next) {
-  res.render('intro', {user: req.user, title: 'Emergency Response Planning'});
+  res.render('intro', {title: 'Emergency Response Planning'});
 });
 
 //get consent form page
 router.get('/consentform', function(req, res, next) {
-  res.render('consentform', {user: req.user, title: 'Emergency Response Planning'});
+  res.render('consentform', {title: 'Emergency Response Planning'});
 });
 
 // This is where a user enters credentials and waits for partner to meet up
@@ -51,31 +51,59 @@ router.get('/loginhome', function(req, res, next) {
 
 // scenario pages
 router.get('/scenario1', function(req, res, next) {
-  res.render('scenario1', {user: req.user, title: 'Emergency Response Planning'});
+  if(req.isAuthenticated()) {
+    laterCheck();
+  } else {
+    res.redirect('/loginhome');
+  }
 });
 router.get('/scenario2', function(req, res, next) {
-  res.render('scenario2', {user: req.user, title: 'Emergency Response Planning'});
+  if(req.isAuthenticated()) {
+    laterCheck();
+  } else {
+    res.redirect('/loginhome');
+  }
 });
 
 // chat pages
 router.get('/messaging1', function(req, res, next) {
-    res.render('messaging1', {title: 'Emergency Response Planning'});
+  if(req.isAuthenticated()) {
+    laterCheck();
+  } else {
+    res.redirect('/loginhome');
+  }
 });
 router.get('/messaging2', function(req, res, next) {
-    res.render('messaging2', {title: 'Emergency Response Planning'});
+  if(req.isAuthenticated()) {
+    laterCheck();
+  } else {
+    res.redirect('/loginhome');
+  }    
 });
 
 // submitplan pages
 router.get('/submitplan1', function(req, res, next) {
-    res.render('submitplan1', {title: 'Emergency Response Planning'});
+  if(req.isAuthenticated()) {
+    laterCheck();
+  } else {
+    res.redirect('/loginhome');
+  }
 });
 router.get('/submitplan2', function(req, res, next) {
-    res.render('submitplan2', {title: 'Emergency Response Planning'});
+  if(req.isAuthenticated()) {
+    laterCheck();
+  } else {
+    res.redirect('/loginhome');
+  }
 });
 
 // endpage, final page of user chat
 router.get('/endpage', function(req, res, next) {
-    res.render('endpage', {title: 'Emergency Response Planning'});
+  if(req.isAuthenticated()) {
+    laterCheck();
+  } else {
+    res.redirect('/loginhome');
+  }
 });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -140,15 +168,6 @@ router.post('/makeUnavailable', function(req, res, next) {
 });
 
 router.get('/makeChat', function(req, res, next) {
-    function makechat(scenario) {
-        var new_chat = new ChatRoom({
-            type: scenario,
-        });
-        new_chat.id = new_chat._id.toString();
-        new_chat.save();
-        return new_chat;
-    }
-
      function makechatsystem() {
         var newchatsystem = new ChatSystem({
             User1:    shortid.generate(),
@@ -167,6 +186,11 @@ router.get('/makeChat', function(req, res, next) {
             return chatsystem;
         })
         .then(chatsystem => {
+            createUser(chatsystem.User1, chatsystem.id);
+            createUser(chatsystem.User2, chatsystem.id);
+            return chatsystem;
+        })
+        .then(chatsystem => {
             chatsystem.save();
             return chatsystem;
         })
@@ -179,6 +203,27 @@ router.get('/makeChat', function(req, res, next) {
     makechatsystem();
   
 });
+
+function makechat(scenario) {
+    var new_chat = new ChatRoom({
+        type: scenario,
+    });
+    new_chat.id = new_chat._id.toString();
+    new_chat.save();
+    return new_chat;
+}
+
+function createUser(userID, chatsystemID) {
+    var password = 1;
+    User.register(new User({username: userID, systemID: chatsystemID, id: userID}), password, function(err) {
+        if (err) {
+          console.log('error while user register!', err);
+          return next(err);
+        }
+    });
+}
+
+
 
 router.get('/getAllChat', function(req, res) {
     ChatRoom
@@ -243,159 +288,167 @@ router.get('/chatarchiveq', function(req, res, next) {
 router.post('/checkSystem', function(req, res) {
     var systemID = req.body.system;
     var entryid = req.body.id;
-    var confirm = req.body.confirm;
-    var currentpage = req.body.page;
-    var returnobject;
-    if (confirm === "yes") {
-        confirm = true;
-        initialCheck();
-    } else {
-        confirm = false;
-        initialCheck();
-    }
-    function initialCheck() {
-        console.log("We are in initialCheck");
-        ChatSystem
-        .findOne({"id": systemID})
-        .populate('scenario1 scenario2')
-        .exec(function (err, userchatsystem) {
-            if (err) {
-              console.log('An error occurred');
-            } 
-            if(userchatsystem === null || userchatsystem.available || userchatsystem.complete || 
-            (userchatsystem.User1 != entryid && userchatsystem.User2 != entryid) ) { // chat system doesn't exist, is not yet available, already used, or invalid user credentials
-                if (confirm) {
-                    returnobject = {'correct': 'false', 'redirect': '/loginhome'};
-                    res.send(returnobject);
-                } else {
-                    res.send("nosystem");
-                }
-            } else if(userchatsystem.location === "none") { // The chat system the user is in has not yet begun
-                if (confirm) {
-                    returnobject = {'correct': 'false', 'redirect': '/loginhome'};
-                    res.send(returnobject);
-                } else {
-                    res.send();
-                }
-            } else { // Chat system has begun, we must determine current page that the users are on
-                // res.send(determineLocation(userchatsystem, confirm, currentpage));
-                determineLocation(userchatsystem, confirm, currentpage)
-                .then(returnobject => {
-                    res.send(returnobject);
-                })
-                .catch(error => { console.log(error) });
-            }
-        })
-    }
+    var name = req.body.name;
+    initialCheck(systemID, entryid, name);
 });
 
-function determineLocation(chatsystem, confirm, currentpage) { // if confirm === false then we are determining where we should redirect user,
-    var returnobject;                                          // otherwise we are confirming if this is the correct page location
-    switch (chatsystem.location) {
-        case "scenario1info":
-            if (confirm & ("scenario1info" !== currentpage)) {
-                return determineLocation(chatsystem, false, currentpage); // we need to redirect the user then
-            }
-            // return checkScenarioInfo(chatsystem, confirm);
-            checkScenarioInfo(chatsystem, confirm)
-            .then(returnobject => {
-                return(returnobject);
-                // return new Promise(function(resolve, reject){
-                //     console.log("A promise was returned");
-                //     console.log("returnobject in determineLocation is", returnobject);
-                //     resolve(returnobject);
-                // });
-            })
-            .catch(error => { console.log(error) });
-            break;
-        case "scenario1":
-            if (confirm & ("scenario1" !== currentpage)) {
-                return determineLocation(chatsystem, false, currentpage); // we need to redirect the user then
+function initialCheck(systemID, entryid, name) {
+    ChatSystem
+    .findOne({"id": systemID})
+    .populate('scenario1 scenario2')
+    .exec(function (err, userchatsystem) {
+        if (err) {
+          console.log('An error occurred');
+        } 
+        if(userchatsystem === null || userchatsystem.available || userchatsystem.complete || 
+        (userchatsystem.User1 != entryid && userchatsystem.User2 != entryid) ) { // chat system doesn't exist, is not yet available, already used, or invalid user credentials
+            if (confirm) {
+                returnobject = {'correct': 'false', 'redirect': '/loginhome'};
+                res.send(returnobject);
             } else {
-                checkChat(chatsystem, confirm)
-                .then(returnobject => {
-                    return new Promise(function(resolve, reject){
-                        resolve(returnobject);
-                    });
-                })
-                .catch(error => { console.log(error) });
+                res.send("nosystem");
             }
-            // return result;
-            break;
-        case "submitplan1":
-            if (confirm) {
-                return checkSubmit(chatsystem, confirm);
-            } else { // if we are determining where to send user
-                returnobject = {'correct': 'false', 'redirect': '/submitplan1'};
-                return returnobject;
-            }
-            break;
-        case "scenario2info":
-            if (confirm & ("scenario2info" !== currentpage)) {
-                return determineLocation(chatsystem, false, currentpage); // we need to redirect the user then
-            }
-            return checkScenarioInfo(chatsystem, confirm);
-            break;
-        case "scenario2":
-            if (confirm & ("scenario2" !== currentpage)) {
-                return determineLocation(chatsystem, false, currentpage); // we need to redirect the user then
-            }
-            return checkChat(chatsystem, confirm);
-            break;
-        case "submitplan2":
-            if (confirm) {
-                return checkSubmit(chatsystem, confirm);
-            } else { // if we are determining where to send user
-                returnobject = {'correct': 'false', 'redirect': '/submitplan2'};
-                return returnobject;
-            }
-            break;
-        case "endpage":
-            returnobject = {'correct': 'false', 'redirect': '/endpage'};
-            return returnobject; // this is where I should send the user to the final page
-            break;
-        default: // we should in theory never get here
-            returnobject = {'correct': 'false', 'redirect': '/loginhome'};
-            return returnobject;
-    }
+        } else if(userchatsystem.location === "none") { // The chat system the user is in has not yet begun
+            assignName(entryid, name);
+            res.send();
+        } else { // Chat system has begun, we must determine current page that the users are on
+            res.send("systemBegun")
+        }
+    })
 }
 
-function checkScenarioInfo(chatsystem, confirm) {
-    var currentTime, msAge, redirect, timeleft, returnobject;
-    currentTime = getCurrentTime();
-    msAge = currentTime - chatsystem.sectionTime;
-    if (msAge > maxScenarioTime) {
-        if (chatsystem.location === "scenario1info") {
-            chatsystem.location = "scenario1";
-            returnobject = {'correct': 'false', 'redirect': "/messaging1"};
-            chatsystem.scenario1.startTime = getCurrentTime();
-        } else {
-            chatsystem.location = "scenario2";
-            returnobject = {'correct': 'false', 'redirect': "/messaging2"};
-            chatsystem.scenario2.startTime = getCurrentTime();
+function assignName(entryid, name) {
+    User.findOne({'username': entryid}, function (err, users) {
+      if (err) {
+        console.log('An error occurred');
+      }
+      user.name = name;
+      user.save();
+  })
+}
+
+function laterCheck() { // User must already be logged in if they got here, thus they are a valid user in a valid chat system
+    ChatSystem
+    .findOne({"id": req.user.systemID})
+    .exec(function (err, userchatsystem) {
+        if (err) {
+          console.log('An error occurred');
+        } 
+        switch (userchatsystem.location) {
+            case "scenario1info":
+                res.render('scenario1', {title: 'Emergency Response Planning'});
+                break;
+            case "scenario1":
+                res.render('messaging1', {title: 'Emergency Response Planning'});
+                break;
+            case "submitplan1":
+                res.render('submitplan1', {title: 'Emergency Response Planning'});
+                break;
+            case "scenario2info":
+                res.render('scenario2', {title: 'Emergency Response Planning'});
+                break;
+            case "scenario2":
+                res.render('messaging2', {title: 'Emergency Response Planning'});
+                break;
+            case "submitplan2":
+                res.render('submitplan2', {title: 'Emergency Response Planning'});
+                break;
+            case "endpage":
+                res.render('endpage', {title: 'Emergency Response Planning'});
+                break;
+            default: // we should in theory never get here
+                res.redirect('/loginhome');
         }
-        chatsystem.sectionTime = "none"; // the chat room object keeps track of time
-        chatsystem.save();
-        return returnobject;
-    } else {
-        if (confirm) { // If here this is the correct page, must send the remaining time left
-            timeleft = maxScenarioTime - msAge;
-            returnobject = {'correct': 'true', 'timeleft': timeleft};
-            console.log("We went down the correct confirm route for checkScenarioInfo");
-            return new Promise(function(resolve, reject){
-                console.log("The promise we returned has returnobject as " + returnobject);
-                resolve(returnobject);
-            });
-            // return returnobject;
-        } else { // if we are determining where to send user
-            if (chatsystem.location === "scenario1") {
-                returnobject = {'correct': 'false', 'redirect': "/scenario1"};
+    })
+}
+
+// function determineLocation(chatsystem, confirm, currentpage) { // if confirm === false then we are determining where we should redirect user,
+//     var returnobject;                                          // otherwise we are confirming if this is the correct page location
+//     switch (chatsystem.location) {
+//         case "scenario1info":
+//             if (confirm & ("scenario1info" !== currentpage)) {
+//                 return determineLocation(chatsystem, false, currentpage); // we need to redirect the user then
+//             } else {
+//                 return checkScenarioInfo(chatsystem, confirm);
+//             }
+//         case "scenario1":
+//             if (confirm & ("scenario1" !== currentpage)) {
+//                 return determineLocation(chatsystem, false, currentpage); // we need to redirect the user then
+//             } else {
+//                 return checkChat(chatsystem, confirm)
+//             }
+//             break;
+//         case "submitplan1":
+//             if (confirm) {
+//                 return checkSubmit(chatsystem, confirm);
+//             } else { // if we are determining where to send user
+//                 returnobject = {'correct': 'false', 'redirect': '/submitplan1'};
+//                 return returnobject;
+//             }
+//             break;
+//         case "scenario2info":
+//             if (confirm & ("scenario2info" !== currentpage)) {
+//                 return determineLocation(chatsystem, false, currentpage); // we need to redirect the user then
+//             } else {
+//                 return checkScenarioInfo(chatsystem, confirm);
+//             }
+//             break;
+//         case "scenario2":
+//             if (confirm & ("scenario2" !== currentpage)) {
+//                 return determineLocation(chatsystem, false, currentpage); // we need to redirect the user then
+//             } {
+//                 return checkChat(chatsystem, confirm);
+//             }
+//             break;
+//         case "submitplan2":
+//             if (confirm) {
+//                 return checkSubmit(chatsystem, confirm);
+//             } else { // if we are determining where to send user
+//                 returnobject = {'correct': 'false', 'redirect': '/submitplan2'};
+//                 return returnobject;
+//             }
+//             break;
+//         case "endpage":
+//             returnobject = {'correct': 'false', 'redirect': '/endpage'};
+//             return returnobject; // this is where I should send the user to the final page
+//             break;
+//         default: // we should in theory never get here
+//             returnobject = {'correct': 'false', 'redirect': '/loginhome'};
+//             return returnobject;
+//     }
+// }
+
+
+router.post('/getScenarioInfo', function(req, res) {
+    var currentTime, msAge, redirect, timeleft, returnobject, redirect;
+    ChatSystem
+    .findOne({"id": req.user.systemID})
+    .exec(function (err, chatsystem) {
+        if (err) {
+          console.log('An error occurred');
+        } 
+        currentTime = getCurrentTime();
+        msAge = currentTime - chatsystem.sectionTime;
+        if (msAge > maxScenarioTime) {
+            if (chatsystem.location === "scenario1info") {
+                chatsystem.location = "scenario1";
+                redirect = "/messaging1";
+                chatsystem.scenario1.startTime = getCurrentTime();
             } else {
-                returnobject = {'correct': 'false', 'redirect': "/scenario2"};
+                chatsystem.location = "scenario2";
+                redirect = "/messaging2";
+                chatsystem.scenario2.startTime = getCurrentTime();
             }
-            return returnobject;
+            chatsystem.sectionTime = "none"; // the chat room object keeps track of time
+            chatsystem.save();
+            returnobject = {'correct': 'false', 'redirect': redirect};
+            res.send(returnobject);
+        } else {
+            timeleft = maxScenarioTime - msAge;
+            returnobject = {'correct': 'true', 'timeleft': timeleft, 'system': chatsystem.id, 'userID': req.user.id};
+            res.send(returnobject);
         }
-    }
+    })
 }
 
 function checkChat(chatsystem, confirm) {
@@ -424,13 +477,7 @@ function checkChat(chatsystem, confirm) {
     } else {
         if (confirm) { // if here this is the correct page
             if (chatsystem.location === "scenario1") {
-                getChat(chatsystem.scenario1.id)
-                .then(returnobject => {
-                    return new Promise(function(resolve, reject){
-                        resolve(returnobject);
-                    });
-                })
-                .catch(error => { console.log(error) });
+                return getChat(chatsystem.scenario1.id)
             } else {
                 return getChat(chatsystem.scenario2.id);
             }
@@ -455,17 +502,8 @@ function getChat(roomid) {
         currentTime = getCurrentTime();
         msAge = currentTime - chatroom.startTime;
         timeleft = maxAgeChat - msAge;
-        console.log();
-        console.log();
-        console.log("We got chatroom in getChat as: " + chatroom);
-        console.log();
-        console.log();
         returnobject = {'correct': 'true', 'room': chatroom, 'timeleft': timeleft};
-        console.log("The returnobject is: " + returnobject);
-        return new Promise(function(resolve, reject){
-            resolve(returnobject);
-        });
-        // return returnobject;
+        return returnobject;
     })
 };
 
@@ -614,27 +652,24 @@ router.post('/addPlan', function(req, res) {
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // Sign Up and login stuff for admin users
 router.post('/signup', function(req, res, next) {
-    var email = req.body.email;
-    var firstname = req.body.firstname;
-    var lastname = req.body.lastname;
+    var username = req.body.username;
     var password = req.body.password;
     var reenterpassword = req.body.reenterpassword;
-    //to find if email already in use
-                 // Using as username
-    User.findOne({'username': email}, function (err, users) {
+    //to find if username
+    User.findOne({'username': username}, function (err, users) {
       if (err) {
         console.log('An error occurred');
       }
       if(users != null){
-        res.send("emailtaken");
+        res.send("usernameTaken");
         return;
       } else {                    // Using as username
-          User.register(new User({username: email, firstname: firstname, lastname: lastname}), password, function(err) {
+          User.register(new User({username: username}), password, function(err) {
             if (err) {
               console.log('error while user register!', err);
               return next(err);
             }
-            User.findOne({username: email}, function (err, users) {
+            User.findOne({username: username}, function (err, users) {
               if (err) {
                 console.log('An error occurred');
               }
@@ -651,13 +686,7 @@ router.post('/signup', function(req, res, next) {
 
 router.post('/login', passport.authenticate('local'), function(req, res) {
     // If this function gets called, authentication was successful.
-    // `req.user` contains the authenticated user.
-    if (req.user.admin) {
-        res.send("admin");
-    } else {
-        res.send("loggedin");
-    }
-    return;
+    res.send("loggedin");
   });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////

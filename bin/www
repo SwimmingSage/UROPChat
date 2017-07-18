@@ -71,7 +71,7 @@ io.on('connection', function(socket) {
     }
 
     socket.on('joinSystem', function(input) {
-        // Input is {'system': inputsystem, 'name': username, 'id': entryid}
+        // Input is {'system': inputsystem 'id': entryid}
         var system = io.sockets.adapter.rooms[input['system']];
         socket.entryid = input['id'];
         if (system === undefined) {

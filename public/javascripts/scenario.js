@@ -1,6 +1,6 @@
 $(document).ready(function() {
     var socket = io();
-    var name, system, userid;
+    var system, userid;
     var timeRemaining, startTime, keepTime;
 
     function getCurrentTime(){
@@ -12,22 +12,22 @@ $(document).ready(function() {
         socket.emit('room', system);
     }
 
-    function checkScenarioTimer(inputsystem, entryid) {
+    prepPage();
+
+    function prepPage() {
         $.ajax({
-            url: '/checkSystem',
+            url: '/getScenarioInfo',
             data: {
-                system: inputsystem,
-                id:   entryid,
-                confirm: "yes",
-                page: currentpage,
             },
             type: 'POST',
             success: function(data) {
                 if(data['correct'] === "false") {
-                    window.location.href = data['redirect'];
+                    window.href.location = data['redirect'];
                 } else {
                     timeRemaining = data['timeleft'];
                     startTime = getCurrentTime();
+                    system = data['system'];
+                    userid = data['userID'];
                     getToRoom(system);
                     keepTime = setInterval(updateTime, 200);
                 }
@@ -36,18 +36,6 @@ $(document).ready(function() {
                 console.log("Uh oh there was an error: " + error);
             }
         });
-    }
-
-
-
-    // where we decide if they stay or go
-    if (document.cookie != "") {
-        name = Cookies.get('name');
-        system = Cookies.get('system');
-        userid = Cookies.get('userid');
-        checkScenarioTimer(system, userid);
-    } else {
-        window.location.href = "/loginhome";
     }
 
     function updateTime(){
