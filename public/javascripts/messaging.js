@@ -39,6 +39,8 @@ $(document).ready(function() {
                     window.href.location = data['redirect'];
                 } else {
                     // data = {'correct': 'true', 'room': chatroom, 'timeLeft': timeLeft, 'systemID': req.user.systemID, 'userID': req.user.id, 'name': req.user.name};
+                    console.log("data is: ");
+                    console.log(data);
                     chatroom = data['room'];
                     room = chatroom.id;
                     system = data['systemID'];
@@ -162,19 +164,18 @@ $(document).ready(function() {
     var warningGiven = false;
 
     function updateTimer(){
-        var time, currentTime, timeSince, timeRemaining;
-        time = new Date();
-        currentTime = time.getTime();
+        var time, currentTime, timeSince, timeLeft;
+        currentTime = getCurrentTime();
         // get time remaining in seconds
         timeSince = (Number(currentTime) - Number(startTime))
-        timeRemaining = Math.floor((Number(timeRemaining) - timeSince)/1000)
+        timeLeft = Math.floor((Number(timeRemaining) - timeSince)/1000)
         // detemine whether we need to give the warning
-        if (0 < timeRemaining && timeRemaining <= warningTime && !warningGiven){
+        if (0 < timeLeft && timeLeft <= warningTime && !warningGiven){
             warningGiven = true;
             giveWarning();
         }
         // determine whether chat time has run up and we need to close it
-        if (timeRemaining <= 0){
+        if (timeLeft <= 0){
             $('#closeChatSection').css({'display':'none'});
             $('#planSubmit').css({'display':'block'});
             $('#planSubmit').animate({'opacity':'1'}, 'slow');
@@ -185,20 +186,20 @@ $(document).ready(function() {
             clearInterval(keepTime);
             return;
         }
-        editTimer(timeRemaining);
+        editTimer(timeLeft);
     }
 
-    function editTimer(timeRemaining) {
+    function editTimer(timeLeft) {
         var secLeft, minLeft, timeLeft;
         // getting proper min/sec in string form;
-        secLeft = (timeRemaining % 60).toString();
-        minLeft = (Math.floor(timeRemaining / 60)).toString();
+        secLeft = (timeLeft % 60).toString();
+        minLeft = (Math.floor(timeLeft / 60)).toString();
         if (secLeft.length === 1){
             secLeft = "0" + secLeft;
         }
         // putting the time left together in min:sec form
-        timeLeft = minLeft + ":" + secLeft;
-        $('#timeLeft').text(timeLeft);
+        timeLeftText = minLeft + ":" + secLeft;
+        $('#timeLeft').text(timeLeftText);
     }
 
 
