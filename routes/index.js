@@ -289,10 +289,6 @@ router.post('/checkSystem', function(req, res) {
     var systemID = req.body.system;
     var entryid = req.body.id;
     var name = req.body.name;
-    initialCheck(systemID, entryid, name);
-});
-
-function initialCheck(systemID, entryid, name) {
     ChatSystem
     .findOne({"id": systemID})
     .populate('scenario1 scenario2')
@@ -315,7 +311,7 @@ function initialCheck(systemID, entryid, name) {
             res.send("systemBegun")
         }
     })
-}
+});
 
 function assignName(entryid, name) {
     // Assign the user a name, as they do not inherently have one
