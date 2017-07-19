@@ -1,6 +1,6 @@
 $(document).ready(function() {
     var socket = io();
-    name, system, userid;
+    // name, system, userid;
     var timeRemaining, startTime, keepTime;
 
     function getCurrentTime(){
