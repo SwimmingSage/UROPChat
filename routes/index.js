@@ -52,14 +52,14 @@ router.get('/loginhome', function(req, res, next) {
 // scenario pages
 router.get('/scenario1', function(req, res, next) {
   if(req.isAuthenticated() && req.user.systemID !== "none") {
-    laterCheck();
+    laterCheck(req, res);
   } else {
     res.redirect('/loginhome');
   }
 });
 router.get('/scenario2', function(req, res, next) {
   if(req.isAuthenticated() && req.user.systemID !== "none") {
-    laterCheck();
+    laterCheck(req, res);
   } else {
     res.redirect('/loginhome');
   }
@@ -68,14 +68,14 @@ router.get('/scenario2', function(req, res, next) {
 // chat pages
 router.get('/messaging1', function(req, res, next) {
   if(req.isAuthenticated() && req.user.systemID !== "none") {
-    laterCheck();
+    laterCheck(req, res);
   } else {
     res.redirect('/loginhome');
   }
 });
 router.get('/messaging2', function(req, res, next) {
   if(req.isAuthenticated() && req.user.systemID !== "none") {
-    laterCheck();
+    laterCheck(req, res);
   } else {
     res.redirect('/loginhome');
   }    
@@ -84,14 +84,14 @@ router.get('/messaging2', function(req, res, next) {
 // submitplan pages
 router.get('/submitplan1', function(req, res, next) {
   if(req.isAuthenticated() && req.user.systemID !== "none") {
-    laterCheck();
+    laterCheck(req, res);
   } else {
     res.redirect('/loginhome');
   }
 });
 router.get('/submitplan2', function(req, res, next) {
   if(req.isAuthenticated() && req.user.systemID !== "none") {
-    laterCheck();
+    laterCheck(req, res);
   } else {
     res.redirect('/loginhome');
   }
@@ -100,7 +100,7 @@ router.get('/submitplan2', function(req, res, next) {
 // endpage, final page of user chat
 router.get('/endpage', function(req, res, next) {
   if(req.isAuthenticated() && req.user.systemID !== "none") {
-    laterCheck();
+    laterCheck(req, res);
   } else {
     res.redirect('/loginhome');
   }
@@ -319,7 +319,7 @@ function assignName(entryid, name) {
   })
 }
 
-function laterCheck() { // User must already be logged in if they got here, thus they are a valid user in a valid chat system
+function laterCheck(req, res) { // User must already be logged in if they got here, thus they are a valid user in a valid chat system
     ChatSystem          // We want to figure out which page to send them depending on where their chat system is at
     .findOne({"id": req.user.systemID})
     .exec(function (err, userchatsystem) {
