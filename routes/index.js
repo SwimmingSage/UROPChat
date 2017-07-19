@@ -298,12 +298,7 @@ router.post('/checkSystem', function(req, res) {
         } 
         if(userchatsystem === null || userchatsystem.available || userchatsystem.complete || 
         (userchatsystem.User1 != entryid && userchatsystem.User2 != entryid) ) { // chat system doesn't exist, is not yet available, already used, or invalid user credentials
-            if (confirm) {
-                returnobject = {'correct': 'false', 'redirect': '/loginhome'};
-                res.send(returnobject);
-            } else {
-                res.send("nosystem");
-            }
+            res.send("nosystem");
         } else if(userchatsystem.location === "none") { // The chat system the user is in has not yet begun
             assignName(entryid, name);
             res.send();
@@ -393,7 +388,6 @@ router.get('/getScenarioInfo', function(req, res) {
     })
 })
 
-// function checkChat(chatsystem, confirm) {
 router.get('/getChatInfo', function(req, res) {
     var currentTime, msAge, chatroom, redirect, returnobject;
     ChatSystem
