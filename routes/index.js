@@ -115,6 +115,7 @@ router.get('/endpage', function(req, res, next) {
 
 router.get('/admin', function(req, res, next) {
   // Lean basically makes it so we have raw javascript objects, which increases run time
+  console.log("req is " + req);
   if(req.isAuthenticated() && req.user.admin) {
     ChatRoom
     .find({"active": true})
@@ -140,8 +141,7 @@ router.get('/admin', function(req, res, next) {
         res.render('admin', {chats: returndata, title: 'Emergency Response Planning'});
     })
   } else {
-    // res.render('index', {title: 'Emergency Response Planning'});
-    res.redirect('/intro');
+    res.render('index', {title: 'Emergency Response Planning'});
   }
 });
 
