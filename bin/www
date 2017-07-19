@@ -193,7 +193,7 @@ io.on('connection', function(socket) {
         } 
         location = popchatsystem.location;
         if (location === "scenario1info" || location === "scenario2info") {
-            popchatsystem.sectionTime = undefined;
+            popchatsystem.sectionTime = "none";
             if (location === "scenario1info") {
                 chatroom = popchatsystem.scenario1
                 popchatsystem.location = "scenario1";
@@ -205,14 +205,18 @@ io.on('connection', function(socket) {
             }
             chatroom.startTime = getCurrentTime();
             chatroom.active = true;
+            chatroom.save();
+            popchatsystem.save();
         } else if (location === "submitplan1") {
             popchatsystem.location = "scenario2info";
             redirect = "/scenario2"
             popchatsystem.sectionTime = getCurrentTime();
+            popchatsystem.save();
         } else { // location === "submitplan2"
             popchatsystem.location = "endpage";
             redirect = '/endpage'
-            popchatsystem.sectionTime = undefined;
+            popchatsystem.sectionTime = "none";
+            popchatsystem.save();
         }
         io.to(systemID).emit("proceedRedirect", redirect);
     })
