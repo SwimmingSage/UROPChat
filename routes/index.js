@@ -31,13 +31,19 @@ function getCurrentTime(){
 // Initial pages
 router.get('/', function(req, res, next) {
   // res.render('index', {title: 'Emergency Response Planning'});
-  res.redirect('/intro');
+  if(req.isAuthenticated()) {
+    res.redirect('/scenario1');
+  } else {
+    res.redirect('/intro');
+  }
 });
 
 // Get intro page
 router.get('/intro', function(req, res, next) {
   if(req.isAuthenticated() && req.user.admin) {
     res.redirect('/admin');
+  } else if (req.isAuthenticated()) {
+    laterCheck(req, res);
   } else {
     res.render('intro', {title: 'Emergency Response Planning'});
   }
@@ -45,12 +51,20 @@ router.get('/intro', function(req, res, next) {
 
 //get consent form page
 router.get('/consentform', function(req, res, next) {
-  res.render('consentform', {title: 'Emergency Response Planning'});
+  if (req.isAuthenticated()) {
+    laterCheck(req, res);
+  } else {
+    res.render('consentform', {title: 'Emergency Response Planning'});
+  }
 });
 
 // This is where a user enters credentials and waits for partner to meet up
 router.get('/loginhome', function(req, res, next) {
-  res.render('loginhome', {title: 'Emergency Response Planning'});
+  if (req.isAuthenticated()) {
+    laterCheck(req, res);
+  } else {
+    res.render('loginhome', {title: 'Emergency Response Planning'});
+  }
 });
 
 // scenario pages
