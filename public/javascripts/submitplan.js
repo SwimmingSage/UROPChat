@@ -23,6 +23,8 @@ $(document).ready(function() {
                 if(data['correct'] === "false") {
                     window.href.location = data['redirect'];
                 } else {
+                    console.log("We got the data as: ");
+                    console.log(data);
                     name = data['name'];
                     system = data['system'];
                     userid = data['userID'];
@@ -39,11 +41,14 @@ $(document).ready(function() {
     }
 
     function updateTime(){
-        time = new Date();
-        currentTime = time.getTime();
+        console.log("We are in updateTime");
+        currentTime = getCurrentTime();
         // get time remaining in seconds
         timeSince = (Number(currentTime) - Number(startTime))
         timeLeft = Math.floor((Number(timeRemaining) - timeSince)/1000)
+        console.log("timeSince is: " + timeSince);
+        console.log("timeLeft is: " + timeLeft);
+        console.log("currentTime is: " + currentTime);
         if (timeLeft <= 0){
             socket.emit('proceed', system);
         }
@@ -52,6 +57,7 @@ $(document).ready(function() {
 
     function editTimer(timeLeft) {
         // getting proper min/sec in string form;
+        console.log("We are running editTimer");
         secLeft = (timeLeft % 60).toString();
         minLeft = (Math.floor(timeLeft / 60)).toString();
         if (secLeft.length === 1){
