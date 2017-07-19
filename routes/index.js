@@ -214,7 +214,7 @@ function makechat(scenario) {
 }
 
 function createUser(userID, chatsystemID) {
-    var password = 1;
+    var password = "1";
     User.register(new User({username: userID, systemID: chatsystemID, id: userID}), password, function(err) {
         if (err) {
           console.log('error while user register!', err);

@@ -61,7 +61,7 @@ $(document).ready(function() {
             url: '/login',
             data: {
               username: userID,
-              password: 1,
+              password: "1",
             },
             type: 'POST',
             success: function(data) {
