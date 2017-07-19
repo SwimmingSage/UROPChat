@@ -314,8 +314,8 @@ function assignName(entryid, name) {
       if (err) {
         console.log('An error occurred');
       }
-      user.name = name;
-      user.save();
+      users.name = name;
+      users.save();
   })
 }
 
