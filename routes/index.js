@@ -36,7 +36,11 @@ router.get('/', function(req, res, next) {
 
 // Get intro page
 router.get('/intro', function(req, res, next) {
-  res.render('intro', {title: 'Emergency Response Planning'});
+  if(req.isAuthenticated() && req.user.admin) {
+    res.redirect('/admin');
+  } else {
+    res.render('intro', {title: 'Emergency Response Planning'});
+  }
 });
 
 //get consent form page
@@ -136,7 +140,8 @@ router.get('/admin', function(req, res, next) {
         res.render('admin', {chats: returndata, title: 'Emergency Response Planning'});
     })
   } else {
-    res.render('index', {title: 'Emergency Response Planning'});
+    // res.render('index', {title: 'Emergency Response Planning'});
+    res.redirect('/intro');
   }
 });
 
