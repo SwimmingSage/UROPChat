@@ -41,7 +41,6 @@ $(document).ready(function() {
     }
 
     function updateTime(){
-        console.log("updateTime is being run");
         time = new Date();
         currentTime = time.getTime();
         // get time remaining in seconds
