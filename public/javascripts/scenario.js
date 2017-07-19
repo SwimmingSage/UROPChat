@@ -53,16 +53,16 @@ $(document).ready(function() {
         editTimer(remaining);
     }
 
-    function editTimer(timeRemaining) {
+    function editTimer(timeLeft) {
         // getting proper min/sec in string form;
-        secLeft = (timeRemaining % 60).toString();
-        minLeft = (Math.floor(timeRemaining / 60)).toString();
+        secLeft = (timeLeft % 60).toString();
+        minLeft = (Math.floor(timeLeft / 60)).toString();
         if (secLeft.length === 1){
             secLeft = "0" + secLeft;
         }
         // putting the time left together in min:sec form
-        timeLeft = minLeft + ":" + secLeft;
-        $('#timeLeft').text(timeLeft);
+        timeLeftText = minLeft + ":" + secLeft;
+        $('#timeLeft').text(timeLeftText);
     }
 
     var proceedReady = false; // keeps track of whether this user attempted to move on

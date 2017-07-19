@@ -58,8 +58,8 @@ $(document).ready(function() {
             secLeft = "0" + secLeft;
         }
         // putting the time left together in min:sec form
-        timeLeft = minLeft + ":" + secLeft;
-        $('#timeLeft').text(timeLeft);
+        timeLeftText = minLeft + ":" + secLeft;
+        $('#timeLeft').text(timeLeftText);
     }
 
     var proceedReady = false; // keeps track of whether this user attempted to move on
