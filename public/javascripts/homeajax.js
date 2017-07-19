@@ -80,9 +80,8 @@ $(document).ready(function() {
       type: 'POST',
       success: function(data) {
         if(data === "loggedin") {
-          window.location.href = "/intro";
-        } else if(data === "admin")
           window.location.href = "/admin";
+        }
       },
       error: function(xhr, status, error) {
         $("#invalidusernamepassword").show();
