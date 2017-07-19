@@ -318,6 +318,7 @@ function initialCheck(systemID, entryid, name) {
 }
 
 function assignName(entryid, name) {
+    // Assign the user a name, as they do not inherently have one
     User.findOne({'username': entryid}, function (err, users) {
       if (err) {
         console.log('An error occurred');
@@ -328,7 +329,7 @@ function assignName(entryid, name) {
 }
 
 function laterCheck() { // User must already be logged in if they got here, thus they are a valid user in a valid chat system
-    ChatSystem
+    ChatSystem          // We want to figure out which page to send them depending on where their chat system is at
     .findOne({"id": req.user.systemID})
     .exec(function (err, userchatsystem) {
         if (err) {
@@ -362,73 +363,18 @@ function laterCheck() { // User must already be logged in if they got here, thus
     })
 }
 
-// function determineLocation(chatsystem, confirm, currentpage) { // if confirm === false then we are determining where we should redirect user,
-//     var returnobject;                                          // otherwise we are confirming if this is the correct page location
-//     switch (chatsystem.location) {
-//         case "scenario1info":
-//             if (confirm & ("scenario1info" !== currentpage)) {
-//                 return determineLocation(chatsystem, false, currentpage); // we need to redirect the user then
-//             } else {
-//                 return checkScenarioInfo(chatsystem, confirm);
-//             }
-//         case "scenario1":
-//             if (confirm & ("scenario1" !== currentpage)) {
-//                 return determineLocation(chatsystem, false, currentpage); // we need to redirect the user then
-//             } else {
-//                 return checkChat(chatsystem, confirm)
-//             }
-//             break;
-//         case "submitplan1":
-//             if (confirm) {
-//                 return checkSubmit(chatsystem, confirm);
-//             } else { // if we are determining where to send user
-//                 returnobject = {'correct': 'false', 'redirect': '/submitplan1'};
-//                 return returnobject;
-//             }
-//             break;
-//         case "scenario2info":
-//             if (confirm & ("scenario2info" !== currentpage)) {
-//                 return determineLocation(chatsystem, false, currentpage); // we need to redirect the user then
-//             } else {
-//                 return checkScenarioInfo(chatsystem, confirm);
-//             }
-//             break;
-//         case "scenario2":
-//             if (confirm & ("scenario2" !== currentpage)) {
-//                 return determineLocation(chatsystem, false, currentpage); // we need to redirect the user then
-//             } {
-//                 return checkChat(chatsystem, confirm);
-//             }
-//             break;
-//         case "submitplan2":
-//             if (confirm) {
-//                 return checkSubmit(chatsystem, confirm);
-//             } else { // if we are determining where to send user
-//                 returnobject = {'correct': 'false', 'redirect': '/submitplan2'};
-//                 return returnobject;
-//             }
-//             break;
-//         case "endpage":
-//             returnobject = {'correct': 'false', 'redirect': '/endpage'};
-//             return returnobject; // this is where I should send the user to the final page
-//             break;
-//         default: // we should in theory never get here
-//             returnobject = {'correct': 'false', 'redirect': '/loginhome'};
-//             return returnobject;
-//     }
-// }
-
-
-router.post('/getScenarioInfo', function(req, res) {
-    var currentTime, msAge, redirect, timeleft, returnobject, redirect;
+router.get('/getScenarioInfo', function(req, res) {
+    var currentTime, msAge, redirect, timeLeft, returnobject, redirect;
     ChatSystem
     .findOne({"id": req.user.systemID})
+    .populate('scenario1 scenario2')
     .exec(function (err, chatsystem) {
         if (err) {
           console.log('An error occurred');
         } 
         currentTime = getCurrentTime();
         msAge = currentTime - chatsystem.sectionTime;
+        // The time to read the chat scenario has expired, and thus we must move the user along
         if (msAge > maxScenarioTime) {
             if (chatsystem.location === "scenario1info") {
                 chatsystem.location = "scenario1";
@@ -443,100 +389,96 @@ router.post('/getScenarioInfo', function(req, res) {
             chatsystem.save();
             returnobject = {'correct': 'false', 'redirect': redirect};
             res.send(returnobject);
-        } else {
-            timeleft = maxScenarioTime - msAge;
-            returnobject = {'correct': 'true', 'timeleft': timeleft, 'system': chatsystem.id, 'userID': req.user.id};
+        } else { // this is the correct page and we must send the necessary data to the front end
+            timeLeft = maxScenarioTime - msAge;
+            returnobject = {'correct': 'true', 'timeLeft': timeLeft, 'system': chatsystem.id, 'userID': req.user.id};
             res.send(returnobject);
         }
     })
-}
+})
 
-function checkChat(chatsystem, confirm) {
+// function checkChat(chatsystem, confirm) {
+router.get('/getChatInfo', function(req, res) {
     var currentTime, msAge, chatroom, redirect, returnobject;
-    if (chatsystem.location === "scenario1") {
-        chatroom = chatsystem.scenario1;
-    } else {
-        chatroom = chatsystem.scenario2;
-    }
-    currentTime = getCurrentTime();
-    msAge = currentTime - chatroom.startTime;
-    if (msAge >= maxAgeChat){
-        chatroom.completed = true;
-        chatroom.active = false;
-        chatroom.save();
+    ChatSystem
+    .findOne({"id": req.user.systemID})
+    .populate('scenario1 scenario2')
+    .exec(function (err, chatsystem) {
         if (chatsystem.location === "scenario1") {
-            chatsystem.location = "submitplan1";
-            returnobject = {'correct': 'false', 'redirect': "/submitplan1"};
+            chatroom = chatsystem.scenario1;
         } else {
-            chatsystem.location = "submitplan2";
-            returnobject = {'correct': 'false', 'redirect': "/submitplan2"};
+            chatroom = chatsystem.scenario2;
         }
-        chatsystem.sectionTime = getCurrentTime();
-        chatsystem.save();
-        return returnobject;
-    } else {
-        if (confirm) { // if here this is the correct page
-            if (chatsystem.location === "scenario1") {
-                return getChat(chatsystem.scenario1.id)
-            } else {
-                return getChat(chatsystem.scenario2.id);
-            }
-        } else { // if we are determining where to send user
-            if (chatsystem.location === "scenario1") {
-                returnobject = {'correct': 'false', 'redirect':'/messaging1'};
-            } else {
-                returnobject = {'correct': 'false', 'redirect':'/messaging2'};
-            }
-            return returnobject;
-        }
-    }
-}
-// Get conversation start time and previous messages if there are any
-function getChat(roomid) {
-    var currentTime, msAge, timeleft, returnobject;
-    ChatRoom
-    .findOne({"id": roomid})
-    .populate({path: 'Conversation', options:{sort: {'timeCreated': 1}}})
-    .exec(function (err, chatroom) {
-        if (err) return handleError(err);
         currentTime = getCurrentTime();
         msAge = currentTime - chatroom.startTime;
-        timeleft = maxAgeChat - msAge;
-        returnobject = {'correct': 'true', 'room': chatroom, 'timeleft': timeleft};
-        return returnobject;
-    })
-};
-
-function checkSubmit(chatsystem, confirm) {
-    var currentTime, msAge, returnobject;
-    currentTime = getCurrentTime();
-    msAge = currentTime - chatsystem.sectionTime;
-    if (msAge > maxSubmitTime) {
-        if (chatsystem.location === "submitplan1") {
-            chatsystem.location = "scenario2info";
-            returnobject = {'correct': 'false', 'redirect': "/scenario2"};
-            chatsystem.sectionTime = getCurrentTime();
-        } else {
-            chatsystem.location = "endpage";
-            returnobject = {'correct': 'false', 'redirect': "/endpage"};
-            chatsystem.sectionTime = "none";
-        }
-        chatsystem.save();
-        return returnobject;
-    } else {
-        if (confirm) { // If here this is the correct page, am going to want time left
-            timeleft = maxSubmitTime - msAge;
-            returnobject = {'correct': 'true', 'timeleft': timeleft};
-            return returnobject;
-        } else { // if we are determining where to send user
-            if (chatsystem.location === "submitplan1") {
-                returnobject = {'correct': 'false', 'redirect':'/submitplan1'};
+        // Chat has expired and we must update the chat room and chat system accordingly
+        if (msAge >= maxAgeChat){
+            chatroom.completed = true;
+            chatroom.active = false;
+            chatroom.save();
+            if (chatsystem.location === "scenario1") {
+                chatsystem.location = "submitplan1";
+                redirect = "/submitplan1";
             } else {
-                returnobject = {'correct': 'false', 'redirect':'/submitplan2'};
+                chatsystem.location = "submitplan2";
+                redirect = "/submitplan2";
             }
-            return returnobject;
+            chatsystem.sectionTime = getCurrentTime();
+            chatsystem.save();
+            returnobject = {'correct': 'false', 'redirect': redirect};
+            res.send(returnobject);
+        } else { // this is the correct page, we want to send the front end the data needed for the chat
+            if (chatsystem.location === "scenario1") {
+                getChat(chatsystem.scenario1.id)
+            } else {
+                getChat(chatsystem.scenario2.id);
+            }
         }
-    }
+    })
+
+    // Get conversation start time and previous messages if there are any
+    function getChat(roomid) {
+        var currentTime, msAge, timeLeft, returnobject;
+        ChatRoom
+        .findOne({"id": roomid})
+        .populate({path: 'Conversation', options:{sort: {'timeCreated': 1}}})
+        .exec(function (err, chatroom) {
+            if (err) return handleError(err);
+            currentTime = getCurrentTime();
+            msAge = currentTime - chatroom.startTime;
+            timeLeft = maxAgeChat - msAge;
+            returnobject = {'correct': 'true', 'room': chatroom, 'timeLeft': timeLeft, 'systemID': req.user.systemID, 'userID': req.user.id, 'name': req.user.name};
+            res.send(returnobject);
+        })
+    };
+}
+
+router.get('/getSubmitInfo', function(req, res) {
+    var currentTime, msAge, timeLeft, redirect, returnobject;
+    ChatSystem
+    .findOne({"id": req.user.systemID})
+    .populate('scenario1 scenario2')
+    .exec(function (err, chatsystem) {
+        currentTime = getCurrentTime();
+        msAge = currentTime - chatsystem.sectionTime;
+        if (msAge > maxSubmitTime) { // the time to submit this info has run out and we must update the chat system accordingly
+            if (chatsystem.location === "submitplan1") {
+                chatsystem.location = "scenario2info";
+                returnobject = {'correct': 'false', 'redirect': "/scenario2"};
+                chatsystem.sectionTime = getCurrentTime();
+            } else {
+                chatsystem.location = "endpage";
+                returnobject = {'correct': 'false', 'redirect': "/endpage"};
+                chatsystem.sectionTime = "none";
+            }
+            chatsystem.save();
+            res.send(returnobject);
+        } else { // this is the correct page and we must send the front end the necessary data
+            timeLeft = maxSubmitTime - msAge;
+            returnobject = {'correct': 'true', 'timeLeft': timeLeft, 'name': req.user.name, 'userID': req.user.id, 'system': chatsystem.id};
+            res.send(returnobject);
+        }
+    })
 }
 
 

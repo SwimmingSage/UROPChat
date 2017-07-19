@@ -2,7 +2,7 @@ $(document).ready(function() {
 
     // Initialize a socket object from socket.io
     var socket = io();
-    var name, room, userid, timeRemaining, startTime, chatroom, system;
+    var name, room, userid, timeRemaining, startTime, chatroom, system, keepTime;
 
     // Send the user to the proper room
     function getToRoom(room) {
@@ -26,26 +26,29 @@ $(document).ready(function() {
         fastScroll();
     }
 
-    function getChat(inputsystem, entryid) {
+    prepPage();
+
+    function prepPage() {
         $.ajax({
-            url: '/checkSystem',
+            url: '/getChatInfo',
             data: {
-                system: inputsystem,
-                id:   entryid,
-                confirm: "yes",
-                page: currentpage,
             },
-            type: 'POST',
+            type: 'GET',
             success: function(data) {
                 if(data['correct'] === "false") {
-                    window.location.href = data['redirect'];
+                    window.href.location = data['redirect'];
                 } else {
-                    console.log("We got data as: " + data);
+                    // data = {'correct': 'true', 'room': chatroom, 'timeLeft': timeLeft, 'systemID': req.user.systemID, 'userID': req.user.id, 'name': req.user.name};
                     chatroom = data['room'];
                     room = chatroom.id;
-                    timeRemaining = data['timeleft'];
+                    system = data['systemID'];
+                    timeRemaining = data['timeLeft'];
+                    userid = data['userID'];
+                    name = data['name'];
                     startTime = getCurrentTime();
                     getToRoom(room);
+                    catchUpChat(chatroom.Conversation);
+                    keepTime = setInterval(updateTimer, 200);
                 }
             },
             error: function(xhr, status, error) {
@@ -54,49 +57,35 @@ $(document).ready(function() {
         });
     }
 
-    // where we decide if they stay or go
-    if (document.cookie != "") {
-        name = Cookies.get('name');
-        system = Cookies.get('system');
-        userid = Cookies.get('userid');
-        getChat(system, userid);
-    } else {
-        window.location.href = "/loginhome";
-    }
-
     /////////////////////////////////////////////////////////////////////////////////////////////////////
     // Process of sending out messages
-    var x = 0
+    var timeSinceMessage = 0
     function addToTime(){
-        x += 1;
+        timeSinceMessage += 1;
     }
     setInterval(addToTime, 200);
 
     $('form').submit(function() {
-        if (x === 0) {
+        var input, message;
+        if (timeSinceMessage === 0) { // so users can't spam messages
             return false;
         } else {
-            x = 0;
+            timeSinceMessage = 0;
         }
-        // Emit the 'chat message' message with socket.io
-        // message = user.firstname + ": " + $('#m').val();
         message = $('#m').val();
-        // I don't want to send empty messages
-        if (message.length === 0){
+        if (message.length === 0){ // I don't want to send empty messages
             return false;
         }
         input = {'room': room, 'message':message, 'sender': name, 'name': name, 'id': userid};
         socket.emit('chat message', input);
-        // // Clear the message area's text
-        $('#m').val('');
-        return false; // This is to not refresh the page after sending a message
+        $('#m').val(''); // Clear the message area's text
+        return false; // This is to not refresh the page after sending a message, which forms inherently do
     });
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
     // Process receiving messages
     var messages = document.getElementById('messages');
     function scrollToBottom() {
-        // messages.scrollTop = messages.scrollHeight; this is to scroll fast
         $('.messages').animate({
             scrollTop: messages.scrollHeight
         }, 200);
@@ -123,29 +112,32 @@ $(document).ready(function() {
     //////////////////////////////////////////////////////////////////////////////////////////////////////
     // Handeling Closing chat
 
-    var closeChat = false;
+    var closeChat = false; // Variable to keep track of whether this user has closed the chat on their end
+
     function closeChat() {
+        // code to be excecuted when it is time for the chat to close
+        var input;
         input = {'system': system, 'room': room};
         socket.emit('close Chat', input);
     }
 
     $("#closeChat").click(function(){
+        // The user has clicked the close chat button at the bottom
+        var input;
         $('.useractionpopup').css({"display":"none", "opacity":"0"});
         $('#closeChatSection').css({'display':'none'});
         closeChat = true;
-        if (closeChat) {
-            closeChat();
-        } else {
-            $('.messages').append('<li><strong>Your partner has been alerted of your desire to close the chat</strong></li>');
-            socket.emit('close attempt', input);
-            fastScroll();
-        }
+        $('.messages').append('<li><strong>Your partner has been alerted of your desire to close the chat</strong></li>');
+        input = {'room': room, 'user': userid};
+        socket.emit('close attempt', input);
+        fastScroll();
     });
 
     socket.on('attempt close', function(output) {
         // input = {'room': user.chat_room, 'user': user.id};
-        if ( (output['user'] != userid) && closeChat) {
-            input = {'system': system, 'user': userid};
+        var input;
+        if ( (output['user'] != userid) && closeChat) { // they want it closed and we closed it already
+            input = {'system': system, 'room': room};
             socket.emit('close Chat', input);
         } else if (output['user'] != userid) {
             $('.messages').append('<li class="otheruser"><strong>Your partner wishes to close the chat, close click the close chat button at the bottom center of the page to close it if you are both done</strong></li>');
@@ -170,18 +162,19 @@ $(document).ready(function() {
     var warningGiven = false;
 
     function updateTimer(){
+        var time, currentTime, timeSince, timeRemaining;
         time = new Date();
         currentTime = time.getTime();
         // get time remaining in seconds
         timeSince = (Number(currentTime) - Number(startTime))
-        remaining = Math.floor((Number(timeRemaining) - timeSince)/1000)
-        // if no time left make it impossible to send more messages, then ideally redirect once we get instructions
-        // for what we want to do with them after
-        if (0 < remaining && remaining <= warningTime && !warningGiven){
+        timeRemaining = Math.floor((Number(timeRemaining) - timeSince)/1000)
+        // detemine whether we need to give the warning
+        if (0 < timeRemaining && timeRemaining <= warningTime && !warningGiven){
             warningGiven = true;
             giveWarning();
         }
-        if (remaining <= 0){
+        // determine whether chat time has run up and we need to close it
+        if (timeRemaining <= 0){
             $('#closeChatSection').css({'display':'none'});
             $('#planSubmit').css({'display':'block'});
             $('#planSubmit').animate({'opacity':'1'}, 'slow');
@@ -192,9 +185,14 @@ $(document).ready(function() {
             clearInterval(keepTime);
             return;
         }
+        editTimer(timeRemaining);
+    }
+
+    function editTimer(timeRemaining) {
+        var secLeft, minLeft, timeLeft;
         // getting proper min/sec in string form;
-        secLeft = (remaining % 60).toString();
-        minLeft = (Math.floor(remaining / 60)).toString();
+        secLeft = (timeRemaining % 60).toString();
+        minLeft = (Math.floor(timeRemaining / 60)).toString();
         if (secLeft.length === 1){
             secLeft = "0" + secLeft;
         }
@@ -202,11 +200,13 @@ $(document).ready(function() {
         timeLeft = minLeft + ":" + secLeft;
         $('#timeLeft').text(timeLeft);
     }
-    var keepTime = setInterval(updateTimer, 200);
+
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Keeping track of the other user is typing notification
     isTyping = false;
     function checkTyping(){
+        var input;
         message = $('#m').val();
         if (message.length > 0) { // user typing
             isTyping = true;
@@ -218,12 +218,14 @@ $(document).ready(function() {
             socket.emit('user typing', input);
         }
     }
-    var typingmodified = false;
+
+    var typingmodified = false; // Determine whether we have set the text for .typing yet
     var wasTyping = false;
     socket.on('typing alert', function(output) {
         // form of output is output = {'id':input['id'], name: input['name'], message: input['message'], 'room':input['room']};
-        if (output['id'] != userid) {
-            if (output['message'].length === 0 && wasTyping) {
+        var shouldScroll;
+        if (output['id'] != userid) { // we must be getting an alert about the other user typing
+            if (output['message'].length === 0 && wasTyping) { // They are no longer typing
                 wasTyping = false;
                 shouldScroll = (messages.scrollTop + messages.clientHeight === messages.scrollHeight);
                 $('ul.messages').css({'height':'calc(100% - 47px)'});
@@ -231,13 +233,15 @@ $(document).ready(function() {
                 if (shouldScroll) {
                     fastScroll();
                 }
-            } else if(output['message'].length > 0 && !wasTyping) {
+            } else if(output['message'].length > 0 && !wasTyping) { // They are now typing
                 if (!typingmodified){
+                    // We need to set the text for .typing with the other user's name and a message like " is typing . . ."
                     typingmodified = true;
                     othertyping = output['name'] + " is typing. . ."
                     $('.typing').text(othertyping);
                 }
-                wasTyping = true;
+                wasTyping = true; // Keep track that we had this notification displayed, so we hide it later upon
+                                  // receiving a message fromt the other user
                 shouldScroll = (messages.scrollTop + messages.clientHeight === messages.scrollHeight);
                 $('ul.messages').css({'height':'calc(100% - 70px)'});
                 $('.typing').css({'display':'block'});

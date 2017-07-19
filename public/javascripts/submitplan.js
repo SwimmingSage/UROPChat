@@ -1,9 +1,8 @@
 $(document).ready(function() {
 
-    // This grabs the user data from backend so we can get their info
     var socket = io();
     var name, system, userid;
-    var timeRemaining, startTime;
+    var timeRemaining, startTime, keepTime;
 
     function getCurrentTime(){
         var time = new Date();
@@ -14,23 +13,23 @@ $(document).ready(function() {
         socket.emit('room', system);
     }
 
-    function checkTimer(system, id) {
+    function prepPage() {
         $.ajax({
-            url: '/checkSystem',
+            url: '/getSubmitInfo',
             data: {
-                system: inputsystem,
-                id:   entryid,
-                confirm: "yes",
-                page: currentpage,
             },
-            type: 'POST',
+            type: 'GET',
             success: function(data) {
                 if(data['correct'] === "false") {
-                    window.location.href = data['redirect'];
+                    window.href.location = data['redirect'];
                 } else {
-                    timeRemaining = data['timeleft'];
+                    name = data['name'];
+                    system = data['system'];
+                    userid = data['userID'];
+                    timeRemaining = data['timeLeft'];
                     startTime = getCurrentTime();
                     getToRoom(system);
+                    keepTime = setInterval(updateTime, 200);
                 }
             },
             error: function(xhr, status, error) {
@@ -39,27 +38,16 @@ $(document).ready(function() {
         });
     }
 
-    // where we decide if they stay or go
-    if (document.cookie != "") {
-        name = Cookies.get('name');
-        system = Cookies.get('system');
-        userid = Cookies.get('userid');
-        checkTimer(system, userid);
-    } else {
-        window.location.href = "/loginhome";
-    }
-
-    var keepTime = setInterval(updateTime, 200);
     function updateTime(){
         time = new Date();
         currentTime = time.getTime();
         // get time remaining in seconds
         timeSince = (Number(currentTime) - Number(startTime))
-        remaining = Math.floor((Number(timeRemaining) - timeSince)/1000)
-        if (remaining <= 0){
+        timeRemaining = Math.floor((Number(timeRemaining) - timeSince)/1000)
+        if (timeRemaining <= 0){
             socket.emit('proceed', system);
         }
-        editTimer(remaining);
+        editTimer(timeRemaining);
     }
 
     function editTimer(timeRemaining) {

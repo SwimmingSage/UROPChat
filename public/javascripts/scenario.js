@@ -19,12 +19,12 @@ $(document).ready(function() {
             url: '/getScenarioInfo',
             data: {
             },
-            type: 'POST',
+            type: 'GET',
             success: function(data) {
                 if(data['correct'] === "false") {
                     window.href.location = data['redirect'];
                 } else {
-                    timeRemaining = data['timeleft'];
+                    timeRemaining = data['timeLeft'];
                     startTime = getCurrentTime();
                     system = data['system'];
                     userid = data['userID'];

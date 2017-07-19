@@ -149,15 +149,17 @@ io.on('connection', function(socket) {
         if (err) {
           console.log('An error occurred');
         } 
+        // get the correct chatroom that we are working with
         if (chatsystem.location === "scenario1") {
             chatroom = chatsystem.scenario1;
         } else {
             chatroom = chatsystem.scenario2;
         }
-
+        // deactivate this chat room
         chatroom.completed = true;
         chatroom.active = false;
         chatroom.save();
+        // determine where we want to redirect our user
         if (chatsystem.location === "scenario1") {
             chatsystem.location = "submitplan1";
             redirect = "/submitplan1";
@@ -167,8 +169,8 @@ io.on('connection', function(socket) {
         }
         chatsystem.sectionTime = getCurrentTime();
         chatsystem.save();
-        returnobject = {"redirect": redirect, "room": input['room']};
-        io.to(input['room']).emit("chat closed", returnobject);
+        returnobject = {"redirect": redirect, "room": input['room']}; // including the room is for the
+        io.to(input['room']).emit("chat closed", returnobject);       // admin page so they know this chat closed
     })
   });
 
@@ -179,10 +181,11 @@ io.on('connection', function(socket) {
     io.to(input['system']).emit("initiateproceed", input['user']);
   });
 
-  socket.on('proceed', function(systemid) {
+  socket.on('proceed', function(systemID) {
+    // Users are finished with current page, must be moved to next one
     var location, chatroom, redirect;
     ChatSystem
-    .findOne({"id": systemid})
+    .findOne({"id": systemID})
     .populate('scenario1 scenario2')
     .exec(function (err, popchatsystem) { //populated chat system
         if (err) {
@@ -211,7 +214,7 @@ io.on('connection', function(socket) {
             redirect = '/endpage'
             popchatsystem.sectionTime = undefined;
         }
-        io.to(systemid).emit("proceedRedirect", redirect);
+        io.to(systemID).emit("proceedRedirect", redirect);
     })
   });
 
