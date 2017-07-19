@@ -7,7 +7,7 @@ var User = new Schema({
     // our users will user their userid to login
     id:                     {type: String}, // defined upon creation
     name:                   {type: String}, // defined later
-    systemID:               {type: String}, // defined upon creation
+    systemID:               {type: String, default: "none"}, // defined upon creation
     admin:                  {type: Boolean, default: false}, // defined upon creation
     complete:               {type: Boolean, default: false}, // defined upon creation
 });
