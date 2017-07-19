@@ -1,6 +1,6 @@
 $(document).ready(function() {
-    var socket = io();
-    // name, system, userid;
+    socket = io(); // this needs to be global to be accessed in the other file too
+    // var name, system, userid; // these must be global, so don't need to define them as local here
     var timeRemaining, startTime, keepTime;
 
     function getCurrentTime(){
