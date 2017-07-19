@@ -1,4 +1,5 @@
 $(document).ready(function() {
+    console.log("submitplan.js ran");
     var socket = io();
     var name, system, userid;
     var timeRemaining, startTime, keepTime;
@@ -15,6 +16,7 @@ $(document).ready(function() {
     prepPage();
 
     function prepPage() {
+        console.log("prepPage ran");
         $.ajax({
             url: '/getSubmitInfo',
             data: {
@@ -24,6 +26,8 @@ $(document).ready(function() {
                 if(data['correct'] === "false") {
                     window.href.location = data['redirect'];
                 } else {
+                    console.log("We received data as: ");
+                    console.log(data);
                     name = data['name'];
                     system = data['system'];
                     userid = data['userID'];
@@ -40,6 +44,7 @@ $(document).ready(function() {
     }
 
     function updateTime(){
+        console.log("We are in updateTime");
         currentTime = getCurrentTime();
         // get time remaining in seconds
         timeSince = (Number(currentTime) - Number(startTime))
