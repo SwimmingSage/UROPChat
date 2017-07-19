@@ -451,7 +451,7 @@ router.get('/getChatInfo', function(req, res) {
             res.send(returnobject);
         })
     };
-}
+})
 
 router.get('/getSubmitInfo', function(req, res) {
     var currentTime, msAge, timeLeft, redirect, returnobject;
@@ -479,7 +479,7 @@ router.get('/getSubmitInfo', function(req, res) {
             res.send(returnobject);
         }
     })
-}
+})
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
