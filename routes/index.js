@@ -495,7 +495,7 @@ router.get('/getSubmitInfo', function(req, res) {
 router.post('/addPlan', function(req, res) {
     var plan = JSON.parse(req.body.plan);
     var name = req.body.name;
-    var system = req.body.system;
+    var systemID = req.body.system;
     var userid = req.body.userid;
     var plannumber;
     var system;
@@ -583,7 +583,7 @@ router.post('/addPlan', function(req, res) {
         .catch(error => { console.log(error) });
     }
     ChatSystem
-    .findOne({"id": systemid})
+    .findOne({"id": systemID})
     .populate('scenario1 scenario2')
     .exec(function (err, userchatsystem) {
         if (err) {
