@@ -7,8 +7,6 @@ $(document).ready(function() {
     function sendPlan() { // submits the user's plan to the backend
         var plans, input;
         plans = gatherPlans(); // should return a list of the plans objects
-        console.log("Plans are: ");
-        console.log(plans)
         $.ajax({
             url: '/addPlan',
             data: {
@@ -80,14 +78,14 @@ $(document).ready(function() {
     function addAction(counter, targetID) {
         var newAction;
         newAction = '<ul class="upperul" id="' + targetID + 'act' + counter + '">'
-                        + '<li class="upperli"><button><span>Missile Type</span> <div class="downarrow">&#10095;</div></button>'
+                        + '<li class="upperli missile"><button><span>Missile Type</span> <div class="downarrow">&#10095;</div></button>'
                             + '<ul class="lowerul onecolumn">'
                                 + '<li>Floating Decoy</li>'
                                 + '<li>Flare (infrared)</li>'
                                 + '<li>Chaff (radar)</li>'
                                 + '<li>Laser Shot</li>'
                             + '</ul>'
-                        + '<li class="upperli"><button><span>Number</span><div class="downarrow">&#10095;</div></button>'
+                        + '<li class="upperli count"><button><span>Number</span><div class="downarrow">&#10095;</div></button>'
                             + '<ul class="lowerul">'
                                 + '<li class="leftcol">1</li>'
                                 + '<li class="leftcol">2</li>'
