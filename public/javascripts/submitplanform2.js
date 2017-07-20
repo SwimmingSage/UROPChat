@@ -5,9 +5,8 @@ $(document).ready(function() {
     });
 
     function sendPlan() { // submits the user's plan to the backend
+        var plans, input;
         plans = gatherPlans(); // should return a list of the plans objects
-        console.log("Plans are: ");
-        console.log(plans);
         $.ajax({
             url: '/addPlan',
             data: {
@@ -33,7 +32,7 @@ $(document).ready(function() {
     }  
 
     function gatherPlans() {
-        plans = [];
+        var plans = [];
         plans = plans.concat(getBlockPlan(block1Count, "block1"));
         plans = plans.concat(getBlockPlan(block2Count, "block2"));
         plans = plans.concat(getBlockPlan(block3Count, "block3"));
@@ -77,6 +76,7 @@ $(document).ready(function() {
     var block5Count = 1;
 
     function addAction(counter, targetID) {
+        var newAction;
         newAction = '<ul class="upperul" id="' + targetID + 'act' + counter + '">'
                         + '<li class="upperli"><button><span>Missile Type</span> <div class="downarrow">&#10095;</div></button>'
                             + '<ul class="lowerul onecolumn">'
@@ -99,6 +99,7 @@ $(document).ready(function() {
     }
 
     $(".addActionSub").click(function() {
+        var parentDivID, sectionNumber;
         parentDivID = $(this).parent("div").parent("div").attr('id'); // "block1", "block2", etc.
         sectionNumber = parentDivID[5];
         switch (sectionNumber) {

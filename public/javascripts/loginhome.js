@@ -2,6 +2,8 @@ $(document).ready(function() {
 
     var socket = io();
 
+    var redirect = false;
+
     function redirect() {
         window.location.href = "/scenario1";
     }
@@ -40,6 +42,7 @@ $(document).ready(function() {
                 if(data === "nosystem") {
                     $("#nosystem").css({"display":"block"});
                 } else if (data === "systemBegun") {
+                    redirect = true;
                     login(entryid, true);
                 } else {
                     $(".enterform").css({"display":"none"});
@@ -65,8 +68,7 @@ $(document).ready(function() {
             },
             type: 'POST',
             success: function(data) {
-                console.log("Successfully logged in");
-                if (redirect) {
+                if (redirect) { // user shold
                     window.location.href = "/scenario1";
                 }
             },

@@ -5,7 +5,8 @@ $(document).ready(function() {
     });
 
     function sendPlan() { // submits the user's plan to the backend
-        plans = []
+        var newobj, input;
+        var plans = []
         for (i=1; i <= stepnumber; i++) {
             newobj = {'stepnumber': i};
             newobj['action'] = $("#action" + i).text();
@@ -39,6 +40,7 @@ $(document).ready(function() {
     var stepnumber = 1;
 
     $("#addAction").click(function() {
+        var newAction;
         stepnumber += 1;
         newAction = '<ul class="upperul" id="step'+ stepnumber+'">'
                         + '<li class="upperli"><strong>' + stepnumber + '.</strong></li>'
@@ -76,8 +78,7 @@ $(document).ready(function() {
     });
 
     $(document).on("click", ".upperul li button", function() {
-        // console.log("We clicked it");
-        // $(".lowerul").css({"display":"none", "opacity":"0"});
+        var element;
         element = $(this).siblings('ul');
         if ($(element).css("display") === 'block' && $(element).css("opacity") === '1') {
             $(".lowerul").css({"display":"none", "opacity":"0"});
@@ -89,9 +90,9 @@ $(document).ready(function() {
     });
 
     $(document).on("click", ".lowerul li", function() {
+        var newtext, element;
         $(".lowerul").css({"display":"none", "opacity":"0"});
         newtext = $(this).text();
-        // console.log(newtext);
         element = $(this).parent("ul").siblings("button").children("span");
         element.text(newtext);
     });

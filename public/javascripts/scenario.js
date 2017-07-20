@@ -21,8 +21,6 @@ $(document).ready(function() {
             },
             type: 'GET',
             success: function(data) {
-                console.log("We got data as: ");
-                console.log(data);
                 if(data['correct'] === "false") {
                     window.href.location = data['redirect'];
                 } else {

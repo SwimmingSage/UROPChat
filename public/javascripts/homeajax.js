@@ -9,7 +9,6 @@ $(document).ready(function() {
     $('li.error').css({"display":"none"});
 
     if(username.length === 0 || password.length === 0 || reenterpassword.length === 0){
-        console.log("We have a fillallsections1 error");
         $("#fillallsections1").show();
         return;
     }
@@ -59,7 +58,6 @@ $(document).ready(function() {
   });
 
   $("#login").click(function(){
-
     //get values in input boxes
     var rawusername = $("#inputusernamelogin").val();
     var username = rawusername.toLowerCase();

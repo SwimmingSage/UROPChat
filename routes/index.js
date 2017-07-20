@@ -124,6 +124,19 @@ router.get('/endpage', function(req, res, next) {
   }
 });
 
+router.get('/chatarchiveq', function(req, res, next) {
+    ChatRoom
+    .find({"active": false})
+    .populate({path: 'Conversation', options:{sort: {'timeCreated': 1}}})
+    .populate({path: 'user1plan', options:{sort: {'stepnumber': 1}}})
+    .populate({path: 'user2plan', options:{sort: {'stepnumber': 1}}})
+    .lean()
+    .exec(function (err, chatrooms) {
+        if (err) return handleError(err);
+        res.render('chatarchiveq', {chats: chatrooms});
+    })
+});
+
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // Admin page stuff
 
@@ -240,8 +253,6 @@ function createUser(userID, chatsystemID) {
     });
 }
 
-
-
 router.get('/getAllChat', function(req, res) {
     ChatRoom
     .find({"active": true})
@@ -270,34 +281,22 @@ router.get('/getAllChat', function(req, res) {
     })
 });
 
-router.get('/chatarchive', function(req, res, next) {
-  //Lean basically makes it so we have raw javascript objects, which increases run time
-  if(req.isAuthenticated() && req.user.admin) {
-    ChatRoom
-    .find({"complete": true})
-    .populate({path: 'Conversation', options:{sort: {'timeCreated': 1}}})
-    .lean()
-    .exec(function (err, chatrooms) {
-        if (err) return handleError(err);
-        res.render('chatarchive', {chats: chatrooms, title: 'Emergency Response Planning'});
-    })
-  } else {
-    res.redirect('/');
-  }
-});
-
-router.get('/chatarchiveq', function(req, res, next) {
-    ChatRoom
-    .find({"active": false})
-    .populate({path: 'Conversation', options:{sort: {'timeCreated': 1}}})
-    .populate({path: 'user1plan', options:{sort: {'stepnumber': 1}}})
-    .populate({path: 'user2plan', options:{sort: {'stepnumber': 1}}})
-    .lean()
-    .exec(function (err, chatrooms) {
-        if (err) return handleError(err);
-        res.render('chatarchiveq', {chats: chatrooms});
-    })
-});
+// no longer used
+// router.get('/chatarchive', function(req, res, next) {
+//   //Lean basically makes it so we have raw javascript objects, which increases run time
+//   if(req.isAuthenticated() && req.user.admin) {
+//     ChatRoom
+//     .find({"complete": true})
+//     .populate({path: 'Conversation', options:{sort: {'timeCreated': 1}}})
+//     .lean()
+//     .exec(function (err, chatrooms) {
+//         if (err) return handleError(err);
+//         res.render('chatarchive', {chats: chatrooms, title: 'Emergency Response Planning'});
+//     })
+//   } else {
+//     res.redirect('/');
+//   }
+// });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // Associated things for authentication structure
@@ -363,12 +362,35 @@ function laterCheck(req, res) { // User must already be logged in if they got he
                 res.render('submitplan2', {title: 'Emergency Response Planning'});
                 break;
             case "endpage":
+                setUserComplete();
+                setSystemComplete();
                 res.render('endpage', {title: 'Emergency Response Planning'});
                 break;
             default: // we should in theory never get here
                 res.redirect('/loginhome');
         }
     })
+}
+
+function setUserComplete() {
+    // Assign the user as complete once they are done
+    User.findOne({'username': req.user.id}, function (err, users) {
+      if (err) {
+        console.log('An error occurred');
+      }
+      users.complete = true;
+      users.save();
+  })
+}
+
+function setSystemComplete() {
+    ChatSystem.findOne({'id': req.user.systemID}, function (err, chatsystem) {
+      if (err) {
+        console.log('An error occurred');
+      }
+      chatsystem.complete = true;
+      chatsystem.save();
+  })
 }
 
 router.get('/getScenarioInfo', function(req, res) {

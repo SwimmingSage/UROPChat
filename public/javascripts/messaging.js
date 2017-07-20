@@ -38,9 +38,9 @@ $(document).ready(function() {
                 if(data['correct'] === "false") {
                     window.href.location = data['redirect'];
                 } else {
-                    // data = {'correct': 'true', 'room': chatroom, 'timeLeft': timeLeft, 'systemID': req.user.systemID, 'userID': req.user.id, 'name': req.user.name};
-                    console.log("data is: ");
-                    console.log(data);
+                    // data = {'correct': 'true', 'room': chatroom, 'timeLeft': timeLeft,
+                    // 'systemID': req.user.systemID, 'userID': req.user.id, 'name': req.user.name};
+                    // these are all global variables
                     chatroom = data['room'];
                     room = chatroom.id;
                     system = data['systemID'];

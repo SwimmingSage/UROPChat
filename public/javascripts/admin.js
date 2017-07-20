@@ -2,16 +2,20 @@ $(document).ready(function() {
 
     var socket = io();
 
+    var chatrooms, chattimes, startTime;
+    var closed = {};
+    var wasTyping = {};
+
     // Send the user to the proper room
     function getToRoom(room) {
         socket.emit('multiroom', room);
     }
 
-    var chatrooms;
-    var chattimes;
-    var startTime;
-    var closed = {};
-    var wasTyping = {};
+    function getCurrentTime(){
+        var time = new Date();
+        return time.getTime();
+    }
+
     $.ajax({
         url: '/getAllChat',
         data: {
@@ -19,10 +23,10 @@ $(document).ready(function() {
         type: 'GET',
         success: function(sentchatinfo) {
             // sentchatinfo = {"rooms":returndata, "times": startTimes}
+            var id;
             chatrooms = sentchatinfo['rooms'];
             chattimes = sentchatinfo['times'];
-            time = new Date();
-            startTime = time.getTime();
+            startTime = getCurrentTime();
             for (i=0; i < chatrooms.length; i++) {
                 id = chatrooms[i].id
                 getToRoom(chatrooms[i].id);
@@ -37,6 +41,7 @@ $(document).ready(function() {
 
 
     function initialScroll(){
+        var thisElement;
         $('.messages').each(function(i, obj) {
             thisElement = document.getElementById(obj.id);
             fastScroll(thisElement);
@@ -54,6 +59,7 @@ $(document).ready(function() {
     setInterval(addToTime, 200);
 
     $('form').submit(function() {
+        var id, roomid, message, input;
         if (x === 0) {
             return false;
         } else {
@@ -66,7 +72,6 @@ $(document).ready(function() {
         id = this.id;
         roomid = id.slice(4, id.length);
         message = $('#m' + roomid).val();
-        console.log("The message is", message);
         // I don't want to send empty messages
         if (message.length === 0){
             return false;
@@ -82,7 +87,6 @@ $(document).ready(function() {
     // Process receiving messages
 
     function scrollToBottom(id, element) {
-        // messages.scrollTop = messages.scrollHeight; this is to scroll fast
         $('#messages' + id).animate({
             scrollTop: element.scrollHeight
         }, 200);
@@ -90,31 +94,27 @@ $(document).ready(function() {
     function fastScroll(element) {
         element.scrollTop = element.scrollHeight;
     };
+
     // When we receive a 'chat message' message...
     socket.on('recieve message', function(output) {
         // form of output is output = {'message':input['message'], name: input['name'], id:input['id'], 'room': input['room']};
-        // <ul class="messages" id="m<%= chats[i].id %>">
-        console.log(output);
+        var thisid, messages, shouldScroll;
         thisid = output['room']
-        console.log("This id is", thisid);
         messages = document.getElementById('messages' + thisid);
-        console.log("Messages is", messages);
+        // determine if user at bottom of chat, keeping up with the latest message
         shouldScroll = (messages.scrollTop + messages.clientHeight === messages.scrollHeight);
         if(output['name'] === "Admin"){
             $('#messages' + thisid).append('<li><strong>'+output['name']+':&nbsp;</strong>'+output['message']+'</li>');
         } else {
             $('#messages' + thisid).append('<li class="otheruser"><strong>'+output['name']+':&nbsp;</strong>'+output['message']+'</li>');
         }
+        wasTyping[thisid] = false;
+        $('#messages' + thisid).css({'height':'17em'});
+        $('#typing'+output['room']).css({'display':'none'});
         if (shouldScroll) {
+            fastScroll(messages);
+        } else {
             scrollToBottom(thisid, messages);
-        }
-        if (wasTyping[thisid]){
-            wasTyping[thisid] = false;
-            $('#messages' + thisid).css({'height':'17em'});
-            $('#typing'+output['room']).css({'display':'none'});
-            if (shouldScroll){
-                fastScroll(messages);
-            }
         }
     });
 
@@ -122,36 +122,34 @@ $(document).ready(function() {
     /////////////////////////////////////////////////////////////////////////////////////////////////////
     // Keep track of the timer
     // max time in minutes
-    var maxTime = 20*60 + 5;
-    var turnedOff = false;
-    function updateTimer(timeRemaining, id){
-        time = new Date();
-        currentTime = time.getTime();
-        // get time remaining in seconds
+    function updateTimer(timeRemaining, roomid){
+        var currentTime, timeSince, timeLeft;
+        currentTime = getCurrentTime();
         timeSince = (Number(currentTime) - Number(startTime))
-        remaining = Math.floor((Number(timeRemaining) - timeSince)/1000)
-        // if no time left make it impossible to send more messages, then ideally redirect once we get instructions
-        // for what we want to do with them after
-        // if (turnedOff) {
-        //     return;
-        // }
-        if (remaining <= 0){
-            $('#m'+ id).prop("readonly", true);
-            $('#m'+ id).val('');
-            $('#timer'+ id).html('0:00');
+        timeLeft = Math.floor((Number(timeRemaining) - timeSince)/1000) // in seconds
+        if (remaining <= 0){ // if the chat is closed
+            $('#m'+ roomid).prop("readonly", true);
+            $('#m'+ roomid).val('');
+            $('#timer'+ roomid).html('0:00');
+            closed[roomid] = true;
             return;
         }
+        editTimer(timeLeft);
+    }
+    // This edits the actual text on the timer
+    function editTimer(timeLeft) {
+        var secLeft, minLeft, timeLeftText;
         // getting proper min/sec in string form;
-        secLeft = (remaining % 60).toString();
-        minLeft = (Math.floor(remaining / 60)).toString();
+        secLeft = (timeLeft % 60).toString();
+        minLeft = (Math.floor(timeLeft / 60)).toString();
         if (secLeft.length === 1){
             secLeft = "0" + secLeft;
         }
         // putting the time left together in min:sec form
-        timeLeft = minLeft + ":" + secLeft;
-        $('#timer'+ id).text(timeLeft);
+        timeLeftText = minLeft + ":" + secLeft;
+        $('#timer'+ id).text(timeLeftText);
     }
-
+    // This updates the timers for every chat if it is not closed
     function updateTimes() {
         for (var roomid in chattimes) {
             if(!closed[roomid]) {
@@ -166,10 +164,7 @@ $(document).ready(function() {
 
     socket.on('typing alert', function(output) {
         // form of output is output = {'id':input['id'], name: input['name'], message: input['message'], 'room':input['room']};
-        // want to add name to this at some point
-        // console.log("Output is", output);
-        // console.log("the length of message is", output['message'].length);
-        // ignore signs that I am typing
+        var roomid, messages, shouldScroll;
         roomid = output['room'];
         messages = document.getElementById('messages'+roomid);
         shouldScroll = (messages.scrollTop + messages.clientHeight === messages.scrollHeight);
@@ -179,20 +174,20 @@ $(document).ready(function() {
             $('ul#messages'+roomid).css({'height':'17em'});
             $('#typing'+roomid).css({'display':'none'});
         } else if(output['message'].length > 0 && !wasTyping[roomid]) {
-            console.log("We recognize the other user is typing");
             wasTyping[roomid] = true;
             $('ul#messages'+roomid).css({'height':'15.6em'});
             $('#typing'+roomid).css({'display':'block'});
         }
-        if (shouldScroll) {
+        if (shouldScroll) { // keep user at bottom of chat
             fastScroll(messages);
         }
     });
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Where I will put the stuff for closing a chat
+    // When the chat is closed
     socket.on('chat closed', function(output) {
         // output  = {"redirect": redirect, "room": input['room']};
+        var roomid;
         roomid = output['room'];
         closed[roomid] = true;
         $('#m'+ roomid).prop("readonly", true);
