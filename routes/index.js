@@ -362,8 +362,8 @@ function laterCheck(req, res) { // User must already be logged in if they got he
                 res.render('submitplan2', {title: 'Emergency Response Planning'});
                 break;
             case "endpage":
-                setUserComplete();
-                setSystemComplete();
+                setUserComplete(req);
+                setSystemComplete(req);
                 res.render('endpage', {title: 'Emergency Response Planning'});
                 break;
             default: // we should in theory never get here
@@ -372,7 +372,7 @@ function laterCheck(req, res) { // User must already be logged in if they got he
     })
 }
 
-function setUserComplete() {
+function setUserComplete(req) {
     // Assign the user as complete once they are done
     User.findOne({'username': req.user.id}, function (err, users) {
       if (err) {
@@ -383,7 +383,7 @@ function setUserComplete() {
   })
 }
 
-function setSystemComplete() {
+function setSystemComplete(req) {
     ChatSystem.findOne({'id': req.user.systemID}, function (err, chatsystem) {
       if (err) {
         console.log('An error occurred');
