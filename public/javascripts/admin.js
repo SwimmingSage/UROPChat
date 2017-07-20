@@ -127,7 +127,7 @@ $(document).ready(function() {
         currentTime = getCurrentTime();
         timeSince = (Number(currentTime) - Number(startTime))
         timeLeft = Math.floor((Number(timeRemaining) - timeSince)/1000) // in seconds
-        if (remaining <= 0){ // if the chat is closed
+        if (timeLeft <= 0){ // if the chat is closed
             $('#m'+ roomid).prop("readonly", true);
             $('#m'+ roomid).val('');
             $('#timer'+ roomid).html('0:00');
