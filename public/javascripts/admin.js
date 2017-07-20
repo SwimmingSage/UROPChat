@@ -187,13 +187,15 @@ $(document).ready(function() {
     // When the chat is closed
     socket.on('chat closed', function(output) {
         // output  = {"redirect": redirect, "room": input['room']};
-        var roomid;
+        var roomid, messages;
         roomid = output['room'];
         closed[roomid] = true;
         $('#m'+ roomid).prop("readonly", true);
         $('#m'+ roomid).val('');
         $('#timer'+output['room']).html('0:00');
         $('#messages' + output['room']).append('<li><strong>Chat has been closed.</strong></li');
+        messages = document.getElementById('messages'+roomid);
+        fastScroll(messages);
     });
 });
 
