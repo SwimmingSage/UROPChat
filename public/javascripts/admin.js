@@ -134,10 +134,10 @@ $(document).ready(function() {
             closed[roomid] = true;
             return;
         }
-        editTimer(timeLeft);
+        editTimer(timeLeft, roomid);
     }
     // This edits the actual text on the timer
-    function editTimer(timeLeft) {
+    function editTimer(timeLeft, roomid) {
         var secLeft, minLeft, timeLeftText;
         // getting proper min/sec in string form;
         secLeft = (timeLeft % 60).toString();
@@ -147,7 +147,7 @@ $(document).ready(function() {
         }
         // putting the time left together in min:sec form
         timeLeftText = minLeft + ":" + secLeft;
-        $('#timer'+ id).text(timeLeftText);
+        $('#timer'+ roomid).text(timeLeftText);
     }
     // This updates the timers for every chat if it is not closed
     function updateTimes() {
