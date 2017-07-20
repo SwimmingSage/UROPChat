@@ -543,7 +543,7 @@ router.post('/addPlan', function(req, res) {
             user:            userid,
             name:            name,
             count:           count,
-            missle:          missile,
+            missile:         missile,
             target:          target
         })
         plan_step.save();
