@@ -312,7 +312,7 @@ router.post('/checkSystem', function(req, res) {
         if (err) {
           console.log('An error occurred');
         } 
-        if(userchatsystem === null || userchatsystem.available || userchatsystem.complete || 
+        if(userchatsystem === null || userchatsystem.available || 
         (userchatsystem.User1 != entryid && userchatsystem.User2 != entryid) ) { // chat system doesn't exist, is not yet available, already used, or invalid user credentials
             res.send("nosystem");
         } else if(userchatsystem.location === "none") { // The chat system the user is in has not yet begun
@@ -516,6 +516,8 @@ router.get('/getSubmitInfo', function(req, res) {
 
 router.post('/addPlan', function(req, res) {
     var plan = JSON.parse(req.body.plan);
+    console.log("The plan is: ");
+    console.log(plan);
     var name = req.body.name;
     var systemID = req.body.system;
     var userid = req.body.userid;
@@ -590,6 +592,8 @@ router.post('/addPlan', function(req, res) {
         .then(chat => {
             for (i=0; i < plan.length; i++) {
                 thisStep = plan[i];
+                console.log("This step is: ");
+                console.log(thisStep)
                 if (chat.type === "uav") {
                     createStepUAV(thisStep.stepnumber, thisStep.action, thisStep.location, chat);
                 } else {

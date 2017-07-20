@@ -39,7 +39,7 @@
                         <% if (chats[i].type === "uav") { %>
                         <td><%= chats[i].user2plan[x].action %> <%= chats[i].user2plan[x].location %></td>
                         <% } else { %>
-                        <td><%= chats[i].user2plan[x].count %> <%= chats[i].user2plan[x].missile %> from <%= chats[i].user2plan[x].ship %> to <%= chats[i].user2plan[x].target %></td>
+                        <td><%= chats[i].user2plan[x].count %> <%= chats[i].user2plan[x].missile %> to <%= chats[i].user2plan[x].target %></td>
                         <% } %>
                     <% } else { %>
                     <td><%= "" %></td>

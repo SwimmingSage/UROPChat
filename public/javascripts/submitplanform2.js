@@ -7,6 +7,8 @@ $(document).ready(function() {
     function sendPlan() { // submits the user's plan to the backend
         var plans, input;
         plans = gatherPlans(); // should return a list of the plans objects
+        console.log("Plans are: ");
+        console.log(plans)
         $.ajax({
             url: '/addPlan',
             data: {
