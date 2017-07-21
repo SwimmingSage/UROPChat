@@ -119,7 +119,6 @@ $(document).ready(function() {
     function closeChat() {
         // code to be excecuted when it is time for the chat to close
         var input;
-        console.log("Closing the chat got called");
         input = {'system': system, 'room': room};
         socket.emit('close Chat', input);
     }
@@ -150,7 +149,6 @@ $(document).ready(function() {
     // chat is closed
     socket.on('chat closed', function(output) {
         // output = {"redirect": redirect, "room": input['room']}; This is for the admin
-        console.log("chat closed was reached");
         $('#closeChatSection').css({'display':'none'});
         $('#m').prop("readonly", true);
         $('#m').val('');

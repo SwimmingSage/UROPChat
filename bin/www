@@ -172,11 +172,6 @@ io.on('connection', function(socket) {
             chatsystem.sectionTime = getCurrentTime();
             chatsystem.save();
             returnobject = {"redirect": redirect, "room": input['room']}; // including the room is for the
-            console.log()
-            console.log()
-            console.log("The return object from close Chat is " + returnobject);
-            console.log()
-            console.log()
             io.to(input['room']).emit("chat closed", returnobject);       // admin page so they know this chat closed
         }
     })
@@ -217,11 +212,6 @@ io.on('connection', function(socket) {
             chatroom.save();
             popchatsystem.save();
             io.to(systemID).emit("proceedRedirect", redirect);
-            console.log()
-            console.log()
-            console.log("One user got in proceedScenario");
-            console.log()
-            console.log()
         }
     })
   });
