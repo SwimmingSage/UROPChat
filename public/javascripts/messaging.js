@@ -139,8 +139,7 @@ $(document).ready(function() {
         // input = {'room': user.chat_room, 'user': user.id};
         var input;
         if ( (output['user'] != userid) && closeChat) { // they want it closed and we closed it already
-            input = {'system': system, 'room': room};
-            socket.emit('close Chat', input);
+            closeChat();
         } else if (output['user'] != userid) {
             $('.messages').append('<li class="otheruser"><strong>Your partner wishes to close the chat, close click the close chat button at the bottom center of the page to close it if you are both done</strong></li>');
             fastScroll();
@@ -150,6 +149,7 @@ $(document).ready(function() {
     // chat is closed
     socket.on('chat closed', function(output) {
         // output = {"redirect": redirect, "room": input['room']}; This is for the admin
+        console.log("output");
         $('#closeChatSection').css({'display':'none'});
         $('#m').prop("readonly", true);
         $('#m').val('');

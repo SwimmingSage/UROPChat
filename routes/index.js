@@ -16,7 +16,8 @@ var ChatSystem = mongoose.model('ChatSystem');
 
 var shortid = require('shortid');
 
-var maxAgeChat = (60*20) * 1000;
+// var maxAgeChat = (60*20) * 1000;
+var maxAgeChat = (30*1) * 1000;
 var maxScenarioTime = (60 * 5) * 1000;
 var maxSubmitTime = (60 * 5) * 1000;
 
