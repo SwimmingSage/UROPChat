@@ -114,11 +114,12 @@ $(document).ready(function() {
     //////////////////////////////////////////////////////////////////////////////////////////////////////
     // Handeling Closing chat
 
-    var closeChat = false; // Variable to keep track of whether this user has closed the chat on their end
+    var userCloseChat = false; // Variable to keep track of whether this user has closed the chat on their end
 
     function closeChat() {
         // code to be excecuted when it is time for the chat to close
         var input;
+        console.log("Closing the chat got called");
         input = {'system': system, 'room': room};
         socket.emit('close Chat', input);
     }
@@ -128,7 +129,7 @@ $(document).ready(function() {
         var input;
         $('.useractionpopup').css({"display":"none", "opacity":"0"});
         $('#closeChatSection').css({'display':'none'});
-        closeChat = true;
+        userCloseChat = true;
         $('.messages').append('<li><strong>Your partner has been alerted of your desire to close the chat</strong></li>');
         input = {'room': room, 'user': userid};
         socket.emit('close attempt', input);
@@ -138,7 +139,7 @@ $(document).ready(function() {
     socket.on('attempt close', function(output) {
         // input = {'room': user.chat_room, 'user': user.id};
         var input;
-        if ( (output['user'] != userid) && closeChat) { // they want it closed and we closed it already
+        if ( (output['user'] != userid) && userCloseChat) { // they want it closed and we closed it already
             closeChat();
         } else if (output['user'] != userid) {
             $('.messages').append('<li class="otheruser"><strong>Your partner wishes to close the chat, close click the close chat button at the bottom center of the page to close it if you are both done</strong></li>');
