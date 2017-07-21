@@ -357,10 +357,7 @@ div.styledbutton {
 }
 
 ul.messages {
-    /* we want this to switch to 16.6em */
-/*    height: 18em;*/
-    height: calc(100% - 47px);
-/*    width: 100%;*/
+    height: calc(100% - 45px);
     width: 40vw;
     overflow-y: auto;
     position: relative;

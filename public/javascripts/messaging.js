@@ -105,7 +105,7 @@ $(document).ready(function() {
         }
         if (wasTyping && output['id'] != userid){
             wasTyping = false;
-            $('ul.messages').css({'height':'calc(100% - 47px)'});
+            $('ul.messages').css({'height':'calc(100% - 45px)'});
             $('.typing').css({'display':'none'});
         }
         fastScroll();
@@ -228,7 +228,7 @@ $(document).ready(function() {
             if (output['message'].length === 0 && wasTyping) { // They are no longer typing
                 wasTyping = false;
                 shouldScroll = (messages.scrollTop + messages.clientHeight === messages.scrollHeight);
-                $('ul.messages').css({'height':'calc(100% - 47px)'});
+                $('ul.messages').css({'height':'calc(100% - 45px)'});
                 $('.typing').css({'display':'none'});
                 if (shouldScroll) {
                     fastScroll();
@@ -243,7 +243,7 @@ $(document).ready(function() {
                 wasTyping = true; // Keep track that we had this notification displayed, so we hide it later upon
                                   // receiving a message fromt the other user
                 shouldScroll = (messages.scrollTop + messages.clientHeight === messages.scrollHeight);
-                $('ul.messages').css({'height':'calc(100% - 70px)'});
+                $('ul.messages').css({'height':'calc(100% - 68px)'});
                 $('.typing').css({'display':'block'});
                 if (shouldScroll) {
                     fastScroll();
