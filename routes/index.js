@@ -16,12 +16,9 @@ var ChatSystem = mongoose.model('ChatSystem');
 
 var shortid = require('shortid');
 
-// var maxAgeChat = (60*20) * 1000;
-var maxAgeChat = (30*1) * 1000;
-// var maxScenarioTime = (60 * 5) * 1000;
-var maxScenarioTime = (20 * 1) * 1000;
-// var maxSubmitTime = (60 * 5) * 1000;
-var maxSubmitTime = (20 * 1) * 1000;
+var maxAgeChat = (60*20) * 1000;
+var maxScenarioTime = (60 * 5) * 1000;
+var maxSubmitTime = (60 * 5) * 1000;
 
 
 // Used to get the current time in ms for later functions
@@ -519,8 +516,6 @@ router.get('/getSubmitInfo', function(req, res) {
 
 router.post('/addPlan', function(req, res) {
     var plan = JSON.parse(req.body.plan);
-    console.log("The plan is: ");
-    console.log(plan);
     var name = req.body.name;
     var systemID = req.body.system;
     var userid = req.body.userid;
