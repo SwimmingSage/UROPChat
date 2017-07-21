@@ -45,7 +45,7 @@ $(document).ready(function() {
         timeSince = (Number(currentTime) - Number(startTime))
         remaining = Math.floor((Number(timeRemaining) - timeSince)/1000)
         if (remaining <= 0){
-            socket.emit('proceed', system);
+            socket.emit('proceedScenario', system);
         }
         editTimer(remaining);
     }
@@ -75,7 +75,7 @@ $(document).ready(function() {
 
     socket.on('initiateproceed', function(initiatorID) {
         if ( (initiatorID !== userid) && (proceedReady) ) {
-            socket.emit('proceed', system);
+            socket.emit('proceedScenario', system);
         }
     });
 

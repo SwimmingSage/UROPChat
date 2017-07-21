@@ -18,8 +18,10 @@ var shortid = require('shortid');
 
 // var maxAgeChat = (60*20) * 1000;
 var maxAgeChat = (30*1) * 1000;
-var maxScenarioTime = (60 * 5) * 1000;
-var maxSubmitTime = (60 * 5) * 1000;
+// var maxScenarioTime = (60 * 5) * 1000;
+var maxScenarioTime = (20 * 1) * 1000;
+// var maxSubmitTime = (60 * 5) * 1000;
+var maxSubmitTime = (20 * 1) * 1000;
 
 
 // Used to get the current time in ms for later functions

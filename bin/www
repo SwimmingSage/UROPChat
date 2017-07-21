@@ -149,28 +149,37 @@ io.on('connection', function(socket) {
         if (err) {
           console.log('An error occurred');
         } 
-        // get the correct chatroom that we are working with
-        if (chatsystem.location === "scenario1") {
-            chatroom = chatsystem.scenario1;
-        } else {
-            chatroom = chatsystem.scenario2;
+        // so if other user got here first then location will no longer be these, and they will have to turn back
+        if (chatsystem.location === "scenario1" || chatsystem.location === "scenario2") {
+            // determine where we want to redirect our user and update chat system
+            if (chatsystem.location === "scenario1") {
+                chatsystem.location = "submitplan1";
+                redirect = "/submitplan1";
+            } else {
+                chatsystem.location = "submitplan2";
+                redirect = "/submitplan2";
+            }
+            chatsystem.sectionTime = getCurrentTime();
+            chatsystem.save();
+            // get the correct chatroom that we are working with
+            if (chatroom.location === "scenario1") {
+                chatroom = chatsystem.scenario1;
+            } else if (chatsystem.location === "scenario2") {
+                chatroom = chatsystem.scenario2;
+            }
+            // deactivate this chat room
+            chatroom.completed = true;
+            chatroom.active = false;
+            chatroom.save();
+            chatsystem.save();
+            returnobject = {"redirect": redirect, "room": input['room']}; // including the room is for the
+            console.log()
+            console.log()
+            console.log("The return object from close Chat is " + returnobject);
+            console.log()
+            console.log()
+            io.to(input['room']).emit("chat closed", returnobject);       // admin page so they know this chat closed
         }
-        // deactivate this chat room
-        chatroom.completed = true;
-        chatroom.active = false;
-        chatroom.save();
-        // determine where we want to redirect our user
-        if (chatsystem.location === "scenario1") {
-            chatsystem.location = "submitplan1";
-            redirect = "/submitplan1";
-        } else {
-            chatsystem.location = "submitplan2";
-            redirect = "/submitplan2";
-        }
-        chatsystem.sectionTime = getCurrentTime();
-        chatsystem.save();
-        returnobject = {"redirect": redirect, "room": input['room']}; // including the room is for the
-        io.to(input['room']).emit("chat closed", returnobject);       // admin page so they know this chat closed
     })
   });
 
@@ -181,7 +190,7 @@ io.on('connection', function(socket) {
     io.to(input['system']).emit("initiateproceed", input['user']);
   });
 
-  socket.on('proceed', function(systemID) {
+  socket.on('proceedScenario', function(systemID) {
     // Users are finished with current page, must be moved to next one
     var location, chatroom, redirect;
     ChatSystem
@@ -192,6 +201,7 @@ io.on('connection', function(socket) {
           console.log('An error occurred');
         } 
         location = popchatsystem.location;
+        // ideally this makes it so the second user fails to get in here
         if (location === "scenario1info" || location === "scenario2info") {
             popchatsystem.sectionTime = "none";
             if (location === "scenario1info") {
@@ -207,18 +217,40 @@ io.on('connection', function(socket) {
             chatroom.active = true;
             chatroom.save();
             popchatsystem.save();
-        } else if (location === "submitplan1") {
-            popchatsystem.location = "scenario2info";
-            redirect = "/scenario2"
-            popchatsystem.sectionTime = getCurrentTime();
-            popchatsystem.save();
-        } else { // location === "submitplan2"
-            popchatsystem.location = "endpage";
-            redirect = '/endpage'
-            popchatsystem.sectionTime = "none";
-            popchatsystem.save();
+            io.to(systemID).emit("proceedRedirect", redirect);
+            console.log()
+            console.log()
+            console.log("One user got in proceedScenario");
+            console.log()
+            console.log()
         }
-        io.to(systemID).emit("proceedRedirect", redirect);
+    })
+  });
+
+  socket.on('proceedSubmitPlan', function(systemID) {
+    // Users are finished with current page, must be moved to next one
+    var location, chatroom, redirect;
+    ChatSystem
+    .findOne({"id": systemID})
+    .exec(function (err, chatsystem) { //populated chat system
+        if (err) {
+          console.log('An error occurred');
+        } 
+        location = chatsystem.location;
+        if (location === "submitplan1" || location === "submitplan2") {
+            if (location === "submitplan1") {
+                chatsystem.location = "scenario2info";
+                redirect = "/scenario2"
+                chatsystem.sectionTime = getCurrentTime();
+                chatsystem.save();
+            } else { // location === "submitplan2"
+                chatsystem.location = "endpage";
+                redirect = '/endpage'
+                chatsystem.sectionTime = "none";
+                chatsystem.save();
+            }
+            io.to(systemID).emit("proceedRedirect", redirect);
+        }
     })
   });
 
