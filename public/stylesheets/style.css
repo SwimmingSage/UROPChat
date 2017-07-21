@@ -413,8 +413,8 @@ ul span#bottomanchor {
     width: 100%;
     box-sizing: border-box;
     margin:0em;
-    /*padding: 0em 1em;*/
-    padding: 1em;
+    padding: 0em 1em;
+/*    padding: 1em;*/
 }
 
 #entermessage form input:focus {
