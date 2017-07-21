@@ -152,7 +152,7 @@ io.on('connection', function(socket) {
         // so if other user got here first then location will no longer be these, and they will have to turn back
         if (chatsystem.location === "scenario1" || chatsystem.location === "scenario2") {
             // get the correct chatroom that we are working with
-            if (chatroom.location === "scenario1") {
+            if (chatsystem.location === "scenario1") {
                 chatroom = chatsystem.scenario1;
             } else if (chatsystem.location === "scenario2") {
                 chatroom = chatsystem.scenario2;
