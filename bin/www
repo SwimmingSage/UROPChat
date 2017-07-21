@@ -151,16 +151,6 @@ io.on('connection', function(socket) {
         } 
         // so if other user got here first then location will no longer be these, and they will have to turn back
         if (chatsystem.location === "scenario1" || chatsystem.location === "scenario2") {
-            // determine where we want to redirect our user and update chat system
-            if (chatsystem.location === "scenario1") {
-                chatsystem.location = "submitplan1";
-                redirect = "/submitplan1";
-            } else {
-                chatsystem.location = "submitplan2";
-                redirect = "/submitplan2";
-            }
-            chatsystem.sectionTime = getCurrentTime();
-            chatsystem.save();
             // get the correct chatroom that we are working with
             if (chatroom.location === "scenario1") {
                 chatroom = chatsystem.scenario1;
@@ -171,6 +161,15 @@ io.on('connection', function(socket) {
             chatroom.completed = true;
             chatroom.active = false;
             chatroom.save();
+            // determine where we want to redirect our user and update chat system
+            if (chatsystem.location === "scenario1") {
+                chatsystem.location = "submitplan1";
+                redirect = "/submitplan1";
+            } else {
+                chatsystem.location = "submitplan2";
+                redirect = "/submitplan2";
+            }
+            chatsystem.sectionTime = getCurrentTime();
             chatsystem.save();
             returnobject = {"redirect": redirect, "room": input['room']}; // including the room is for the
             console.log()
