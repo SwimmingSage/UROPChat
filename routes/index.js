@@ -31,7 +31,7 @@ function getCurrentTime(){
 // Initial pages
 router.get('/', function(req, res, next) {
   // res.render('index', {title: 'Emergency Response Planning'});
-  if(req.isAuthenticated()) {
+  if(req.isAuthenticated() && req.user.systemID !== "none") {
     res.redirect('/scenario1');
   } else {
     res.redirect('/intro');
@@ -51,9 +51,7 @@ router.get('/intro', function(req, res, next) {
 
 //get consent form page
 router.get('/consentform', function(req, res, next) {
-  if(req.isAuthenticated() && req.user.admin) {
-    res.redirect('/admin');
-  } else if (req.isAuthenticated()) {
+  if (req.isAuthenticated() && req.user.systemID !== "none") {
     laterCheck(req, res);
   } else {
     res.render('consentform', {title: 'Emergency Response Planning'});
@@ -62,9 +60,7 @@ router.get('/consentform', function(req, res, next) {
 
 // This is where a user enters credentials and waits for partner to meet up
 router.get('/loginhome', function(req, res, next) {
-  if(req.isAuthenticated() && req.user.admin) {
-    res.redirect('/admin');
-  } else if (req.isAuthenticated()) {
+  if (req.isAuthenticated() && req.user.systemID !== "none") {
     laterCheck(req, res);
   } else {
     res.render('loginhome', {title: 'Emergency Response Planning'});
@@ -73,18 +69,14 @@ router.get('/loginhome', function(req, res, next) {
 
 // scenario pages
 router.get('/scenario1', function(req, res, next) {
-  if(req.isAuthenticated() && req.user.admin) {
-    res.redirect('/admin');
-  } else if(req.isAuthenticated() && req.user.systemID !== "none") {
+  if(req.isAuthenticated() && req.user.systemID !== "none") {
     laterCheck(req, res);
   } else {
     res.redirect('/loginhome');
   }
 });
 router.get('/scenario2', function(req, res, next) {
-  if(req.isAuthenticated() && req.user.admin) {
-    res.redirect('/admin');
-  } else if(req.isAuthenticated() && req.user.systemID !== "none") {
+  if(req.isAuthenticated() && req.user.systemID !== "none") {
     laterCheck(req, res);
   } else {
     res.redirect('/loginhome');
@@ -93,18 +85,14 @@ router.get('/scenario2', function(req, res, next) {
 
 // chat pages
 router.get('/messaging1', function(req, res, next) {
-  if(req.isAuthenticated() && req.user.admin) {
-    res.redirect('/admin');
-  } else if(req.isAuthenticated() && req.user.systemID !== "none") {
+  if(req.isAuthenticated() && req.user.systemID !== "none") {
     laterCheck(req, res);
   } else {
     res.redirect('/loginhome');
   }
 });
 router.get('/messaging2', function(req, res, next) {
-  if(req.isAuthenticated() && req.user.admin) {
-    res.redirect('/admin');
-  } else if(req.isAuthenticated() && req.user.systemID !== "none") {
+  if(req.isAuthenticated() && req.user.systemID !== "none") {
     laterCheck(req, res);
   } else {
     res.redirect('/loginhome');
@@ -113,18 +101,14 @@ router.get('/messaging2', function(req, res, next) {
 
 // submitplan pages
 router.get('/submitplan1', function(req, res, next) {
-  if(req.isAuthenticated() && req.user.admin) {
-    res.redirect('/admin');
-  } else if(req.isAuthenticated() && req.user.systemID !== "none") {
+  if(req.isAuthenticated() && req.user.systemID !== "none") {
     laterCheck(req, res);
   } else {
     res.redirect('/loginhome');
   }
 });
 router.get('/submitplan2', function(req, res, next) {
-  if(req.isAuthenticated() && req.user.admin) {
-    res.redirect('/admin');
-  } else if(req.isAuthenticated() && req.user.systemID !== "none") {
+  if(req.isAuthenticated() && req.user.systemID !== "none") {
     laterCheck(req, res);
   } else {
     res.redirect('/loginhome');
@@ -133,9 +117,7 @@ router.get('/submitplan2', function(req, res, next) {
 
 // endpage, final page of user chat
 router.get('/endpage', function(req, res, next) {
-  if(req.isAuthenticated() && req.user.admin) {
-    res.redirect('/admin');
-  } else if(req.isAuthenticated() && req.user.systemID !== "none") {
+  if(req.isAuthenticated() && req.user.systemID !== "none") {
     laterCheck(req, res);
   } else {
     res.redirect('/loginhome');
