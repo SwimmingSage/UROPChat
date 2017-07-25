@@ -9,6 +9,12 @@
         <% for(i=0; i < chats.length; i++) { %>
             <table>
                 <tr>
+                    <th>Chat Room ID:</th>
+                    <th><%= chats[i].id %></th>
+                    <th>Chat Type:</th>
+                    <th><%= chats[i].type %></th>
+                </tr>
+                <tr>
                     <th>Name</th>
                     <th>Messages</th>
                     <th>Time (sec)</th>
