@@ -16,6 +16,10 @@ button {
     outline: none;
 }
 
+p {
+    margin: 0;
+}
+
 /* Style for front home page */
 
 .loginhome {
@@ -765,7 +769,7 @@ td.planside {
     margin-bottom: 1em;
 }
 
-.submitinstructions h3, p {
+.submitinstructions h2, .submitinstructions h3 {
     margin: 0;
 }
 
