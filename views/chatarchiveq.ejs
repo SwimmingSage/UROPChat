@@ -6,13 +6,16 @@
   <body>
     <div>
 
-        <% for(i=0; i < chats.length; i++) { %>
+        <% for(i=0; i < chatsystems.length; i++) { %>
             <table>
                 <tr>
-                    <th>Chat Room ID:</th>
-                    <th><%= chats[i].id %></th>
+                    <th> Chat System ID:</th>
+                    <th><%= chatsystems[i].id %></th>
+                <tr>
+                    <th>Scenario 1 Chat Room ID:</th>
+                    <th><%= chatsystems[i].scenario1.id %></th>
                     <th>Chat Type:</th>
-                    <th><%= chats[i].type %></th>
+                    <th><%= chatsystems[i].scenario1.type %></th>
                 </tr>
                 <tr>
                     <th>Name</th>
@@ -21,38 +24,71 @@
                     <th>User 1 Action</th>
                     <th>User 2 Action</th>
                 </tr>
-                <% for(x=0; x < Math.max(chats[i].Conversation.length, chats[i].user1plan.length, chats[i].user2plan.length); x++) { %>
+                <% for(x=0; x < Math.max(chatsystems[i].scenario1.Conversation.length, chatsystems[i].scenario1.user1plan.length, chatsystems[i].scenario1.user2plan.length); x++) { %>
                 <tr>
-                    <% if (chats[i].Conversation[x] != undefined) { %>
-                    <td><%= chats[i].Conversation[x].sender %></td>
-                    <td><%= chats[i].Conversation[x].message %></td>
-                    <td><%= Math.round(Math.round(100 * ((chats[i].Conversation[x].timeCreated - chats[i].startTime)/1000))/100) - 5 %></td>
+                    <% if (chatsystems[i].scenario1.Conversation[x] != undefined) { %>
+                    <td><%= chatsystems[i].scenario1.Conversation[x].sender %></td>
+                    <td><%= chatsystems[i].scenario1.Conversation[x].message %></td>
+                    <td><%= Math.round(Math.round(100 * ((chatsystems[i].scenario1.Conversation[x].timeCreated - chatsystems[i].scenario1.startTime)/1000))/100) %></td>
                     <% } else { %>
                     <td><%= "" %></td>
                     <td><%= "" %></td>
                     <td><%= "" %></td>
                     <% } %>
-                    <% if (chats[i].user1plan[x] != undefined) { %>
-                        <% if (chats[i].type === "uav") { %>
-                        <td><%= chats[i].user1plan[x].action %> <%= chats[i].user1plan[x].location %></td>
-                        <% } else { %>
-                        <td><%= chats[i].user1plan[x].count %> <%= chats[i].user1plan[x].missile %> to <%= chats[i].user1plan[x].target %></td>
-                        <% } %>
+                    <% if (chatsystems[i].scenario1.user1plan[x] != undefined) { %>
+                        <td><%= chatsystems[i].scenario1.user1plan[x].action %> <%= chatsystems[i].scenario1.user1plan[x].location %></td>
                     <% } else { %>
                     <td><%= "" %></td>
                     <% } %>
-                    <% if (chats[i].user2plan[x] != undefined) { %>
-                        <% if (chats[i].type === "uav") { %>
-                        <td><%= chats[i].user2plan[x].action %> <%= chats[i].user2plan[x].location %></td>
-                        <% } else { %>
-                        <td><%= chats[i].user2plan[x].count %> <%= chats[i].user2plan[x].missile %> to <%= chats[i].user2plan[x].target %></td>
-                        <% } %>
+                    <% if (chatsystems[i].scenario1.user2plan[x] != undefined) { %>
+                        <td><%= chatsystems[i].scenario1.user2plan[x].action %> <%= chatsystems[i].scenario1.user2plan[x].location %></td>
+                    <% } else { %>
+                    <td><%= "" %></td>
+                    <% } %>
+                </tr>
+                <% } %>
+
+                <tr>
+                    <th>Scenario Chat 2 Room ID:</th>
+                    <th><%= chatsystems[i].scenario2.id %></th>
+                    <th>Chat Type:</th>
+                    <th><%= chatsystems[i].scenario2.type %></th>
+                </tr>
+                <tr>
+                    <th>Name</th>
+                    <th>Messages</th>
+                    <th>Time (sec)</th>
+                    <th>User 1 Action</th>
+                    <th>User 2 Action</th>
+                </tr>
+                <% for(x=0; x < Math.max(chatsystems[i].scenario2.Conversation.length, chatsystems[i].scenario2.user1plan.length, chatsystems[i].scenario2.user2plan.length); x++) { %>
+                <tr>
+                    <% if (chatsystems[i].scenario2.Conversation[x] != undefined) { %>
+                    <td><%= chatsystems[i].scenario2.Conversation[x].sender %></td>
+                    <td><%= chatsystems[i].scenario2.Conversation[x].message %></td>
+                    <td><%= Math.round(Math.round(100 * ((chatsystems[i].scenario2.Conversation[x].timeCreated - chatsystems[i].scenario2.startTime)/1000))/100) %></td>
+                    <% } else { %>
+                    <td><%= "" %></td>
+                    <td><%= "" %></td>
+                    <td><%= "" %></td>
+                    <% } %>
+                    <% if (chatsystems[i].scenario2.user1plan[x] != undefined) { %>
+                        <td><%= chatsystems[i].scenario2.user2plan[x].count %> <%= chatsystems[i].scenario2.user1plan[x].missile %> to <%= chatsystems[i].scenario2.user1plan[x].target %></td>
+                    <% } else { %>
+                    <td><%= "" %></td>
+                    <% } %>
+                    <% if (chatsystems[i].scenario2.user2plan[x] != undefined) { %>
+                        <td><%= chatsystems[i].scenario2.user2plan[x].count %> <%= chatsystems[i].scenario2.user2plan[x].missile %> to <%= chatsystems[i].scenario2.user2plan[x].target %></td>
                     <% } else { %>
                     <td><%= "" %></td>
                     <% } %>
                 </tr>
                 <% } %>
             </table>
+            <br>
+            <br>
+            <br>
+
         <% } %>
 
     </div>

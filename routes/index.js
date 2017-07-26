@@ -125,16 +125,37 @@ router.get('/endpage', function(req, res, next) {
 });
 
 router.get('/chatarchiveq', function(req, res, next) {
-    ChatRoom
-    .find({"active": false})
-    .populate({path: 'Conversation', options:{sort: {'timeCreated': 1}}})
-    .populate({path: 'user1plan', options:{sort: {'stepnumber': 1}}})
-    .populate({path: 'user2plan', options:{sort: {'stepnumber': 1}}})
+    ChatSystem
+    .find({"location": "endpage"})
+    .populate('scenario1 scenario2')
+    .populate({
+        path: 'scenario1',
+        populate: { path: 'Conversation', options:{sort: {'timeCreated': 1}}} })
+    .populate({
+        path: 'scenario1',
+        populate: { path: 'user1plan', options:{sort: {'stepnumber': 1}}} })
+    .populate({
+        path: 'scenario1',
+        populate: { path: 'user2plan', options:{sort: {'stepnumber': 1}}} })  
+    .populate({
+        path: 'scenario2',
+        populate: { path: 'Conversation', options:{sort: {'timeCreated': 1}}} })
     .lean()
-    .exec(function (err, chatrooms) {
+    .exec(function (err, chatsystems) {
         if (err) return handleError(err);
-        res.render('chatarchiveq', {chats: chatrooms});
+        res.render('chatarchiveq', {chatsystems: chatsystems});
     })
+
+    // ChatRoom
+    // .find({"active": false})
+    // .populate({path: 'Conversation', options:{sort: {'timeCreated': 1}}})
+    // .populate({path: 'user1plan', options:{sort: {'stepnumber': 1}}})
+    // .populate({path: 'user2plan', options:{sort: {'stepnumber': 1}}})
+    // .lean()
+    // .exec(function (err, chatrooms) {
+    //     if (err) return handleError(err);
+    //     res.render('chatarchiveq', {chatsystems: chatsystems});
+    // })
 });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -590,8 +611,6 @@ router.post('/addPlan', function(req, res) {
         .then(chat => {
             for (i=0; i < plan.length; i++) {
                 thisStep = plan[i];
-                console.log("This step is: ");
-                console.log(thisStep)
                 if (chat.type === "uav") {
                     createStepUAV(thisStep.stepnumber, thisStep.action, thisStep.location, chat);
                 } else {
