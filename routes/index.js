@@ -140,6 +140,12 @@ router.get('/chatarchiveq', function(req, res, next) {
     .populate({
         path: 'scenario2',
         populate: { path: 'Conversation', options:{sort: {'timeCreated': 1}}} })
+    .populate({
+        path: 'scenario2',
+        populate: { path: 'user1plan', options:{sort: {'stepnumber': 1}}} })
+    .populate({
+        path: 'scenario2',
+        populate: { path: 'user2plan', options:{sort: {'stepnumber': 1}}} })  
     .lean()
     .exec(function (err, chatsystems) {
         if (err) return handleError(err);
