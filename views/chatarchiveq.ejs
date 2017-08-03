@@ -27,7 +27,7 @@
                 <% for(x=0; x < Math.max(chatsystems[i].scenario1.Conversation.length, chatsystems[i].scenario1.user1plan.length, chatsystems[i].scenario1.user2plan.length); x++) { %>
                 <tr>
                     <% if (chatsystems[i].scenario1.Conversation[x] != undefined) { %>
-                    <td><%= chatsystems[i].scenario1.Conversation[x].sender %></td>
+                    <td><%= chatsystems[i].scenario1.Conversation[x].idofSender %></td>
                     <td><%= chatsystems[i].scenario1.Conversation[x].message %></td>
                     <td><%= Math.round(Math.round(100 * ((chatsystems[i].scenario1.Conversation[x].timeCreated - chatsystems[i].scenario1.startTime)/1000))/100) %></td>
                     <% } else { %>
@@ -64,7 +64,7 @@
                 <% for(x=0; x < Math.max(chatsystems[i].scenario2.Conversation.length, chatsystems[i].scenario2.user1plan.length, chatsystems[i].scenario2.user2plan.length); x++) { %>
                 <tr>
                     <% if (chatsystems[i].scenario2.Conversation[x] != undefined) { %>
-                    <td><%= chatsystems[i].scenario2.Conversation[x].sender %></td>
+                    <td><%= chatsystems[i].scenario2.Conversation[x].idofSender %></td>
                     <td><%= chatsystems[i].scenario2.Conversation[x].message %></td>
                     <td><%= Math.round(Math.round(100 * ((chatsystems[i].scenario2.Conversation[x].timeCreated - chatsystems[i].scenario2.startTime)/1000))/100) %></td>
                     <% } else { %>
