@@ -21,8 +21,8 @@
                     <th>Name</th>
                     <th>Messages</th>
                     <th>Time (sec)</th>
-                    <th>User 1 Action</th>
-                    <th>User 2 Action</th>
+                    <th><%= chatsystems[i].User1 %></th>
+                    <th><%= chatsystems[i].User2 %></th>
                 </tr>
                 <% for(x=0; x < Math.max(chatsystems[i].scenario1.Conversation.length, chatsystems[i].scenario1.user1plan.length, chatsystems[i].scenario1.user2plan.length); x++) { %>
                 <tr>
@@ -58,8 +58,8 @@
                     <th>Name</th>
                     <th>Messages</th>
                     <th>Time (sec)</th>
-                    <th>User 1 Action</th>
-                    <th>User 2 Action</th>
+                    <th><%= chatsystems[i].User1 %></th>
+                    <th><%= chatsystems[i].User2 %></th>
                 </tr>
                 <% for(x=0; x < Math.max(chatsystems[i].scenario2.Conversation.length, chatsystems[i].scenario2.user1plan.length, chatsystems[i].scenario2.user2plan.length); x++) { %>
                 <tr>
